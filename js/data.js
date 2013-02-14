@@ -10,16 +10,16 @@
 
   // These will hold the data for each store.
   App.data.store = {};
-  App.data.store.universite;
-  App.data.store.programmes;
-  App.data.store.donnees;
+  App.data.store.universite = {};
+  App.data.store.programmes = {};
+  App.data.store.donnees = {};
 
   // Keep count of the number of files retrieved.
-  App.data.files_retrieved = 0;
+  App.data.filesRetrieved = 0;
 
   // Some information pertaining to the DB.
   App.data.DB_NAME    = 'LaRelance';
-  App.data.DB_VERSION = 10;
+  App.data.DB_VERSION = 12;
   App.data.db;
 
   App.data.init = function( dbName ) {
@@ -55,18 +55,18 @@
         App.data.db = request.result;
 
 
-        // var objectStore = App.data.db.transaction( App.data.DB_NAME ).objectStore( 'universite');
+        var store = request.result.transaction( App.data.DB_NAME ).objectStore( 'universite');
 
-        // objectStore.openCursor().onsuccess = function(event) {
-        //   var cursor = event.target.result;
-        //   if (cursor) {
-        //     alert("Name for SSN " + cursor.key + " is " + cursor.value.UNAME);
-        //     cursor.continue();
-        //   }
-        //   else {
-        //     alert("No more entries!");
-        //   }
-        // };
+        store.openCursor().onsuccess = function( event ) {
+          var cursor = event.target.result;
+          if ( cursor ) {
+            alert("Name for SSN " + cursor.key + " is " + cursor.value.UNAME);
+            cursor.continue();
+          }
+          else {
+            alert("No more entries!");
+          }
+        };
       };
 
       // Here we upgrade (or create) DB entries.
@@ -95,15 +95,15 @@
           store.add( App.data.store.universite[ o ] );
         }
 
-        // // Create the object stores
-        // store = App.data.db.createObjectStore(
-        //   'programmes',
-        //   { keyPath: 'PID' }
-        // );
-        // // Store each object in the object store.
-        // for ( var o in App.data.store.programmes ) {
-        //   store.add( App.data.store.programmes[ o ] );
-        // }
+        // Create the object stores
+        store = App.data.db.createObjectStore(
+          'programmes',
+          { keyPath: 'PID' }
+        );
+        // Store each object in the object store.
+        for ( var o in App.data.store.programmes ) {
+          store.add( App.data.store.programmes[ o ] );
+        }
 
         // // Create the object stores
         // var store = App.data.db.createObjectStore(
@@ -116,47 +116,49 @@
         // }
       };
     }
+  };
 
 
-    /**
-     * Each time a file is retrieve, this method is called.
-     * We know we need to retrieve three files, after 3 times this
-     * method is called, call the init on the DB
-     *
-     */
-    App.data.fileHasBeenRetrieved = function() {
-      App.data.fileRetrieved += 1;
-      console.log(App.data.fileRetrieved);
+  /**
+   * Each time a file is retrieve, this method is called.
+   * We know we need to retrieve three files, after 3 times this
+   * method is called, call the init on the DB
+   *
+   */
+  App.data.fileHasBeenRetrieved = function() {
+    App.data.filesRetrieved += 1;
+    console.log(App.data.filesRetrieved);
 
-      if ( App.data.fileRetrieved === 2 ){
-        App.data.init();
-    }
+    if ( App.data.filesRetrieved === 3 )
+      App.data.init();
+  };
 
 
-    /*
-     * Given a file name, this method will return the file content.
-     * Used to retrieve JSON data for each object store.
-     *
-     * @param   Var     dest      Destination of the retrieved data.
-     * @param   String  file      The file the retrieve.
-     */
-    App.data.retrieveData = function( dest, url ) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      // http://www.w3.org/TR/XMLHttpRequest2/#the-response-attribute
-      xhr.responseType = 'blob';
-      xhr.onload = function ( event ) {
-        if (xhr.status == 200) {
-          console.log(xhr.status);
-          dest = xhr.response;
-          App.data.fileHasBeenRetrieved();
-        }
-        else {
-          App.ui.updateStatusBar( 'Failed to retrieve data.' );
-          console.log(xhr.responseText + ' (' + xhr.status + ')');
-        }
-      };
-      xhr.send();
-    }
+  /*
+   * Given a file name, this method will return the file content.
+   * Used to retrieve JSON data for each object store.
+   *
+   * @param   Var     dest      Destination of the retrieved data.
+   * @param   String  file      The file the retrieve.
+   */
+  App.data.retrieveData = function( dest, url ) {
+        console.log(dest);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    // http://www.w3.org/TR/XMLHttpRequest2/#the-response-attribute
+    xhr.responseType = 'blob';
+    xhr.onload = function ( event ) {
+      if (xhr.status == 200) {
+        console.log(xhr.status);
+        console.log(dest);
+        dest = xhr.response;
+        App.data.fileHasBeenRetrieved();
+      }
+      else {
+        App.ui.updateStatusBar( 'Failed to retrieve data.' );
+        console.log(xhr.responseText + ' (' + xhr.status + ')');
+      }
+    };
+    xhr.send();
   };
 })();
