@@ -9,156 +9,170 @@
   App.data = {};
 
   // These will hold the data for each store.
-  App.data.store = {};
-  App.data.store.universite = {};
-  App.data.store.programmes = {};
-  App.data.store.donnees = {};
+  App.data.objectstores = [
+    { name: 'UNIVERSITIES',
+      keyPath: 'UID',
+      autoIncrement: false,
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/universite.json' },
 
-  // Keep count of the number of files retrieved.
-  App.data.filesRetrieved = 0;
+    { name: 'PROGRAMS',
+      keyPath: 'PID',
+      autoIncrement: false,
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/programmes.json' },
+
+    { name: 'DATA',
+      keyPath: 'id',
+      autoIncrement: true,
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/donnees.json' },
+  ];
 
   // Some information pertaining to the DB.
-  App.data.DB_NAME    = 'LaRelance';
-  App.data.DB_VERSION = 12;
-  App.data.db;
-
-  App.data.init = function( dbName ) {
-    // Let's initialize an IndexedDB instance.
-    // https://developer.mozilla.org/en-US/docs/IndexedDB/Using_IndexedDB
-    var indexedDB      = window.indexedDB;
-    var IDBTransaction = window.IDBTransaction;
-    var IDBKeyRange    = window.IDBKeyRange;
-
-    if ( ! indexedDB ) {
-      // Browser with experimental version of IndexedDB DO pass this test.
-      App.ui.browserNotSupported();
-
-      // @TODO Test for experimental version and warn user.
-    }
-    else {
-      // Open up the database, version 1.
-      // The open() method returns an IDBOpenDBRequest object,
-      // to handle below.
-      App.ui.updateStatusBar( 'Opening the database.' );
-      var request = indexedDB.open( App.data.DB_NAME, App.data.DB_VERSION );
-
-      //
-      // Request handler for opening the database object.
-      //
-      request.onerror = function( event ) {
-        console.log( event );
-        App.ui.browserNotSupported( event.target.errorCode );
-      };
-
-      request.onsuccess = function( event ) {
-        App.ui.updateStatusBar( 'Database opened successfully!' );
-        App.data.db = request.result;
-
-
-        var store = request.result.transaction( App.data.DB_NAME ).objectStore( 'universite');
-
-        store.openCursor().onsuccess = function( event ) {
-          var cursor = event.target.result;
-          if ( cursor ) {
-            alert("Name for SSN " + cursor.key + " is " + cursor.value.UNAME);
-            cursor.continue();
-          }
-          else {
-            alert("No more entries!");
-          }
-        };
-      };
-
-      // Here we upgrade (or create) DB entries.
-      request.onupgradeneeded = function( event ) {
-        App.ui.updateStatusBar( 'Currently adding data to the database.' );
-
-        App.data.db = event.target.result;
-
-        // It is impossible to update an existing object store,
-        // so delete it if it exist.
-        if( App.data.db.objectStoreNames.contains( 'universite' ) )
-          App.data.db.deleteObjectStore( 'universite' );
-        if( App.data.db.objectStoreNames.contains( 'programmes' ) )
-          App.data.db.deleteObjectStore( 'programmes' );
-        if( App.data.db.objectStoreNames.contains( 'donnees' ) )
-          App.data.db.deleteObjectStore( 'donnees' );
-
-
-        // Create the object stores
-        var store = App.data.db.createObjectStore(
-          'universite',
-          { keyPath: 'UID' }
-        );
-        // Store each object in the object store.
-        for ( var o in App.data.store.universite ) {
-          store.add( App.data.store.universite[ o ] );
-        }
-
-        // Create the object stores
-        store = App.data.db.createObjectStore(
-          'programmes',
-          { keyPath: 'PID' }
-        );
-        // Store each object in the object store.
-        for ( var o in App.data.store.programmes ) {
-          store.add( App.data.store.programmes[ o ] );
-        }
-
-        // // Create the object stores
-        // var store = App.data.db.createObjectStore(
-        //   'universite',
-        //   { keyPath: 'UID' }
-        // );
-        // // Store each object in the object store.
-        // for ( var o in App.data.store.universite ) {
-        //   objectStore.add( App.data.store.universite[ o ] );
-        // }
-      };
-    }
-  };
+  App.data.indexedDB    = {};
+  App.data.indexedDB.db = null
+  App.data.DB_NAME      = 'LaRelance';
+  App.data.DB_VERSION   = 42;
 
 
   /**
-   * Each time a file is retrieve, this method is called.
-   * We know we need to retrieve three files, after 3 times this
-   * method is called, call the init on the DB
+   * This is the entry point for the database system.
+   * Either open or create the database and if need be, retrieve the data and
+   * add it to the database.
    *
    */
-  App.data.fileHasBeenRetrieved = function() {
-    App.data.filesRetrieved += 1;
-    console.log(App.data.filesRetrieved);
-
-    if ( App.data.filesRetrieved === 3 )
-      App.data.init();
-  };
+  App.data.init = function() {
+    App.ui.updateStatusBar( 'Initializing database...' );
+    App.data.indexedDB.open();
+  }; // end App.data.init()
 
 
-  /*
-   * Given a file name, this method will return the file content.
-   * Used to retrieve JSON data for each object store.
+  /**
+   * Attempt to open the database.
+   * If the version has changed, deleted known object stores and re-create them.
+   * We'll add the data later.
    *
-   * @param   Var     dest      Destination of the retrieved data.
-   * @param   String  file      The file the retrieve.
    */
-  App.data.retrieveData = function( dest, url ) {
-        console.log(dest);
+  App.data.indexedDB.open = function() {
+    // Everything is done through requests and transactions.
+    var request = window.indexedDB.open( App.data.DB_NAME, App.data.DB_VERSION );
+
+    // We can only create Object stores in a onupgradeneeded transaction.
+    request.onupgradeneeded = function( e ) {
+      App.ui.updateStatusBar( 'Database update required...' );
+      var db = e.target.result;
+
+      // Not sure what this does here...
+      e.target.transaction.onerror = App.data.indexedDB.onerror;
+
+      // Loop through each object stores we have defined above.
+      // If an object store is already present, delete it
+      // (we cannot add an object store if it is already present).
+      // Create the object store again, so they are certainly empty.
+      // Finally, add the data to the object store.
+      App.ui.updateStatusBar( 'Updating database schema...' );
+      App.data.objectstores.forEach( function( o ) {
+        if ( db.objectStoreNames.contains( o.name ) ) {
+          App.ui.updateStatusBar( 'Deleting ' + o.name + ' object store...' );
+          db.deleteObjectStore( o.name );
+        }
+
+        App.ui.updateStatusBar( 'Creating ' + o.name + ' object store...' );
+        var store = db.createObjectStore(
+          o.name,
+          { keyPath: o.keyPath, autoIncrement: o.autoIncrement }
+        );
+
+        App.data.indexedDB.addDataFromUrl( o.name, o.data_source );
+      });
+    }; // end request.onupgradeneeded()
+
+    request.onsuccess = function( e ) {
+      App.ui.updateStatusBar( 'Database initialized...' );
+      App.data.indexedDB.db = e.target.result;
+      // Do some more stuff in a minute
+    }; // end request.onsuccess()
+
+    request.onerror = App.data.indexedDB.onerror;
+  }; // end App.data.indexedDB.open()
+
+
+  App.data.indexedDB.addDataFromUrl = function( store, url ) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
+    xhr.open( 'GET', url, true );
     // http://www.w3.org/TR/XMLHttpRequest2/#the-response-attribute
-    xhr.responseType = 'blob';
-    xhr.onload = function ( event ) {
-      if (xhr.status == 200) {
-        console.log(xhr.status);
-        console.log(dest);
-        dest = xhr.response;
-        App.data.fileHasBeenRetrieved();
+    // xhr.responseType = 'blob';
+    xhr.onload = function( event ) {
+      if( xhr.status == 200 ) {
+        var json = JSON.parse( xhr.response );
+        // var json = JSON.parse( xhr.response.replace(/&quot;/ig,'"') );
+        // console.log(json);
+
+        json.forEach( function( o ){
+          console.log(o);
+          App.data.indexedDB.addItem( store, o );
+        });
       }
-      else {
-        App.ui.updateStatusBar( 'Failed to retrieve data.' );
-        console.log(xhr.responseText + ' (' + xhr.status + ')');
+      else{
+        console.error("addDataFromUrl error:", xhr.responseText, xhr.status);
       }
     };
     xhr.send();
-  };
+  }; // end App.data.indexedDB.addDataFromUrl()
+
+
+  App.data.indexedDB.addItem = function( store, item ) {
+    var store = App.data.indexedDB.getObjectStore( store, 'readwrite' );
+    var req;
+    try{
+      req = store.add( item );
+    }
+    catch( e ){
+      if( e.name == 'DataCloneError' )
+        App.ui.updateStatusBar( "This engine doesn't know how to clone a Blob, " + "use Firefox" );
+      throw e;
+    }
+    req.onsuccess = function (evt) {
+      console.log("Insertion in DB successful");
+      // displayActionSuccess();
+      // displayPubList(store);
+    };
+    req.onerror = function() {
+      console.error("addPublication error", this.error);
+    };
+  }; // end App.data.indexedDB.addItem()
+
+
+  /**
+   * Handle all IndexedDB related errors.
+   *
+   */
+  App.data.indexedDB.onerror = function( e ) {
+    console.log(e);
+  }; // end App.data.indexedDB.onerror()
+
+
+  /**
+   * Helper method to retrieve an object store from the currently opened DB
+   *
+   * @param   {string}  store   The name of the object store to retrieve.
+   * @param   {string}  mode    Either 'readonly' or 'readwrite'.
+   */
+  App.data.indexedDB.getObjectStore = function( store, mode ) {
+    var trn = App.data.indexedDB.db.transaction( store, mode );
+    return trn.objectStore( store );
+  }; // end App.data.indexedDB.getObjectStore()
+
+
+  /**
+   * Helper method to delete all object in an object store.
+   *
+   * @param   {string}  store   The name of the object store.
+   */
+  App.data.indexedDB.clearObjectStore = function( store ) {
+    var store = App.data.indexedDB.getObjectStore( store, 'readwrite' );
+    var req   = store.clear();
+    req.onsuccess = function( event ) {
+      App.ui.updateStatusBar( store + ' successfully cleared...' );
+    }
+    req.onerror = App.data.indexedDB.onerror;
+  }; // end App.data.indexedDB.clearObjectStore()
 })();
