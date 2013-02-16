@@ -87,15 +87,19 @@
     request.onsuccess = function( e ) {
       App.data.indexedDB.db = e.target.result;
       App.ui.updateStatusBar( 'Database initialized...' );
-
-      App.data.indexedDB.retrieveAllUniversities();
+      App.ui.updateStatusBar( 'Initializing UI...' );
+      App.ui.init();
     }; // end request.onsuccess()
 
     request.onerror = App.data.indexedDB.onerror;
   }; // end App.data.indexedDB.open()
 
 
-  App.data.indexedDB.retrieveAllUniversities = function(){
+  /**
+   * Retrieves all Universities.
+   *
+   */
+  App.data.retrieveAllUniversities = function(){
     var objectStore = App.data.indexedDB.db.transaction("UNIVERSITIES").objectStore("UNIVERSITIES");
     var universities = [];
     objectStore.openCursor().onsuccess = function(event) {
@@ -108,6 +112,7 @@
         console.log(universities);
       }
     };
+    return universities;
   }
 
 
