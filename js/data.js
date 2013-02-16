@@ -8,6 +8,7 @@
 (function(){
   App.data = {};
 
+  App.data.fileLoaded = 0;
   // These will hold the data for each store.
   App.data.objectstores = [
     { name: 'UNIVERSITIES',
@@ -29,9 +30,8 @@
   // Some information pertaining to the DB.
   App.data.indexedDB    = {};
   App.data.indexedDB.db = null
-  App.data.DB_NAME      = 'LaRelance';
-  App.data.DB_VERSION   = 42;
-
+  App.data.DB_NAME      = 'test01';
+  App.data.DB_VERSION   = 78;
 
   /**
    * This is the entry point for the database system.
@@ -40,6 +40,7 @@
    *
    */
   App.data.init = function() {
+    console.log('---------');
     App.ui.updateStatusBar( 'Initializing database...' );
     App.data.indexedDB.open();
   }; // end App.data.init()
@@ -58,16 +59,13 @@
     // We can only create Object stores in a onupgradeneeded transaction.
     request.onupgradeneeded = function( e ) {
       App.ui.updateStatusBar( 'Database update required...' );
-      var db = e.target.result;
+      App.data.indexedDB.db = e.target.result;
+      var db = App.data.indexedDB.db;
 
-      // Not sure what this does here...
+      // Not sure what this does here... Transaction here ?
       e.target.transaction.onerror = App.data.indexedDB.onerror;
 
-      // Loop through each object stores we have defined above.
-      // If an object store is already present, delete it
-      // (we cannot add an object store if it is already present).
-      // Create the object store again, so they are certainly empty.
-      // Finally, add the data to the object store.
+      // Delete all object stores not to create confusion.
       App.ui.updateStatusBar( 'Updating database schema...' );
       App.data.objectstores.forEach( function( o ) {
         if ( db.objectStoreNames.contains( o.name ) ) {
@@ -81,18 +79,36 @@
           { keyPath: o.keyPath, autoIncrement: o.autoIncrement }
         );
 
+        console.log('+++ Addind data');
         App.data.indexedDB.addDataFromUrl( o.name, o.data_source );
       });
     }; // end request.onupgradeneeded()
 
     request.onsuccess = function( e ) {
-      App.ui.updateStatusBar( 'Database initialized...' );
       App.data.indexedDB.db = e.target.result;
-      // Do some more stuff in a minute
+      App.ui.updateStatusBar( 'Database initialized...' );
+
+      App.data.indexedDB.retrieveAllUniversities();
     }; // end request.onsuccess()
 
     request.onerror = App.data.indexedDB.onerror;
   }; // end App.data.indexedDB.open()
+
+
+  App.data.indexedDB.retrieveAllUniversities = function(){
+    var objectStore = App.data.indexedDB.db.transaction("UNIVERSITIES").objectStore("UNIVERSITIES");
+    var universities = [];
+    objectStore.openCursor().onsuccess = function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        universities.push(cursor.value);
+        cursor.continue();
+      }
+      else {
+        console.log(universities);
+      }
+    };
+  }
 
 
   App.data.indexedDB.addDataFromUrl = function( store, url ) {
@@ -102,12 +118,10 @@
     // xhr.responseType = 'blob';
     xhr.onload = function( event ) {
       if( xhr.status == 200 ) {
+        console.log('*** XHR successful');
         var json = JSON.parse( xhr.response );
-        // var json = JSON.parse( xhr.response.replace(/&quot;/ig,'"') );
-        // console.log(json);
 
-        json.forEach( function( o ){
-          console.log(o);
+        json.forEach( function( o, i ){
           App.data.indexedDB.addItem( store, o );
         });
       }
@@ -158,6 +172,18 @@
    */
   App.data.indexedDB.getObjectStore = function( store, mode ) {
     var trn = App.data.indexedDB.db.transaction( store, mode );
+
+    console.log('TRN');
+    console.log(trn);
+
+    trn.onsuccess = function( evt ) {
+      console.log("transaction ok");
+    }
+    // trn.onerror = App.data.indexedDB.onerror();
+    trn.onerror = function ( e ) {
+      console.log(e);
+    }
+
     return trn.objectStore( store );
   }; // end App.data.indexedDB.getObjectStore()
 
