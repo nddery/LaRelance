@@ -3,41 +3,55 @@
 //
 // This file is responsible of the rendering the UI.
 //
+// We will be dealing with callback all over the place because of the asynch nature
+// of IndexedDB. Probably not the best design pattern but IDB is kind of a pita.
+//
 (function(){
   // This is the first file included, define App.
   App = {};
   App.ui = {};
   App.ui.d3 = {};
 
-  App.ui.svg    = d3.select( 'svg' );
-  App.ui.width  = window.innerWidth;
-  App.ui.height = window.innerHeight;
+  App.ui.svg     = d3.select( 'svg' );
+  App.ui.width   = window.innerWidth;
+  App.ui.height  = window.innerHeight;
+  App.ui.margins = 50;
 
   App.ui.init = function() {
     // Set the width and height.
     App.ui.svg.attr( 'width',  App.ui.width )
               .attr( 'height', App.ui.height );
 
-    var universities = App.data.retrieveAllUniversities(),
-        t = universities.length;
+    App.data.retrieveAllUniversities( App.ui.createBubbleView );
 
-    universities.forEach( function( o, i ) {
-      App.ui.createBubble( o, i, t );
-    });
-
-    App.ui.test( universities );
+    App.ui.test();
   }; // end App.ui.init()
+
+
+  /**
+   * Renders a "bubble" view on the screen with a collection of item.
+   *
+   * @param   {Object}  c   The object collection
+   */
+  App.ui.createBubbleView = function( c ) {
+    var total         = c.length,
+        workingHeight = App.ui.height - ( App.ui.margins * 2 ),
+        angle         = 360 / total,
+        currentAngle  = 0;
+
+    c.forEach( function( o, i ) {
+    });
+  }
 
 
   /**
    * Draw a "bubble" (node) on the screen.
    *
-   * @param   {Object}  o   The object to draw.
-   * @param   {int}     i   The current object.
-   * @param   {int}     t   The total # of object to draw.
+   * @param   {Object}  b   The object to draw.
+   * @param   {Object}  p   The position to draw the bubble.
    */
-  App.ui.createBubble = function( o, i, t ) {
-    //
+  App.ui.renderBubble = function( b, p ) {
+
   }
 
 
@@ -76,7 +90,10 @@
     var status = typeof status === 'undefined' ? ''       : status;
     var type   = typeof type   === 'undefined' ? 'notice' : type;
 
-    console.log('Status updated: ' + status);
+    if ( type === 'error' )
+      console.error('Status updated: ' + status);
+    else
+      console.log('Status updated: ' + status);
   }; // end App.ui.updateStatusBar()
 
 

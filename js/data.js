@@ -8,30 +8,33 @@
 (function(){
   App.data = {};
 
-  App.data.fileLoaded = 0;
+  App.data.filesLoaded = 0;
+  App.data.filesToLoad = 0;
   // These will hold the data for each store.
   App.data.objectstores = [
     { name: 'UNIVERSITIES',
       keyPath: 'UID',
       autoIncrement: false,
-      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/universite.json' },
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/universite.json',
+      data: '' },
 
     { name: 'PROGRAMS',
       keyPath: 'PID',
       autoIncrement: false,
-      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/programmes.json' },
-
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/programmes.json',
+      data: '' },
     { name: 'DATA',
       keyPath: 'id',
       autoIncrement: true,
-      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/donnees.json' },
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/donnees.json',
+      data: '' },
   ];
 
   // Some information pertaining to the DB.
   App.data.indexedDB    = {};
   App.data.indexedDB.db = null
-  App.data.DB_NAME      = 'test01';
-  App.data.DB_VERSION   = 78;
+  App.data.DB_NAME      = 'test02';
+  App.data.DB_VERSION   = 3;
 
   /**
    * This is the entry point for the database system.
@@ -41,18 +44,78 @@
    */
   App.data.init = function() {
     console.log('---------');
-    App.ui.updateStatusBar( 'Initializing database...' );
-    App.data.indexedDB.open();
+    App.ui.updateStatusBar( 'Initializing...' );
+    // Pre-fetch all data to avoid DOM IDBDatabase Exception 11 and all.
+    App.data.filesToLoad = App.data.objectstores.length;
+    App.data.preFetchAll();
   }; // end App.data.init()
+
+
+  /**
+   * Pre-fetch all data.
+   *
+   * @param   {function}  cb  Function to callback when everything is done.
+   * @return  void
+   */
+  App.data.preFetchAll = function() {
+    App.ui.updateStatusBar( 'Fetching data...' );
+
+    App.data.objectstores.forEach( function( o ) {
+      App.ui.updateStatusBar( 'Fetching data for ' + o.name +'...' );
+      var data = App.data.fetchDataFromURL( o );
+    });
+  } // end App.data.preFetchAll()
+
+
+  /**
+   * Fetch content from a file and add it to an object 'data' property.
+   *
+   * @param   {Object}  o   Object containing a 'data_source' attribute.
+   * @return   void
+   */
+  App.data.fetchDataFromURL = function( o ) {
+    var xhr = new XMLHttpRequest();
+    xhr.open( 'GET', o.data_source, true );
+    xhr.onload = function( event ) {
+      if( xhr.status == 200 ) {
+        console.log('*** XHR successful');
+        o.data = JSON.parse( xhr.response );
+        App.data.dataFetched();
+        // json.forEach( function( o, i ){
+        //   App.data.indexedDB.addItem( store, o );
+        // });
+      }
+      else{
+        console.error("fetchDataFromURL error:", xhr.responseText, xhr.status);
+      }
+    };
+    xhr.send();
+  }; // end App.data.fetchDataFromURL()
+
+
+  /**
+   * This method is called every time we successfully fetched a file content.
+   * When we have fetched all files, open the database.
+   *
+   * @return  void
+   */
+  App.data.dataFetched = function() {
+    App.data.filesLoaded++;
+    console.log('FILES LOADED: ' + App.data.filesLoaded + "\t\tFILES TO LOAD: " + App.data.filesToLoad );
+    if ( App.data.filesLoaded === App.data.filesToLoad )
+      App.data.indexedDB.open();
+  } // end App.data.dataFetched()
 
 
   /**
    * Attempt to open the database.
    * If the version has changed, deleted known object stores and re-create them.
-   * We'll add the data later.
+   * If we are re-creating the stores, also add the data.
    *
    */
   App.data.indexedDB.open = function() {
+    App.ui.updateStatusBar( 'Initializing database...' );
+
     // Everything is done through requests and transactions.
     var request = window.indexedDB.open( App.data.DB_NAME, App.data.DB_VERSION );
 
@@ -69,18 +132,22 @@
       App.ui.updateStatusBar( 'Updating database schema...' );
       App.data.objectstores.forEach( function( o ) {
         if ( db.objectStoreNames.contains( o.name ) ) {
-          App.ui.updateStatusBar( 'Deleting ' + o.name + ' object store...' );
+          App.ui.updateStatusBar( 'Deleting the ' + o.name + ' object store...' );
           db.deleteObjectStore( o.name );
         }
 
-        App.ui.updateStatusBar( 'Creating ' + o.name + ' object store...' );
+        App.ui.updateStatusBar( 'Creating the ' + o.name + ' object store...' );
         var store = db.createObjectStore(
           o.name,
           { keyPath: o.keyPath, autoIncrement: o.autoIncrement }
         );
 
-        console.log('+++ Addind data');
-        App.data.indexedDB.addDataFromUrl( o.name, o.data_source );
+        App.ui.updateStatusBar( 'Adding data in the ' + o.name + ' object store...' );
+        o.data.forEach( function( json, i ) {
+          var request = store.add( json );
+          request.onsuccess = function ( event ) { /* success, continue */ };
+          request.onerror = App.data.indexedDB.onerror;
+        });
       });
     }; // end request.onupgradeneeded()
 
@@ -98,8 +165,9 @@
   /**
    * Retrieves all Universities.
    *
+   * @param   {function}  cb  The callback method.
    */
-  App.data.retrieveAllUniversities = function(){
+  App.data.retrieveAllUniversities = function( cb ){
     var objectStore = App.data.indexedDB.db.transaction("UNIVERSITIES").objectStore("UNIVERSITIES");
     var universities = [];
     objectStore.openCursor().onsuccess = function(event) {
@@ -109,33 +177,12 @@
         cursor.continue();
       }
       else {
+        cb( universities );
+        // return universities;
         console.log(universities);
       }
     };
-    return universities;
   }
-
-
-  App.data.indexedDB.addDataFromUrl = function( store, url ) {
-    var xhr = new XMLHttpRequest();
-    xhr.open( 'GET', url, true );
-    // http://www.w3.org/TR/XMLHttpRequest2/#the-response-attribute
-    // xhr.responseType = 'blob';
-    xhr.onload = function( event ) {
-      if( xhr.status == 200 ) {
-        console.log('*** XHR successful');
-        var json = JSON.parse( xhr.response );
-
-        json.forEach( function( o, i ){
-          App.data.indexedDB.addItem( store, o );
-        });
-      }
-      else{
-        console.error("addDataFromUrl error:", xhr.responseText, xhr.status);
-      }
-    };
-    xhr.send();
-  }; // end App.data.indexedDB.addDataFromUrl()
 
 
   App.data.indexedDB.addItem = function( store, item ) {
@@ -165,7 +212,7 @@
    *
    */
   App.data.indexedDB.onerror = function( e ) {
-    console.log(e);
+    App.ui.updateStatusBar( e, 'error' );
   }; // end App.data.indexedDB.onerror()
 
 
