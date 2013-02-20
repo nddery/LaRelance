@@ -75,7 +75,108 @@
     <!-- Headings & Paragraph Copy -->
     <div class="row">
       <div class="span8">
+        <h2>Why IndexedDB?</h2>
+        <p>For this project, I decided I needed an in-browser database to speed
+        things up. Having to query the server every time I needed more data would
+        of been (much simpler for me) but the end user might have noticed
+        a certain lag between requesting information and the information
+        actually being displayed. For this reason, speed, I decided to start
+        looking at possibilities for in-browser database. Having worked a lot
+        with MySQL, WebSQL was obviously my first
+        choice. However, I soon discovered that it had been deprecated back in
+        2010, replaced with something called IndexedDB.</p>
 
+        <h2>(Index)edDB</h2>
+        <p>As the name suggest, IndexedDB does not use Structured Query Language
+        (SQL), instead it uses queries on an index that produces a cursor, which
+        you use to iterate across the result set. This <strong>NoSQL</strong>
+        way of doing things was completely new to me. I knew it was supposed to
+        be much faster than SQL though - so that was quite comforting.</p>
+
+        <h2>Some note on browser support</h2>
+        <p>IndexedDB is still in its infant years, it is not supported by most
+        browsers and even the browsers that supports it do not in the same
+        manner. This has lead me to many head-scratching time-consuming
+        problems. I am solely testing on Firefox 18 and Chrome 24 for the moment.</p>
+
+        <p>As of the date of writing this, supported browsers were as follow:</p>
+        <ul>
+          <li>Mozilla Firefox
+            <ul>
+              <li>16.0</li>
+              <li>4.0 <code>-moz</code></li>
+            </ul>
+          </li>
+          <li>Google Chrome
+            <ul>
+              <li>24.0</li>
+              <li>11.0 <code>-webkit</code></li>
+            </ul>
+          </li>
+          <li>Internet Explorer 10
+            <ul>
+              <li>10 <code>-ms</code></li>
+            </ul>
+          </li>
+          <li>Safari
+            <ul>
+              <li>Not supported</li>
+            </ul>
+          </li>
+          <li>Opera
+            <ul>
+              <li>Not supported</li>
+            </ul>
+          </li>
+        </ul>
+
+        <p>Mobile support is only available in Firefox Mobile 6.0
+        <code>-moz</code>.</p>
+
+        <p>For an up-to-date matrix of browser compatibility see <a
+          href="https://developer.mozilla.org/en-US/docs/IndexedDB#Browser_compatibility"
+          title="MDN IndexedDB Browser Compatibility table">MDN IndexedDB Browser Compatibility table</a> or <a href="http://caniuse.com/indexeddb"
+        title="http://caniuse.com/indexeddb">When Can I Use IndexedDB</a>.</p>
+
+        <h2>The asynchronous nature of IndexedDB</h2>
+        <p>One of the most difficult problem I had to circumvent was to find
+        a solution to the asynchronous nature of IndexedDB. Asynchronous tasks
+        is something I've always had trouble with in Javascript, how to properly
+        handle AJAX callbacks is another exception of my difficulty with the
+        concept. Deferred &amp; promises is something I still have to fully wrap my
+        head around.</p>
+
+        <p>In IndexedDB, everything is done through <strong>requests</strong>. You
+        request open a database, you request to add data to an object store.
+        The basic way to go about IndexedDB is as follow:</p>
+
+        <ol>
+          <li>Open the database;</li>
+          <li>Create an object store;</li>
+          <li>Make a request to do some database operation, like adding or
+          retrieving data;</li>
+          <li>Wait for the operation to complete by listening to the right kind
+          of DOM event;</li>
+          <li>Do something with the results.</li>
+        </ol>
+
+        <p>Problem comes when you try and retrieve data before you have finished
+        creating the correct database schema and adding all you data to it. This
+        will throw an error. At first, I tried to open the database, add data to
+        it via AJAX and then listen for the <code>oncomplete</code> call to
+        start querying the database. However, because both IndexedDB and AJAX
+        are asynchronous, when I started the AJAX call, the database became
+        inactive and hence closed the transaction, calling the
+        <code>oncomplete</code> method - leading me to believe I could safely
+        access the data. I asked on StackOverflow and here is <a
+        href="http://stackoverflow.com/a/14907761/2077298" title="Kristof
+        Degrave answer on the subject">Kristof Degrave answer on the
+        subject</a>.</p>
+
+        <p>To remedy this behavior, I decided to pre-fetch my data and only when
+        I had successfully retrieve all data, open the database. Then, if there
+        was a need to update the database structure, it would be done
+        synchronously, removing all place for error.</p>
       </div>
     </div>
   </section>
