@@ -11,42 +11,42 @@
   App.data.filesLoaded = 0;
   App.data.filesToLoad = 0;
   // These will hold the data for each store.
-  // App.data.objectstores = [
-  //   { name: 'UNIVERSITIES',
-  //     keyPath: 'UID',
-  //     autoIncrement: false,
-  //     data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/universite.json',
-  //     data: '' },
-
-  //   { name: 'PROGRAMS',
-  //     keyPath: 'PID',
-  //     autoIncrement: false,
-  //     data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/programmes.json',
-  //     data: '' },
-  //   { name: 'DATA',
-  //     keyPath: 'id',
-  //     autoIncrement: true,
-  //     data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/donnees.json',
-  //     data: '' },
-  // ];
   App.data.objectstores = [
     { name: 'UNIVERSITIES',
       keyPath: 'UID',
       autoIncrement: false,
-      data_source: 'http://larelance.nddery.ca/data/universite.json',
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/universite.json',
       data: '' },
 
     { name: 'PROGRAMS',
       keyPath: 'PID',
       autoIncrement: false,
-      data_source: 'http://larelance.nddery.ca/data/programmes.json',
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/programmes.json',
       data: '' },
     { name: 'DATA',
       keyPath: 'id',
       autoIncrement: true,
-      data_source: 'http://larelance.nddery.ca/data/donnees.json',
+      data_source: 'http://mysites.dev/nddery.ca_www/larelance/data/donnees.json',
       data: '' },
   ];
+  // App.data.objectstores = [
+  //   { name: 'UNIVERSITIES',
+  //     keyPath: 'UID',
+  //     autoIncrement: false,
+  //     data_source: 'http://larelance.nddery.ca/data/universite.json',
+  //     data: '' },
+
+  //   { name: 'PROGRAMS',
+  //     keyPath: 'PID',
+  //     autoIncrement: false,
+  //     data_source: 'http://larelance.nddery.ca/data/programmes.json',
+  //     data: '' },
+  //   { name: 'DATA',
+  //     keyPath: 'id',
+  //     autoIncrement: true,
+  //     data_source: 'http://larelance.nddery.ca/data/donnees.json',
+  //     data: '' },
+  // ];
 
   // Some information pertaining to the DB.
   App.data.indexedDB    = {};
