@@ -15,18 +15,18 @@
     { name: 'UNIVERSITIES',
       keyPath: 'UID',
       autoIncrement: false,
-      data_source: 'http://proj.nddery.dev/larelance/data/universite.json',
+      data_source: 'http://proj.nddery.dev/larelance/app/data/universite.json',
       data: '' },
 
     { name: 'PROGRAMS',
       keyPath: 'PID',
       autoIncrement: false,
-      data_source: 'http://proj.nddery.dev/larelance/data/programmes.json',
+      data_source: 'http://proj.nddery.dev/larelance/app/data/programmes.json',
       data: '' },
     { name: 'DATA',
       keyPath: 'id',
       autoIncrement: true,
-      data_source: 'http://proj.nddery.dev/larelance/data/donnees.json',
+      data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
       data: '' },
   ];
   // App.data.objectstores = [
