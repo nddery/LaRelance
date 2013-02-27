@@ -195,8 +195,8 @@
         cursor.continue();
       }
       else {
-        cb( universities );
-        // return universities;
+        // cb( universities );
+        return universities;
         console.log(universities);
       }
     };
