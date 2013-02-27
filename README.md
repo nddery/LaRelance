@@ -9,10 +9,10 @@ salary, and the relation with the studied field.
 
 *Made possible with:*
 
-* [Initializr](http://www.initializr.com/)
-* [Bootstrap](http://twitter.github.com/bootstrap/)
-* [HTML5 Boilerplate](http://html5boilerplate.com/)
 * [d3js](http://d3js.org/)
 * [AngularJS](http://angularjs.org/)
 * [Modernizr](http://modernizr.com/)
 * [Font Awesome](http://fortawesome.github.com/Font-Awesome/)
+* [Initializr](http://www.initializr.com/)
+* [Bootstrap](http://twitter.github.com/bootstrap/)
+* [HTML5 Boilerplate](http://html5boilerplate.com/)
