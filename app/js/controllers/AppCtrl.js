@@ -1,5 +1,7 @@
 'use strict';
 
-app.controller('AppCtrl', ['$scope', '$routeParams', 'db', function AppCtrl($scope, $routeParams, db) {
-  //
+angular.module('app').controller('AppCtrl', ['$scope', '$routeParams', 'db', function AppCtrl($scope, $routeParams, db) {
+  var self = this;
+
+  // db.retrieveAllUniversities( self );
 }]);
