@@ -6,6 +6,7 @@
 // It is also with this class that we get data out.
 //
 (function(){
+  data = {};
   data.filesLoaded = 0;
   data.filesToLoad = 0;
   // These will hold the data for each store.
@@ -60,7 +61,7 @@
    */
   data.init = function() {
     console.log('---------');
-    App.ui.updateStatusBar( 'Initializing...' );
+    data.updateStatusBar( 'Initializing...' );
     // Pre-fetch all data to avoid DOM IDBDatabase Exception 11 and all.
     data.filesToLoad = data.objectstores.length;
     data.preFetchAll();
@@ -74,10 +75,10 @@
    * @return  void
    */
   data.preFetchAll = function() {
-    App.ui.updateStatusBar( 'Fetching data...' );
+    data.updateStatusBar( 'Fetching data...' );
 
     data.objectstores.forEach( function( o ) {
-      App.ui.updateStatusBar( 'Fetching data for ' + o.name +'...' );
+      // data.updateStatusBar( 'Fetching data for ' + o.name +'...' );
       var data = data.fetchDataFromURL( o );
     });
   } // end data.preFetchAll()
@@ -130,14 +131,14 @@
    *
    */
   data.indexedDB.open = function() {
-    App.ui.updateStatusBar( 'Initializing database...' );
+    data.updateStatusBar( 'Initializing database...' );
 
     // Everything is done through requests and transactions.
     var request = window.indexedDB.open( data.DB_NAME, data.DB_VERSION );
 
     // We can only create Object stores in a onupgradeneeded transaction.
     request.onupgradeneeded = function( e ) {
-      App.ui.updateStatusBar( 'Database update required...' );
+      data.updateStatusBar( 'Database update required...' );
       data.indexedDB.db = e.target.result;
       var db = data.indexedDB.db;
 
@@ -145,20 +146,20 @@
       e.target.transaction.onerror = data.indexedDB.onerror;
 
       // Delete all object stores not to create confusion.
-      App.ui.updateStatusBar( 'Updating database schema...' );
+      data.updateStatusBar( 'Updating database schema...' );
       data.objectstores.forEach( function( o ) {
         if ( db.objectStoreNames.contains( o.name ) ) {
-          App.ui.updateStatusBar( 'Deleting the ' + o.name + ' object store...' );
+          data.updateStatusBar( 'Deleting the ' + o.name + ' object store...' );
           db.deleteObjectStore( o.name );
         }
 
-        App.ui.updateStatusBar( 'Creating the ' + o.name + ' object store...' );
+        data.updateStatusBar( 'Creating the ' + o.name + ' object store...' );
         var store = db.createObjectStore(
           o.name,
           { keyPath: o.keyPath, autoIncrement: o.autoIncrement }
         );
 
-        App.ui.updateStatusBar( 'Adding data in the ' + o.name + ' object store...' );
+        data.updateStatusBar( 'Adding data in the ' + o.name + ' object store...' );
         o.data.forEach( function( json, i ) {
           var request = store.add( json );
           request.onsuccess = function ( event ) { /* success, continue */ };
@@ -169,9 +170,9 @@
 
     request.onsuccess = function( e ) {
       data.indexedDB.db = e.target.result;
-      App.ui.updateStatusBar( 'Database initialized...' );
-      App.ui.updateStatusBar( 'Initializing UI...' );
-      App.ui.init();
+      data.updateStatusBar( 'Database initialized...' );
+      data.updateStatusBar( 'Initializing UI...' );
+      data.init();
     }; // end request.onsuccess()
 
     request.onerror = data.indexedDB.onerror;
@@ -209,7 +210,7 @@
     }
     catch( e ){
       if( e.name == 'DataCloneError' )
-        App.ui.updateStatusBar( "This engine doesn't know how to clone a Blob, " + "use Firefox" );
+        data.updateStatusBar( "This engine doesn't know how to clone a Blob, " + "use Firefox" );
       throw e;
     }
     req.onsuccess = function (evt) {
@@ -228,7 +229,7 @@
    *
    */
   data.indexedDB.onerror = function( e ) {
-    App.ui.updateStatusBar( e, 'error' );
+    data.updateStatusBar( e, 'error' );
   }; // end data.indexedDB.onerror()
 
 
@@ -265,7 +266,7 @@
     var store = data.indexedDB.getObjectStore( store, 'readwrite' );
     var req   = store.clear();
     req.onsuccess = function( event ) {
-      App.ui.updateStatusBar( store + ' successfully cleared...' );
+      data.updateStatusBar( store + ' successfully cleared...' );
     }
     req.onerror = data.indexedDB.onerror;
   }; // end data.indexedDB.clearObjectStore()

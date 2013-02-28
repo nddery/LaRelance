@@ -1,6 +1,5 @@
 'use strict';
 
-
 var app = angular.module('app', []);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
@@ -9,9 +8,3 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/vis/sunburst', {templateUrl: 'partials/vis-sunburst.html', controller: 'VisSunburstCtrl'}).
     otherwise({redirectTo: '/'});
 }]);
-
-// Load the data.
-(function(){
-  data = {};
-  data.init();
-})();

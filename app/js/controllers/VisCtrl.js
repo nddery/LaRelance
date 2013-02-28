@@ -1,5 +1,5 @@
 'use strict';
 
-app.controller('VisCtrl', ['$scope', '$routeParams', function VisCtrl($scope, $routeParams) {
+app.controller('VisCtrl', ['$scope', '$routeParams', 'db', function VisCtrl($scope, $routeParams, db) {
   //
 }]);

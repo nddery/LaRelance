@@ -1,5 +1,5 @@
 'use strict';
 
-app.controller('AppCtrl', ['$scope', '$routeParams', function AppCtrl($scope, $routeParams) {
+app.controller('AppCtrl', ['$scope', '$routeParams', 'db', function AppCtrl($scope, $routeParams, db) {
   //
 }]);
