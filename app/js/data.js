@@ -6,12 +6,10 @@
 // It is also with this class that we get data out.
 //
 (function(){
-  App.data = {};
-
-  App.data.filesLoaded = 0;
-  App.data.filesToLoad = 0;
+  data.filesLoaded = 0;
+  data.filesToLoad = 0;
   // These will hold the data for each store.
-  App.data.objectstores = [
+  data.objectstores = [
     { name: 'UNIVERSITIES',
       keyPath: 'UID',
       autoIncrement: false,
@@ -29,7 +27,7 @@
       data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
       data: '' },
   ];
-  // App.data.objectstores = [
+  // data.objectstores = [
   //   { name: 'UNIVERSITIES',
   //     keyPath: 'UID',
   //     autoIncrement: false,
@@ -49,10 +47,10 @@
   // ];
 
   // Some information pertaining to the DB.
-  App.data.indexedDB    = {};
-  App.data.indexedDB.db = null
-  App.data.DB_NAME      = 'test02';
-  App.data.DB_VERSION   = 3;
+  data.indexedDB    = {};
+  data.indexedDB.db = null
+  data.DB_NAME      = 'test02';
+  data.DB_VERSION   = 3;
 
   /**
    * This is the entry point for the database system.
@@ -60,13 +58,13 @@
    * add it to the database.
    *
    */
-  App.data.init = function() {
+  data.init = function() {
     console.log('---------');
     App.ui.updateStatusBar( 'Initializing...' );
     // Pre-fetch all data to avoid DOM IDBDatabase Exception 11 and all.
-    App.data.filesToLoad = App.data.objectstores.length;
-    App.data.preFetchAll();
-  }; // end App.data.init()
+    data.filesToLoad = data.objectstores.length;
+    data.preFetchAll();
+  }; // end data.init()
 
 
   /**
@@ -75,14 +73,14 @@
    * @param   {function}  cb  Function to callback when everything is done.
    * @return  void
    */
-  App.data.preFetchAll = function() {
+  data.preFetchAll = function() {
     App.ui.updateStatusBar( 'Fetching data...' );
 
-    App.data.objectstores.forEach( function( o ) {
+    data.objectstores.forEach( function( o ) {
       App.ui.updateStatusBar( 'Fetching data for ' + o.name +'...' );
-      var data = App.data.fetchDataFromURL( o );
+      var data = data.fetchDataFromURL( o );
     });
-  } // end App.data.preFetchAll()
+  } // end data.preFetchAll()
 
 
   /**
@@ -91,16 +89,16 @@
    * @param   {Object}  o   Object containing a 'data_source' attribute.
    * @return   void
    */
-  App.data.fetchDataFromURL = function( o ) {
+  data.fetchDataFromURL = function( o ) {
     var xhr = new XMLHttpRequest();
     xhr.open( 'GET', o.data_source, true );
     xhr.onload = function( event ) {
       if( xhr.status == 200 ) {
         console.log('*** XHR successful');
         o.data = JSON.parse( xhr.response );
-        App.data.dataFetched();
+        data.dataFetched();
         // json.forEach( function( o, i ){
-        //   App.data.indexedDB.addItem( store, o );
+        //   data.indexedDB.addItem( store, o );
         // });
       }
       else{
@@ -108,7 +106,7 @@
       }
     };
     xhr.send();
-  }; // end App.data.fetchDataFromURL()
+  }; // end data.fetchDataFromURL()
 
 
   /**
@@ -117,12 +115,12 @@
    *
    * @return  void
    */
-  App.data.dataFetched = function() {
-    App.data.filesLoaded++;
-    console.log('FILES LOADED: ' + App.data.filesLoaded + "\t\tFILES TO LOAD: " + App.data.filesToLoad );
-    if ( App.data.filesLoaded === App.data.filesToLoad )
-      App.data.indexedDB.open();
-  } // end App.data.dataFetched()
+  data.dataFetched = function() {
+    data.filesLoaded++;
+    console.log('FILES LOADED: ' + data.filesLoaded + "\t\tFILES TO LOAD: " + data.filesToLoad );
+    if ( data.filesLoaded === data.filesToLoad )
+      data.indexedDB.open();
+  } // end data.dataFetched()
 
 
   /**
@@ -131,24 +129,24 @@
    * If we are re-creating the stores, also add the data.
    *
    */
-  App.data.indexedDB.open = function() {
+  data.indexedDB.open = function() {
     App.ui.updateStatusBar( 'Initializing database...' );
 
     // Everything is done through requests and transactions.
-    var request = window.indexedDB.open( App.data.DB_NAME, App.data.DB_VERSION );
+    var request = window.indexedDB.open( data.DB_NAME, data.DB_VERSION );
 
     // We can only create Object stores in a onupgradeneeded transaction.
     request.onupgradeneeded = function( e ) {
       App.ui.updateStatusBar( 'Database update required...' );
-      App.data.indexedDB.db = e.target.result;
-      var db = App.data.indexedDB.db;
+      data.indexedDB.db = e.target.result;
+      var db = data.indexedDB.db;
 
       // Not sure what this does here... Transaction here ?
-      e.target.transaction.onerror = App.data.indexedDB.onerror;
+      e.target.transaction.onerror = data.indexedDB.onerror;
 
       // Delete all object stores not to create confusion.
       App.ui.updateStatusBar( 'Updating database schema...' );
-      App.data.objectstores.forEach( function( o ) {
+      data.objectstores.forEach( function( o ) {
         if ( db.objectStoreNames.contains( o.name ) ) {
           App.ui.updateStatusBar( 'Deleting the ' + o.name + ' object store...' );
           db.deleteObjectStore( o.name );
@@ -164,20 +162,20 @@
         o.data.forEach( function( json, i ) {
           var request = store.add( json );
           request.onsuccess = function ( event ) { /* success, continue */ };
-          request.onerror = App.data.indexedDB.onerror;
+          request.onerror = data.indexedDB.onerror;
         });
       });
     }; // end request.onupgradeneeded()
 
     request.onsuccess = function( e ) {
-      App.data.indexedDB.db = e.target.result;
+      data.indexedDB.db = e.target.result;
       App.ui.updateStatusBar( 'Database initialized...' );
       App.ui.updateStatusBar( 'Initializing UI...' );
       App.ui.init();
     }; // end request.onsuccess()
 
-    request.onerror = App.data.indexedDB.onerror;
-  }; // end App.data.indexedDB.open()
+    request.onerror = data.indexedDB.onerror;
+  }; // end data.indexedDB.open()
 
 
   /**
@@ -185,8 +183,8 @@
    *
    * @param   {function}  cb  The callback method.
    */
-  App.data.retrieveAllUniversities = function( cb ){
-    var objectStore = App.data.indexedDB.db.transaction("UNIVERSITIES").objectStore("UNIVERSITIES");
+  data.retrieveAllUniversities = function( cb ){
+    var objectStore = data.indexedDB.db.transaction("UNIVERSITIES").objectStore("UNIVERSITIES");
     var universities = [];
     objectStore.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
@@ -203,8 +201,8 @@
   }
 
 
-  App.data.indexedDB.addItem = function( store, item ) {
-    var store = App.data.indexedDB.getObjectStore( store, 'readwrite' );
+  data.indexedDB.addItem = function( store, item ) {
+    var store = data.indexedDB.getObjectStore( store, 'readwrite' );
     var req;
     try{
       req = store.add( item );
@@ -222,16 +220,16 @@
     req.onerror = function() {
       console.error("addPublication error", this.error);
     };
-  }; // end App.data.indexedDB.addItem()
+  }; // end data.indexedDB.addItem()
 
 
   /**
    * Handle all IndexedDB related errors.
    *
    */
-  App.data.indexedDB.onerror = function( e ) {
+  data.indexedDB.onerror = function( e ) {
     App.ui.updateStatusBar( e, 'error' );
-  }; // end App.data.indexedDB.onerror()
+  }; // end data.indexedDB.onerror()
 
 
   /**
@@ -240,8 +238,8 @@
    * @param   {string}  store   The name of the object store to retrieve.
    * @param   {string}  mode    Either 'readonly' or 'readwrite'.
    */
-  App.data.indexedDB.getObjectStore = function( store, mode ) {
-    var trn = App.data.indexedDB.db.transaction( store, mode );
+  data.indexedDB.getObjectStore = function( store, mode ) {
+    var trn = data.indexedDB.db.transaction( store, mode );
 
     console.log('TRN');
     console.log(trn);
@@ -249,13 +247,13 @@
     trn.onsuccess = function( evt ) {
       console.log("transaction ok");
     }
-    // trn.onerror = App.data.indexedDB.onerror();
+    // trn.onerror = data.indexedDB.onerror();
     trn.onerror = function ( e ) {
       console.log(e);
     }
 
     return trn.objectStore( store );
-  }; // end App.data.indexedDB.getObjectStore()
+  }; // end data.indexedDB.getObjectStore()
 
 
   /**
@@ -263,12 +261,28 @@
    *
    * @param   {string}  store   The name of the object store.
    */
-  App.data.indexedDB.clearObjectStore = function( store ) {
-    var store = App.data.indexedDB.getObjectStore( store, 'readwrite' );
+  data.indexedDB.clearObjectStore = function( store ) {
+    var store = data.indexedDB.getObjectStore( store, 'readwrite' );
     var req   = store.clear();
     req.onsuccess = function( event ) {
       App.ui.updateStatusBar( store + ' successfully cleared...' );
     }
-    req.onerror = App.data.indexedDB.onerror;
-  }; // end App.data.indexedDB.clearObjectStore()
+    req.onerror = data.indexedDB.onerror;
+  }; // end data.indexedDB.clearObjectStore()
+
+  /**
+   * Helper method to update the text in #statusbar.
+   *
+   * @param   {String}  status  The text to display.
+   * @param   {String}  type    The type of status.
+   */
+  data.updateStatusBar = function( status, type ) {
+    var status = typeof status === 'undefined' ? ''       : status;
+    var type   = typeof type   === 'undefined' ? 'notice' : type;
+
+    if ( type === 'error' )
+      console.error('Status updated: ' + status);
+    else
+      console.log('Status updated: ' + status);
+  }; // end data.updateStatusBar()
 })();
