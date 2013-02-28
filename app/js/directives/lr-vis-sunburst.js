@@ -2,7 +2,7 @@ angular.module('app').directive('lrVisSunburst', function(){
   // Constants
   var margin = 20,
       width  = window.innerWidth,
-      height = window.innerHeight - margin,
+      height = window.innerHeight - (margin * 2),
       radius = Math.min(width, height) / 2,
       color  = d3.scale.category20c();
 
@@ -66,15 +66,15 @@ angular.module('app').directive('lrVisSunburst', function(){
           .innerRadius(function(d) { return Math.sqrt(d.y); })
           .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-        d3.json("data/flares.json", function(error, root) {
+        d3.json("data/flare.json", function(error, root) {
           var path = svg.datum(root).selectAll("path")
               .data(partition.nodes)
             .enter().append("path")
               .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
               .attr("d", arc)
               .style("stroke", "#fff")
-              .style("fill", function(d) { return color(d.name); })
-              // .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+              // .style("fill", function(d) { return color(d.name); })
+              .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
               .style("fill-rule", "evenodd")
               .each(stash);
 

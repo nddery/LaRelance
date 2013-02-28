@@ -2,9 +2,13 @@
    Basic Styling
    ========================================================================== */
 
+body {
+  overflow: hidden;
+}
+
 #mainView {
   position:absolute;
-  top: 0;
+  top: 41px;
 }
 
 
