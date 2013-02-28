@@ -78,23 +78,24 @@
       </div>
     </div>
 
-    <div class="container">
+    <!-- <div class="container"> -->
 
-      <section ng-view></section>
+      <section id="mainView" ng-view></section>
 
-      <footer>
-        <p>&copy; Nicolas Duvieusart Déry 2013</p>
-      </footer>
+      <!-- <footer> -->
+      <!--   <p>&copy; Nicolas Duvieusart Déry 2013</p> -->
+      <!-- </footer> -->
 
-    </div> <!-- /container -->
+    <!-- </div> -->
 
     <script src="js/vendor/d3.js"></script>
     <script src="js/vendor/d3.js"></script>
     <script src="js/plugins.js"></script>
 
     <script src="js/app.js"></script>
-    <script src="js/directives.js"></script>
-    <script src="js/services/db.js"></script>
+    <script src="js/directives/backImg.js"></script>
+    <script src="js/directives/lr-vis-sunburst.js"></script>
+    <script src="js/services/idb.js"></script>
     <script src="js/controllers/AppCtrl.js"></script>
     <script src="js/controllers/VisCtrl.js"></script>
     <script src="js/controllers/VisSunburstCtrl.js"></script>
