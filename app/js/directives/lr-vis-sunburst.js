@@ -66,8 +66,11 @@ angular.module('app').directive('lrVisSunburst', function(){
           .innerRadius(function(d) { return Math.sqrt(d.y); })
           .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-        d3.json("data/flare.json", function(error, root) {
-          var path = svg.datum(root).selectAll("path")
+        // d3.json("data/flare.json", function(error, root) {
+          // console.log(data);
+          data = data[0];
+          console.log(data);
+          var path = svg.datum(data).selectAll("path")
               .data(partition.nodes)
             .enter().append("path")
               .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
@@ -89,7 +92,7 @@ angular.module('app').directive('lrVisSunburst', function(){
                 .duration(1500)
                 .attrTween("d", arcTween);
           });
-        });
+        // });
       });
     }
   };

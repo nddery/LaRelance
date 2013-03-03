@@ -2,18 +2,21 @@ angular.module('app').service('idb', function() {
   var objectstores = [
     { name: 'UNIVERSITIES',
       keyPath: 'UID',
+      indexes: ['UID'],
       autoIncrement: false,
       data_source: 'http://proj.nddery.dev/larelance/app/data/universite.json',
       data: '' },
 
     { name: 'PROGRAMS',
       keyPath: 'PID',
+      indexes: ['PID'],
       autoIncrement: false,
       data_source: 'http://proj.nddery.dev/larelance/app/data/programmes.json',
       data: '' },
 
     { name: 'DATA',
       keyPath: 'id',
+      indexes: ['PID', 'UID'],
       autoIncrement: true,
       data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
       data: '' },
@@ -44,7 +47,7 @@ angular.module('app').service('idb', function() {
       filesToLoad = objectstores.length,
       db          = null,
       DB_NAME     = 'ttt',
-      DB_VERSION  = 2;
+      DB_VERSION  = 5;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");
@@ -134,6 +137,11 @@ angular.module('app').service('idb', function() {
           o.name,
           { keyPath: o.keyPath, autoIncrement: o.autoIncrement }
         );
+
+        // And add index on the keyPath
+        o.indexes.forEach(function(index){
+          store.createIndex(index, index, { unique: false });
+        });
 
         updateStatusBar( 'Adding data in the ' + o.name + ' object store...' );
         o.data.forEach( function( json, i ) {
