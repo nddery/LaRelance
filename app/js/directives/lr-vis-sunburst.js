@@ -31,25 +31,26 @@ angular.module('app').directive('lrVisSunburst', function(){
         // Clear the elements inside of the directive.
         svg.selectAll('*').remove();
 
-  // Stash the old values for transition.
-  var stash = function(d) {
-    console.log(d);
-    d.x0 = d.x;
-    d.dx0 = d.dx;
-  }
+        // Stash the old values for transition.
+        var stash = function(d) {
+          d.x0 = d.x;
+          d.dx0 = d.dx;
+        }
 
-  // Interpolate the arcs in data space.
-  var arcTween = function(a) {
-    var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
-    return function(t) {
-      var b = i(t);
-      a.x0 = b.x;
-      a.dx0 = b.dx;
-      return arc(b);
-    };
-  }
+        // Interpolate the arcs in data space.
+        var arcTween = function(a) {
+          var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+          return function(t) {
+            var b = i(t);
+            a.x0 = b.x;
+            a.dx0 = b.dx;
+            return arc(b);
+          };
+        }
 
 
+        console.log(newData);
+        // console.log(JSON.stringify(newData));
         // Exit if no new data.
         if (!newData) {
           return;
@@ -66,33 +67,30 @@ angular.module('app').directive('lrVisSunburst', function(){
           .innerRadius(function(d) { return Math.sqrt(d.y); })
           .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-        // d3.json("data/flare.json", function(error, root) {
-          // console.log(data);
-          data = data[0];
-          console.log(data);
-          var path = svg.datum(data).selectAll("path")
-              .data(partition.nodes)
-            .enter().append("path")
-              .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
-              .attr("d", arc)
-              .style("stroke", "#fff")
-              // .style("fill", function(d) { return color(d.name); })
-              .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-              .style("fill-rule", "evenodd")
-              .each(stash);
+        var path = svg.datum(newData).selectAll("path")
+            .data(partition.nodes)
+          .enter().append("path")
+            .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
+            .attr("d", arc)
+            .style("stroke", "#fff")
+            .style("fill", function(d) {
+              return color((d.children ? d : d.parent).UNAME);
+            })
+            .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+            .style("fill-rule", "evenodd")
+            .each(stash);
 
-          d3.selectAll("input").on("change", function change() {
-            var value = this.value === "count"
-                ? function() { return 1; }
-                : function(d) { return d.size; };
+        d3.selectAll("input").on("change", function change() {
+          var value = this.value === "count"
+              ? function() { return 1; }
+              : function(d) { return d.salaireHebdoBrut; };
 
-            path
-                .data(partition.value(value).nodes)
-              .transition()
-                .duration(1500)
-                .attrTween("d", arcTween);
-          });
-        // });
+          path
+              .data(partition.value(value).nodes)
+            .transition()
+              .duration(1500)
+              .attrTween("d", arcTween);
+        });
       });
     }
   };

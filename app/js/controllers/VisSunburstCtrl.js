@@ -33,6 +33,7 @@ angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', '
           }
           // Done retrieving programs.
           else {
+            var universityCount = 0;
             // Loop through universities and add all programs.
             data.children.forEach(function(university){
               // Add the programs.
@@ -51,32 +52,47 @@ angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', '
                 // Done getting data for current university.
                 else {
                   // Loop through the programs and add the data.
+                  var programCount    = 0;
                   university.children.forEach(function(currentProgram){
                     // Loop through universityData and add it if it is for the
                     // current program.
-                    // currentProgram.children = [];
+                    currentProgram.children = [];
                     universityData.forEach(function(currentData){
                       if (currentData.PID === currentProgram.PID) {
-                        if (!currentProgram.hasOwnProperty("chidlren"))
-                          currentProgram.children = [];
-
                         currentProgram.children.push(currentData);
                       }
                     });
 
                     // If the program children array is empty, delete it.
-                    // if (currentProgram.children.length === 0) {
-                    //   delete currentProgram.children;
-                    // }
+                    if (currentProgram.children.length === 0) {
+                      console.log(university.UNAME + ' : ' + currentProgram.PNAME);
+                      delete currentProgram;
+                      // delete currentProgram.children;
+                    }
+
+                    // If we are done this university.children loop.
+                    if(programCount === university.children.length) {
+                      universityCount++;
+                    }
+                    else{
+                      programCount++;
+                    }
+
+                    if ( universityCount === ( data.children.length - 1 ) ) {
+                      console.log('ALL DONE');
+                      // Ca fonctionne!
+                      $scope.$apply(function(scope){
+                        scope.data = data;
+                      });
+                    }
                   });
                 }
               };
             });
 
-            $scope.data = data;
             // @TODO: Once stringified, seems like we loose DATA...
-            console.log(data);
-            console.log(JSON.stringify(data));
+            // console.log(data);
+            // console.log(JSON.stringify(data));
           }
         }
       }
