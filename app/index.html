@@ -39,39 +39,27 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="#">La Relance</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li active-link="active"><a href="#">Home</a></li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle"
+                  data-toggle="dropdown">Type <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
+                  <li active-link="active"><a href="#/vis/sunburst/">Sunburst</a></li>
+                  <li active-link="active"><a href="#/g">Another type</a></li>
                   <li class="divider"></li>
                   <li class="nav-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
+                  <li active-link="active"><a href="#/s">Separated link</a></li>
+                  <li active-link="active"><a href="#/f">One more separated link</a></li>
                 </ul>
               </li>
             </ul>
 
             <ul class="nav pull-right">
-              <li><a href="#contact">Contact</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li class="nav-header">Category</li>
-                  <li><a href="#">Project 1</a></li>
-                  <li><a href="#">Project 2</a></li>
-                  <li class="divider"></li>
-                  <li class="nav-header">Category</li>
-                  <li><a href="#">Project 1</a></li>
-                </ul>
-              </li>
+              <li active-link="active"><a href="#/about">About</a></li>
+              <li active-link="active"><a href="#/contact">Contact</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -88,12 +76,20 @@
 
     <!-- </div> -->
 
+    <!-- Bootstrap.js needs this... for stuff like dropdown menus and... -->
+    <!-- Will work on removing dependencies alltogheter. -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+
+    <script src="js/vendor/bootstrap.js"></script>
+
     <script src="js/vendor/d3.js"></script>
     <script src="js/vendor/d3.js"></script>
     <script src="js/plugins.js"></script>
 
     <script src="js/app.js"></script>
-    <script src="js/directives/backImg.js"></script>
+    <script src="js/directives/back-img.js"></script>
+    <script src="js/directives/active-link.js"></script>
     <script src="js/directives/lr-vis-sunburst.js"></script>
     <script src="js/services/idb.js"></script>
     <script src="js/controllers/AppCtrl.js"></script>
