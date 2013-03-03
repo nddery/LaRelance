@@ -1,101 +1,144 @@
 'use strict';
 
 angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', 'idb', function VisSunburstCtrl($scope, $routeParams, idb) {
+  // Will hold the data retrieved from the database.
+  var universities = [], programs = [], donnees = [];
+
   // Get our data.
   var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
   request.onsuccess = function( e ) {
     var db   = e.target.result,
         trn  = db.transaction(["UNIVERSITIES", "PROGRAMS", "DATA"]),
-        data = {"name": "sunburst", "children": []};
+        data = {"name": "sunburst", "children": []},
+        universities = [], programs = [], donnees = [];
 
     var uStore = trn.objectStore("UNIVERSITIES");
     var pStore = trn.objectStore("PROGRAMS");
     var dStore = trn.objectStore("DATA");
 
-    // Loop through all retrieved universities
+    // Retrieve all universities and store them in the respective array.
     uStore.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
-      if (cursor) {
-        // Create the children array for the university.
+      if ( cursor ) {
+        // Already add the children array for universities.
         cursor.value.children = [];
-        data.children.push(cursor.value);
+        universities.push(cursor.value);
         cursor.continue();
       }
-      // Universities collected.
       else {
-        // Get the programs.
-        var programs = [];
-        pStore.openCursor().onsuccess = function(event) {
-          var cursor = event.target.result;
-          if (cursor) {
-            programs.push(cursor.value);
-            cursor.continue();
-          }
-          // Done retrieving programs.
-          else {
-            var universityCount = 0;
-            // Loop through universities and add all programs.
-            data.children.forEach(function(university){
-              // Add the programs.
-              university.children = programs;
-
-              // Get all data pertaining to current university.
-              var universityData = [];
-              var i = dStore.index("UID");
-              var r = IDBKeyRange.only(university.UID);
-              i.openCursor(r).onsuccess = function(event) {
-                var cursor = event.target.result;
-                if (cursor) {
-                  universityData.push(cursor.value);
-                  cursor.continue();
-                }
-                // Done getting data for current university.
-                else {
-                  // Loop through the programs and add the data.
-                  var programCount    = 0;
-                  university.children.forEach(function(currentProgram){
-                    // Loop through universityData and add it if it is for the
-                    // current program.
-                    currentProgram.children = [];
-                    universityData.forEach(function(currentData){
-                      if (currentData.PID === currentProgram.PID) {
-                        currentProgram.children.push(currentData);
-                      }
-                    });
-
-                    // If the program children array is empty, delete it.
-                    if (currentProgram.children.length === 0) {
-                      console.log(university.UNAME + ' : ' + currentProgram.PNAME);
-                      delete currentProgram;
-                      // delete currentProgram.children;
-                    }
-
-                    // If we are done this university.children loop.
-                    if(programCount === university.children.length) {
-                      universityCount++;
-                    }
-                    else{
-                      programCount++;
-                    }
-
-                    if ( universityCount === ( data.children.length - 1 ) ) {
-                      console.log('ALL DONE');
-                      // Ca fonctionne!
-                      $scope.$apply(function(scope){
-                        scope.data = data;
-                      });
-                    }
-                  });
-                }
-              };
-            });
-
-            // @TODO: Once stringified, seems like we loose DATA...
-            // console.log(data);
-            // console.log(JSON.stringify(data));
-          }
-        }
+        console.log(universities);
       }
-    };
+    }
+
+    // Retrieve all programs and store them in the respective array.
+    pStore.openCursor().onsuccess = function(event) {
+      var cursor = event.target.result;
+      if ( cursor ) {
+        programs.push(cursor.value);
+        cursor.continue();
+      }
+      else {
+        console.log(programs);
+      }
+    }
+
+    // Retrieve all donnees and store them in the respective array.
+    dStore.openCursor().onsuccess = function(event) {
+      var cursor = event.target.result;
+      if ( cursor ) {
+        donnees.push(cursor.value);
+        cursor.continue();
+      }
+      else {
+        console.log(donnees);
+      }
+    }
   }; // end request.onsuccess()
+
+
+    // // Loop through all retrieved universities
+    // uStore.openCursor().onsuccess = function(event) {
+    //   var cursor = event.target.result;
+    //   if (cursor) {
+    //     // Create the children array for the university.
+    //     cursor.value.children = [];
+    //     data.children.push(cursor.value);
+    //     cursor.continue();
+    //   }
+    //   // Universities collected.
+    //   else {
+    //     // Get the programs.
+    //     var programs = [];
+    //     pStore.openCursor().onsuccess = function(event) {
+    //       var cursor = event.target.result;
+    //       if (cursor) {
+    //         programs.push(cursor.value);
+    //         cursor.continue();
+    //       }
+    //       // Done retrieving programs.
+    //       else {
+    //         var universityCount = 0;
+    //         // Loop through universities and add all programs.
+    //         data.children.forEach(function(university){
+    //           // Add the programs.
+    //           university.children = programs;
+
+    //           // Get all data pertaining to current university.
+    //           var universityData = [];
+    //           var i = dStore.index("UID");
+    //           var r = IDBKeyRange.only(university.UID);
+    //           i.openCursor(r).onsuccess = function(event) {
+    //             var cursor = event.target.result;
+    //             if (cursor) {
+    //               universityData.push(cursor.value);
+    //               cursor.continue();
+    //             }
+    //             // Done getting data for current university.
+    //             else {
+    //               // Loop through the programs and add the data.
+    //               var programCount    = 0;
+    //               university.children.forEach(function(currentProgram){
+    //                 // Loop through universityData and add it if it is for the
+    //                 // current program.
+    //                 currentProgram.children = [];
+    //                 universityData.forEach(function(currentData){
+    //                   if (currentData.PID === currentProgram.PID) {
+    //                     currentProgram.children.push(currentData);
+    //                   }
+    //                 });
+
+    //                 // If the program children array is empty, delete it.
+    //                 if (currentProgram.children.length === 0) {
+    //                   console.log(university.UNAME + ' : ' + currentProgram.PNAME);
+    //                   delete currentProgram;
+    //                   // delete currentProgram.children;
+    //                 }
+
+    //                 // If we are done this university.children loop.
+    //                 if(programCount === university.children.length) {
+    //                   universityCount++;
+    //                 }
+    //                 else{
+    //                   programCount++;
+    //                 }
+
+    //                 if ( universityCount === ( data.children.length - 1 ) ) {
+    //                   console.log('ALL DONE');
+    //                   // Ca fonctionne!
+    //                   $scope.$apply(function(scope){
+    //                     scope.data = data;
+    //                   });
+    //                 }
+    //               });
+    //             }
+    //           };
+    //         });
+
+    //         // @TODO: Once stringified, seems like we loose DATA...
+    //         // console.log(data);
+    //         // console.log(JSON.stringify(data));
+    //       }
+    //     }
+    //   }
+    // };
 }]);
