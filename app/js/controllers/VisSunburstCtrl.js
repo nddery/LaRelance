@@ -73,18 +73,15 @@ angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', '
           // 0 if no row matched, 1 or 2 depending on if there is data for both
           // undergrad and master.
           var uniq  = parseInt("975000") + parseInt("5102");
-              var index = dStore.index("UNIQ");
-              var range = IDBKeyRange.only("980102");
-              // var range = IDBKeyRange.only('"' + uniq + '"');
 
-          // var tempData = [{"name": "nom", "size": "123"}, {"name": "nom2", "size": "453"}];
-          // program.children = tempData;
+          var index = dStore.index("UNIQ");
+          var range = IDBKeyRange.only(uniq.toString());
 
-          var children = [];
           index.openCursor(range).onsuccess = function(event){
             var cursor = event.target.result;
             var obj = {};
             if(cursor){
+              console.log(typeof(cursor.value.UNIQ));
               program.children.push({"name": "UID", "size": cursor.value.UID});
               program.children.push({"name": "PID", "size": cursor.value.PID});
               program.children.push({"name": "TPYE", "size": cursor.value.TYPE});
@@ -104,13 +101,13 @@ angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', '
               cursor.continue();
             }
             else{
-              // console.log(d);
+              // console.log(program.children);
             }
           }
 
           if(uCount === uIndex && pCount === pIndex) {
               data.children = universities;
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
             $scope.$apply(function(scope){
               scope.data = data;
             });
