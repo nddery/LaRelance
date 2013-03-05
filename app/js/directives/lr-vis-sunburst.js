@@ -49,8 +49,6 @@ angular.module('app').directive('lrVisSunburst', function(){
         }
 
 
-        console.log(newData);
-        // console.log(JSON.stringify(newData));
         // Exit if no new data.
         if (!newData) {
           return;
@@ -73,24 +71,21 @@ angular.module('app').directive('lrVisSunburst', function(){
             .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
             .attr("d", arc)
             .style("stroke", "#fff")
-            .style("fill", function(d) {
-              return color((d.children ? d : d.parent).UNAME);
-            })
             .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
             .style("fill-rule", "evenodd")
             .each(stash);
 
-        d3.selectAll("input").on("change", function change() {
-          var value = this.value === "count"
-              ? function() { return 1; }
-              : function(d) { return d.salaireHebdoBrut; };
+        // d3.selectAll("input").on("change", function change() {
+        //   var value = this.value === "count"
+        //       ? function() { return 1; }
+        //       : function(d) { return d.salaireHebdoBrut; };
 
-          path
-              .data(partition.value(value).nodes)
-            .transition()
-              .duration(1500)
-              .attrTween("d", arcTween);
-        });
+        //   path
+        //       .data(partition.value(value).nodes)
+        //     .transition()
+        //       .duration(1500)
+        //       .attrTween("d", arcTween);
+        // });
       });
     }
   };

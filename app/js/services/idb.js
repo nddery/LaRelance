@@ -16,7 +16,7 @@ angular.module('app').service('idb', function() {
 
     { name: 'DATA',
       keyPath: 'id',
-      indexes: ['PID', 'UID'],
+      indexes: ['UNIQ', 'PID', 'UID'],
       autoIncrement: true,
       data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
       data: '' },
@@ -46,8 +46,8 @@ angular.module('app').service('idb', function() {
       filesLoaded = 0,
       filesToLoad = objectstores.length,
       db          = null,
-      DB_NAME     = 'ttt',
-      DB_VERSION  = 5;
+      DB_NAME     = 'larelance',
+      DB_VERSION  = 4;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");

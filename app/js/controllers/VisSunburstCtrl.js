@@ -3,6 +3,7 @@
 angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', 'idb', function VisSunburstCtrl($scope, $routeParams, idb) {
   // Will hold the data retrieved from the database.
   var universities = [], programs = [], donnees = [];
+  var streamRetrieved = 0;
 
   // Get our data.
   var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
@@ -22,37 +23,114 @@ angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', '
       if ( cursor ) {
         // Already add the children array for universities.
         cursor.value.children = [];
+        cursor.value.name = cursor.value.UNAME;
         universities.push(cursor.value);
         cursor.continue();
       }
       else {
-        console.log(universities);
+        retrievePrograms();
       }
     }
 
-    // Retrieve all programs and store them in the respective array.
-    pStore.openCursor().onsuccess = function(event) {
-      var cursor = event.target.result;
-      if ( cursor ) {
-        programs.push(cursor.value);
-        cursor.continue();
-      }
-      else {
-        console.log(programs);
-      }
-    }
+    var retrievePrograms = function(){
+      // Retrieve all programs and store them in the respective array.
+      pStore.openCursor().onsuccess = function(event) {
+        var cursor = event.target.result;
+        if ( cursor ) {
+          cursor.value.children = [];
+          cursor.value.name = cursor.value.PNAME;
+          programs.push(cursor.value);
 
-    // Retrieve all donnees and store them in the respective array.
-    dStore.openCursor().onsuccess = function(event) {
-      var cursor = event.target.result;
-      if ( cursor ) {
-        donnees.push(cursor.value);
-        cursor.continue();
+          cursor.continue();
+        }
+        else {
+          associateProgramsToUniversities();
+        }
       }
-      else {
-        console.log(donnees);
-      }
-    }
+    } // end retrievePrograms();
+
+    var associateProgramsToUniversities = function(){
+      var length = universities.length - 1;
+      universities.forEach(function(university, uIndex){
+        university.children = programs;
+
+        if ( length === uIndex )
+          associateDonnees();
+      });
+    } // end associateProgramesToUniversities()
+
+    // Associate the data to each university program.
+    var associateDonnees = function(){
+      var uCount = universities.length - 1,
+          pCount = universities[0].children.length - 1;
+
+      // For each universities, go through each program.
+      universities.forEach(function(university, uIndex){
+        university.children.forEach(function(program, pIndex){
+          // Query the data object store on the UNIQ field.
+          // UNIQ === UID + PID (+ as in addition)
+          // The index will either return 0, 1, or 2 result(s).
+          // 0 if no row matched, 1 or 2 depending on if there is data for both
+          // undergrad and master.
+          var uniq  = parseInt("975000") + parseInt("5102");
+              var index = dStore.index("UNIQ");
+              var range = IDBKeyRange.only("980102");
+              // var range = IDBKeyRange.only('"' + uniq + '"');
+
+          // var tempData = [{"name": "nom", "size": "123"}, {"name": "nom2", "size": "453"}];
+          // program.children = tempData;
+
+          var children = [];
+          index.openCursor(range).onsuccess = function(event){
+            var cursor = event.target.result;
+            var obj = {};
+            if(cursor){
+              program.children.push({"name": "UID", "size": cursor.value.UID});
+              program.children.push({"name": "PID", "size": cursor.value.PID});
+              program.children.push({"name": "TPYE", "size": cursor.value.TYPE});
+              program.children.push({"name": "nVisees", "size": cursor.value.nVisees});
+              program.children.push({"name": "tauxDeReponse", "size": cursor.value.tauxDeReponse});
+              program.children.push({"name": "emEmploi", "size": cursor.value.emEmploi});
+              program.children.push({"name": "rechercheEmploi", "size": cursor.value.rechercheEmploi});
+              program.children.push({"name": "auxEtudes", "size": cursor.value.auxEtudes});
+              program.children.push({"name": "pInactives", "size": cursor.value.pInactives});
+              program.children.push({"name": "tauxDeChomage", "size": cursor.value.tauxDeChomage});
+              program.children.push({"name": "emploiTempsPlein", "size": cursor.value.emploiTempsPlein});
+              program.children.push({"name": "dureeDeRecherche", "size": cursor.value.dureeDeRecherche});
+              program.children.push({"name": "salaireHebdoBrut", "size": cursor.value.salaireHebdoBrut});
+              program.children.push({"name": "emploiEnRapport", "size": cursor.value.emploiEnRapport});
+              program.children.push({"name": "enRapport", "size": cursor.value.enRapport});
+
+              cursor.continue();
+            }
+            else{
+              // console.log(d);
+            }
+          }
+
+          if(uCount === uIndex && pCount === pIndex) {
+              data.children = universities;
+            console.log(JSON.stringify(data));
+            $scope.$apply(function(scope){
+              scope.data = data;
+            });
+          }
+        }); // end university.children.forEach()
+      }); // end universities.forEach()
+
+      // // Retrieve all donnees and store them in the respective array.
+      // dStore.openCursor().onsuccess = function(event) {
+      //   var cursor = event.target.result;
+      //   if ( cursor ) {
+      //     donnees.push(cursor.value);
+      //     cursor.continue();
+      //   }
+      //   else {
+      //     console.log(universities);
+      //     console.log(donnees);
+      //   }
+      // }
+    } // end retrieveDonnees();
   }; // end request.onsuccess()
 
 
