@@ -1,6 +1,6 @@
 'use strict';
-
-angular.module('app').controller('VisSunburstCtrl', ['$scope', '$routeParams', 'idb', function VisSunburstCtrl($scope, $routeParams, idb) {
+angular.module('app')
+.controller('VisSunburstCtrl', ['$scope', '$routeParams', 'idb', function VisSunburstCtrl($scope, $routeParams, idb) {
   // Will hold the data retrieved from the database.
   var universities = [], programs = [], donnees = [];
   var streamRetrieved = 0;

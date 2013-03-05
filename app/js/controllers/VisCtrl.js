@@ -1,6 +1,6 @@
 'use strict';
-
-app.controller('VisCtrl', ['$scope', '$routeParams', 'idb', function VisCtrl($scope, $routeParams, idb) {
+angular.module('app')
+.controller('VisCtrl', ['$scope', '$routeParams', 'idb', function VisCtrl($scope, $routeParams, idb) {
   // Everything is done through requests and transactions.
   var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
   request.onsuccess = function( e ) {

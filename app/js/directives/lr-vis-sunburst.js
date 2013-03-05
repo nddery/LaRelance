@@ -1,4 +1,5 @@
-angular.module('app').directive('lrVisSunburst', function(){
+angular.module('app')
+.directive('lrVisSunburst', function(){
   // Constants
   var margin = 20,
       width  = window.innerWidth,

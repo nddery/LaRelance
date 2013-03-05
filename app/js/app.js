@@ -3,8 +3,8 @@
 var app = angular.module('app', []);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-    when('/', {templateUrl: 'partials/main.html',   controller: 'AppCtrl'}).
-    when('/vis', {templateUrl: 'partials/vis.html',   controller: 'VisCtrl'}).
-    when('/vis/sunburst', {templateUrl: 'partials/vis-sunburst.html', controller: 'VisSunburstCtrl'}).
+    when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'}).
+    when('/vis', {templateUrl: 'views/vis.html',   controller: 'VisCtrl'}).
+    when('/vis/sunburst', {templateUrl: 'views/vis-sunburst.html', controller: 'VisSunburstCtrl'}).
     otherwise({redirectTo: '/'});
 }]);

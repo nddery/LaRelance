@@ -1,7 +1,7 @@
 // http://stackoverflow.com/a/12631074/2077298
 // http://jsfiddle.net/p3ZMR/3/
-angular.module('app', []).
-directive('activeLink', ['$location', function(location) {
+angular.module('app')
+.directive('activeLink', ['$location', function(location) {
   return {
     restrict: 'A',
     link: function(scope, element, attrs, controller) {
