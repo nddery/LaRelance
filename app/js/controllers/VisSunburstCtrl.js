@@ -1,4 +1,5 @@
 'use strict';
+
 angular.module('app')
 .controller('VisSunburstCtrl', ['$scope', '$routeParams', 'idb', function VisSunburstCtrl($scope, $routeParams, idb) {
   // Will hold the data retrieved from the database.
@@ -81,7 +82,6 @@ angular.module('app')
             var cursor = event.target.result;
             var obj = {};
             if(cursor){
-              console.log(typeof(cursor.value.UNIQ));
               program.children.push({"name": "UID", "size": cursor.value.UID});
               program.children.push({"name": "PID", "size": cursor.value.PID});
               program.children.push({"name": "TPYE", "size": cursor.value.TYPE});
