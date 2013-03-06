@@ -46,8 +46,8 @@ angular.module('app').service('idb', function() {
       filesLoaded = 0,
       filesToLoad = objectstores.length,
       db          = null,
-      DB_NAME     = 'larelance',
-      DB_VERSION  = 8;
+      DB_NAME     = 'tt',
+      DB_VERSION  = 3;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");

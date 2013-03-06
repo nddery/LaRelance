@@ -91,40 +91,40 @@ angular.module('app')
               //   "size": cursor.value.TYPE});
               program.children.push({
                 "name": "nVisees",
-                "size": cursor.value.nVisees});
+                "size": parseInt(cursor.value.nVisees, 10)});
               program.children.push({
                 "name": "tauxDeReponse",
-                "size": cursor.value.tauxDeReponse});
-              program.children.push({
-                "name": "emEmploi",
-                "size": cursor.value.emEmploi});
-              program.children.push({
-                "name": "rechercheEmploi",
-                "size": cursor.value.rechercheEmploi});
+                "size": parseInt(cursor.value.tauxDeReponse, 10)});
+              // program.children.push({
+              //   "name": "emEmploi",
+              //   "size": parseInt(cursor.value.emEmploi, 10)});
+              // program.children.push({
+              //   "name": "rechercheEmploi",
+              //   "size": parseInt(cursor.value.rechercheEmploi, 10)});
               program.children.push({
                 "name": "auxEtudes",
-                "size": cursor.value.auxEtudes});
-              program.children.push(
-                {"name": "pInactives",
-                  "size": cursor.value.pInactives});
-              program.children.push({
-                "name": "tauxDeChomage",
-                "size": cursor.value.tauxDeChomage});
+                "size": parseInt(cursor.value.auxEtudes, 10)});
+              // program.children.push({
+              //   "name": "pInactives",
+              //   "size": parseInt(cursor.value.pInactives, 10)});
+              // program.children.push({
+              //   "name": "tauxDeChomage",
+              //   "size": parseInt(cursor.value.tauxDeChomage, 10)});
               program.children.push({
                 "name": "emploiTempsPlein",
-                "size": cursor.value.emploiTempsPlein});
+                "size": parseInt(cursor.value.emploiTempsPlein, 10)});
               program.children.push({
                 "name": "dureeDeRecherche",
-                "size": (parseInt(cursor.value.dureeDeRecherche, 10)) * 100});
+                "size": parseInt(cursor.value.dureeDeRecherche, 10)});
               program.children.push({
                 "name": "salaireHebdoBrut",
-                "size": (parseInt(cursor.value.salaireHebdoBrut, 10) * 100)});
+                "size": parseInt(cursor.value.salaireHebdoBrut, 10)});
               program.children.push({
                 "name": "emploiEnRapport",
-                "size": (parseInt(cursor.value.emploiEnRapport, 10) * 100)});
+                "size": parseInt(cursor.value.emploiEnRapport, 10)});
               program.children.push({
                 "name": "enRapport",
-                "size": cursor.value.enRapport});
+                "size": parseInt(cursor.value.enRapport, 10)});
 
               cursor.continue();
             }
@@ -132,9 +132,6 @@ angular.module('app')
               // Delete programs with no children (data)
               if(program.children.length === 0) {
                 university.children.splice(pIndex, pIndex);
-              }
-              else {
-                console.log(program.children.length);
               }
 
               if(uCount === uIndex && pCount === pIndex) {
