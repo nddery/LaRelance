@@ -20,13 +20,18 @@ angular.module('app')
       // Initialization, done once per my-directive tag in template.
       // If my-directive is within an ng-repeat-ed template then it will be
       // called every time ngRepeat creates a new copy of the template.
+      var force = d3.layout.force()
+        .charge(-120)
+        .linkDistance(40)
+        .size([width, height]);
 
-      // The arc we'll use over and over.
-      var arc = d3.svg.arc()
-        .startAngle(0)
-        .endAngle(twoPI)
-        .innerRadius(20)
-        .outerRadius(25);
+      // Set up the initial svg, full width and height.
+      var svg = d3.select(elem[0])
+        .append('svg')
+          .attr('width', width)
+          .attr('height', height);
+
+      var group = svg.append('g');
 
       // Whenever the bound 'exp' expression changes, execute this
       scope.$watch('data', function (newData, oldData) {
@@ -35,74 +40,47 @@ angular.module('app')
           return;
         }
 
-        // Clear the elements inside of the directive.
-        /* svg.selectAll('*').remove(); */
+        force
+          .nodes(newData)
+          .links([])
+          .start();
 
-        // Set up the initial svg, full width and height.
-        var svg = d3.select(elem[0])
-          .append('svg')
-            .attr('width', width)
-            .attr('height', height);
+        // var link = group.selectAll(".link")
+        //   .data(graph.links)
+        //   .enter().append("line")
+        //     .attr("class", "link")
+        //     .style("stroke-width", function(d) { return Math.sqrt(d.value); });
 
-        var total = newData.length,
-            angle = 360 / total;
+        var node = group.selectAll('.node')
+          .data(newData)
+          .enter().append('circle')
+            .attr('class', function(d) {
+              return d.fixed ? 'node fixed' : 'node not-fixed';
+            })
+            .attr('r', 10);
 
-        var groups = svg
-          .selectAll('g')
-          .data(newData).enter()
-          .append('g')
-            .attr('transform', function(d,i){
-              var cx = width / 2,
-                  cy = height / 2,
-                  a  = i * angle,
-                  d  = total * 12;
+        // attach the standard force drag to all but the fixed node
+        group.selectAll('.not-fixed')
+          .call(force.drag);
 
-              d = Math.min(Math.max(parseInt(d), 250), (radius - (margin * 2)));
+        // attach a different drag handler to the fixed node
+        var groupDrag = d3.behavior.drag()
+          .on('drag', function(d) {
+            // mouse pos offset by starting node pos
+            var x = d3.event.x - 200,
+                y = d3.event.y - 200;
+            group.attr('transform', function(d) { return 'translate(' + x + ',' + y + ')'; });
+          });
 
-              var t = 'translate(' + cx + ',' + ( cy + d ) + ')';
-              var r = 'rotate(' +  a + ', 0, -' + d + ')';
-              return t + r;
-            });
+        group.call(groupDrag)
 
-        var text = groups
-          .append('text')
-            .text( function(d) { return d.name; } )
-            .attr('opacity', 0)
-            .attr('transform', function(d,i){
-              var cx = width / 2,
-                  cy = height / 2,
-                  a  = i * angle,
-                  d  = total * 12;
+        node.append('title')
+          .text(function(d) { return d.name; });
 
-              d = Math.min(Math.max(parseInt(d), 250), (radius - (margin * 2)));
-
-              // console.log(cx);
-              // console.log(cy);
-              // var t = 'translate(' + cx + ',' + ( cy ) + ')';
-              var t = 'translate(' + (cx - 785) + ',' + (cy + 60) + ')';
-              // var t = 'translate(0,0)';
-              var r = 'rotate(-' +  a + ', 0, -' + d + ')';
-              return t + r;
-            });
-
-        var drag = d3.behavior.drag()
-          .origin(Object)
-          .on('drag', dragmove);
-
-        var arcs = groups
-            .call(drag)
-          .append('path')
-            .attr('fill', 'red')
-            .attr('id', function(d,i){ return 's'+i; })
-            .attr('data-UID', function(d){ return d.UID; })
-            .attr('data-UNAME_SHORT', function(d){ return d.UNAME_SHORT; })
-            .attr('d', arc);
-
-        var dragmove = function(d) {
-          d3.select(this)
-            .attr("cx", d.x = Math.max(radius, Math.min(width - radius, d3.event.x)))
-            .attr("cy", d.y = Math.max(radius, Math.min(height - radius, d3.event.y)));
-        }
+        force.on('tick', function() {
+          node.attr('cx', function(d) { return d.x; })
+            .attr('cy', function(d) { return d.y; });
+        });
       });
     }
   };
