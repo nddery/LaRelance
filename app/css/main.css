@@ -3,12 +3,13 @@
    ========================================================================== */
 
 body {
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
+nav,
 #mainView {
   position:absolute;
-  top: 41px;
+  top: 0;
 }
 
 

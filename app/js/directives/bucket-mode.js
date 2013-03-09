@@ -1,18 +1,13 @@
 'use strict';
 angular.module('app')
-.directive('lrBucketMode', function(){
+.directive('bucketMode', function(){
   // Constants
-  var margin = 20,
-      width  = window.innerWidth,
-      height = window.innerHeight - (margin * 2),
-      radius = Math.min(width, height) / 2,
-      color  = d3.scale.category20c();
-
-  var total         = c.length,
-      workingHeight = App.ui.height - ( App.ui.margins * 2 ),
-      twoPI         = 2 * Math.PI,
-      angle         = 360 / total,
-      currentAngle  = 0;
+  var margin      = 20,
+      width       = window.innerWidth,
+      height      = window.innerHeight - (margin * 2),
+      radius      = Math.min(width, height) / 2,
+      twoPI       = 2 * Math.PI,
+      color       = d3.scale.category20c();
 
   return {
     // The directive can only be invoked by using tag in the template.
@@ -26,52 +21,88 @@ angular.module('app')
       // If my-directive is within an ng-repeat-ed template then it will be
       // called every time ngRepeat creates a new copy of the template.
 
-      // Set up the initial svg, full width and height.
-      var svg = d3.select(elem[0])
-        .append('svg')
-          .attr('width', width)
-          .attr('height', height)
-        .append('g')
-          .attr('transform', 'translate(' + width / 2 + ',' + height * .52 + ')');
+      // The arc we'll use over and over.
+      var arc = d3.svg.arc()
+        .startAngle(0)
+        .endAngle(twoPI)
+        .innerRadius(20)
+        .outerRadius(25);
 
       // Whenever the bound 'exp' expression changes, execute this
       scope.$watch('data', function (newData, oldData) {
-        // Clear the elements inside of the directive.
-        svg.selectAll('*').remove();
-
         // Exit if no new data.
         if (!newData) {
           return;
         }
 
-        var partition = d3.layout.partition()
-          .sort(null)
-          .size([2 * Math.PI, radius * radius])
-          .value(function(d) { return 1; });
+        // Clear the elements inside of the directive.
+        /* svg.selectAll('*').remove(); */
 
+        // Set up the initial svg, full width and height.
+        var svg = d3.select(elem[0])
+          .append('svg')
+            .attr('width', width)
+            .attr('height', height);
 
-          console.log(JSON.stringify(newData));
-        var path = svg.datum(newData).selectAll('path')
-            .data(partition.nodes)
-          .enter().append('path')
-            .attr('display', function(d) { return d.depth ? null : 'none'; }) // hide inner ring
-            .attr('d', arc)
-            .style('stroke', '#fff')
-            .style('fill', function(d) { return color((d.children ? d : d.parent).name); })
-            .style('fill-rule', 'evenodd')
-            .each(stash);
+        var total = newData.length,
+            angle = 360 / total;
 
-        d3.selectAll('input').on('change', function change() {
-          var value = this.value === 'count'
-              ? function() { return 1; }
-              : function(d) { console.log(d); return d.size; };
+        var groups = svg
+          .selectAll('g')
+          .data(newData).enter()
+          .append('g')
+            .attr('transform', function(d,i){
+              var cx = width / 2,
+                  cy = height / 2,
+                  a  = i * angle,
+                  d  = total * 12;
 
-          path
-              .data(partition.value(value).nodes)
-            .transition()
-              .duration(1500)
-              .attrTween('d', arcTween);
-        });
+              d = Math.min(Math.max(parseInt(d), 250), (radius - (margin * 2)));
+
+              var t = 'translate(' + cx + ',' + ( cy + d ) + ')';
+              var r = 'rotate(' +  a + ', 0, -' + d + ')';
+              return t + r;
+            });
+
+        var text = groups
+          .append('text')
+            .text( function(d) { return d.name; } )
+            .attr('opacity', 0)
+            .attr('transform', function(d,i){
+              var cx = width / 2,
+                  cy = height / 2,
+                  a  = i * angle,
+                  d  = total * 12;
+
+              d = Math.min(Math.max(parseInt(d), 250), (radius - (margin * 2)));
+
+              // console.log(cx);
+              // console.log(cy);
+              // var t = 'translate(' + cx + ',' + ( cy ) + ')';
+              var t = 'translate(' + (cx - 785) + ',' + (cy + 60) + ')';
+              // var t = 'translate(0,0)';
+              var r = 'rotate(-' +  a + ', 0, -' + d + ')';
+              return t + r;
+            });
+
+        var drag = d3.behavior.drag()
+          .origin(Object)
+          .on('drag', dragmove);
+
+        var arcs = groups
+            .call(drag)
+          .append('path')
+            .attr('fill', 'red')
+            .attr('id', function(d,i){ return 's'+i; })
+            .attr('data-UID', function(d){ return d.UID; })
+            .attr('data-UNAME_SHORT', function(d){ return d.UNAME_SHORT; })
+            .attr('d', arc);
+
+        var dragmove = function(d) {
+          d3.select(this)
+            .attr("cx", d.x = Math.max(radius, Math.min(width - radius, d3.event.x)))
+            .attr("cy", d.y = Math.max(radius, Math.min(height - radius, d3.event.y)));
+        }
       });
     }
   };

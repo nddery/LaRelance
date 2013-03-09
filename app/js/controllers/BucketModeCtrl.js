@@ -13,23 +13,27 @@ angular.module('app')
         pStore = trn.objectStore("PROGRAMS"),
         dStore = trn.objectStore("DATA"),
         objs   = [],
-        store;
+        c      = {};
 
     switch($scope.method){
       case 'programs' :
-        store = pStore;
+        c.store = pStore;
+        c.name = "PNAME";
         break
 
       default:
       case 'universities' :
-        store = uStore;
+        // store = uStore;
+        c.store = uStore;
+        c.name = "UNAME";
         break;
     }
 
     // Retrieve whatever has been asked.
-    store.openCursor().onsuccess = function(event) {
+    c.store.openCursor().onsuccess = function(event) {
       var cursor = event.target.result;
       if(cursor){
+        cursor.value.name = cursor.value[c.name];
         objs.push(cursor.value);
         cursor.continue();
       }

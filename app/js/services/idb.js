@@ -47,7 +47,7 @@ angular.module('app').service('idb', function() {
       filesToLoad = objectstores.length,
       db          = null,
       DB_NAME     = 'tt',
-      DB_VERSION  = 3;
+      DB_VERSION  = 6;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");
