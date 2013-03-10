@@ -1,5 +1,5 @@
 angular.module('app')
-.service('idb', function() {
+.service('idb', ['$rootScope', function($rootScope) {
   var objectstores = [
     { name: 'LARELANCE',
       keyPath: 'id',
@@ -123,6 +123,7 @@ angular.module('app')
     request.onsuccess = function( e ) {
       db = e.target.result;
       updateStatusBar( 'Database initialized...' );
+      $rootScope.$broadcast('idbInitialized');
     }; // end request.onsuccess()
 
     request.onerror = handleError;
@@ -165,4 +166,4 @@ angular.module('app')
     DB_NAME: DB_NAME,
     DB_VERSION: DB_VERSION
   };
-});
+}]);
