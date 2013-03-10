@@ -1,26 +1,27 @@
 angular.module('app').service('idb', function() {
   var objectstores = [
-    { name: 'UNIVERSITIES',
-      keyPath: 'UID',
-      indexes: ['UID'],
-      autoIncrement: false,
-      data_source: 'http://proj.nddery.dev/larelance/app/data/universite.json',
-      data: '' },
-
-    { name: 'PROGRAMS',
-      keyPath: 'PID',
-      indexes: ['PID'],
-      autoIncrement: false,
-      data_source: 'http://proj.nddery.dev/larelance/app/data/programmes.json',
-      data: '' },
-
-    { name: 'DATA',
+    { name: 'LARELANCE',
       keyPath: 'id',
-      indexes: ['UNIQ', 'PID', 'UID'],
+      indexes: ['UNIQ', 'UID', 'PID', 'TYPE'],
       autoIncrement: true,
-      data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
-      data: '' },
+      data_source: 'http://proj.nddery.dev/larelance/app/data/larelance.json',
+      data: '' }
   ];
+//
+//     { name: 'PROGRAMS',
+//       keyPath: 'PID',
+//       indexes: ['PID'],
+//       autoIncrement: false,
+//       data_source: 'http://proj.nddery.dev/larelance/app/data/programmes.json',
+//       data: '' },
+//
+//     { name: 'DATA',
+//       keyPath: 'id',
+//       indexes: ['UNIQ', 'PID', 'UID'],
+//       autoIncrement: true,
+//       data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
+//       data: '' },
+//   ];
 
   // data.objectstores = [
   //   { name: 'UNIVERSITIES',
@@ -46,8 +47,8 @@ angular.module('app').service('idb', function() {
       filesLoaded = 0,
       filesToLoad = objectstores.length,
       db          = null,
-      DB_NAME     = 'tt',
-      DB_VERSION  = 6;
+      DB_NAME     = 'larelance-test',
+      DB_VERSION  = 2;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");
@@ -149,6 +150,7 @@ angular.module('app').service('idb', function() {
           request.onsuccess = function ( event ) { /* success, continue */ };
           request.onerror = handleError;
         });
+        o.data = null;
       });
     }; // end request.onupgradeneeded()
 
@@ -180,10 +182,13 @@ angular.module('app').service('idb', function() {
     var status = typeof status === 'undefined' ? ''       : status;
     var type   = typeof type   === 'undefined' ? 'notice' : type;
 
-    if ( type === 'error' )
-      console.error('Status updated: ' + status);
-    else
+    if ( type === 'error' ) {
+      console.error('Error: ' + status);
+      console.log(status);
+    }
+    else {
       console.log('Status updated: ' + status);
+    }
   }
 
   // Start pre-fetching.

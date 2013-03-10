@@ -2,61 +2,52 @@
 angular.module('app')
 .controller('BucketModeCtrl', ['$scope', '$routeParams', 'idb', function BucketModeCtrl($scope, $routeParams, idb) {
   $scope.method = $routeParams.method;
-  $scope.u = $routeParams.u ? $routeParams.u : null;
-  $scope.p = $routeParams.p ? $routeParams.p : null;
+  $scope.u      = $routeParams.u;
+  $scope.p      = $routeParams.p;
 
   // Get our data.
   var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
   request.onsuccess = function( e ) {
-    var db   = e.target.result,
-        trn  = db.transaction(["UNIVERSITIES", "PROGRAMS", "DATA"]),
-        uStore = trn.objectStore("UNIVERSITIES"),
-        pStore = trn.objectStore("PROGRAMS"),
-        dStore = trn.objectStore("DATA"),
+    var db     = e.target.result,
+        trn    = db.transaction(["LARELANCE"]),
+        dStore = trn.objectStore("LARELANCE"),
         objs   = [],
         c      = {};
 
     switch($scope.method){
       case 'programs' :
-        c.store = pStore;
         c.name = "PNAME";
         c.index = "PID";
         break
 
       default:
       case 'universities' :
-        // store = uStore;
-        c.store = uStore;
         c.name = "UNAME";
         c.index = "UID";
         break;
     }
 
-    var range = null,
-        U     = [];
+    var range  = null;
     // We have universities, display programs.
-    if(typeof $scope.u !== 'null'){
+    if(typeof $scope.u !== 'undefined'){
+      console.log(typeof $scope.u);
       // Get a list of programs from the data object store.
       range = IDBKeyRange.bound("975000","976000",false,false);
-      var index = dStore.index("UID"),
-          last  = 0,
-          P     = [];
+      var index  = dStore.index("UID"),
+          values = [];
 
       index.openCursor(range).onsuccess = function(event) {
         var cursor = event.target.result;
         if(cursor){
-          if(P.indexOf(cursor.value.PID) === -1){
-            console.log(cursor.value.UID);
-            P.push(cursor.value.PID);
-            last = cursor.value.PID;
-            cursor.value.name = cursor.value[c.name];
+          // If we do not stored this value yet.
+          if(values.indexOf(cursor.value.PID) === -1){
+            values.push(cursor.value.PID);
+            cursor.value.name = cursor.value['PNAME'];
             objs.push(cursor.value);
           }
           cursor.continue();
         }
         else{
-          console.log(P);
-          // get(P);
           $scope.$apply(function(){
             $scope.data = objs;
           });
@@ -64,22 +55,21 @@ angular.module('app')
       }
     }
     // We have programs, display universities.
-    else if(typeof $scope.p !== 'null'){
-      get();
-    }
-    // We do not have anything.
-    else{
-      get();
-    }
+    else if(typeof $scope.p !== 'undefined'){
+      // Get a list of programs from the data object store.
+      range = IDBKeyRange.only("5104");
+      var index  = dStore.index("PID")
+          values = [];
 
-    // Retrieve whatever has been asked.
-    var get = function(){
-      var index = c.store.index(c.index);
       index.openCursor(range).onsuccess = function(event) {
         var cursor = event.target.result;
         if(cursor){
-          cursor.value.name = cursor.value[c.name];
-          objs.push(cursor.value);
+          // If we do not stored this value yet.
+          if(values.indexOf(cursor.value.UID) === -1){
+            values.push(cursor.value.UID);
+            cursor.value.name = cursor.value['UNAME'];
+            objs.push(cursor.value);
+          }
           cursor.continue();
         }
         else{
@@ -88,7 +78,30 @@ angular.module('app')
           });
         }
       }
-    } // end get()
+    }
+    // We do not have anything.
+    else{
+      // Retrieve whatever has been asked.
+      var index  = dStore.index(c.index),
+          values = [];
+      index.openCursor(range).onsuccess = function(event) {
+        var cursor = event.target.result;
+        if(cursor){
+          // If we do not stored this value yet.
+          if(values.indexOf(cursor.value.UID) === -1){
+            values.push(cursor.value.UID);
+            cursor.value.name = cursor.value[c.name];
+            objs.push(cursor.value);
+            cursor.continue();
+          }
+        }
+        else{
+          $scope.$apply(function(){
+            $scope.data = objs;
+          });
+        }
+      }
+    }
   }; // end request.onsuccess()
 
   $scope.clicked = function(evt) {
