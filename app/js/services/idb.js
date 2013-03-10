@@ -1,4 +1,5 @@
-angular.module('app').service('idb', function() {
+angular.module('app')
+.service('idb', function() {
   var objectstores = [
     { name: 'LARELANCE',
       keyPath: 'id',
@@ -7,48 +8,13 @@ angular.module('app').service('idb', function() {
       data_source: 'http://proj.nddery.dev/larelance/app/data/larelance.json',
       data: '' }
   ];
-//
-//     { name: 'PROGRAMS',
-//       keyPath: 'PID',
-//       indexes: ['PID'],
-//       autoIncrement: false,
-//       data_source: 'http://proj.nddery.dev/larelance/app/data/programmes.json',
-//       data: '' },
-//
-//     { name: 'DATA',
-//       keyPath: 'id',
-//       indexes: ['UNIQ', 'PID', 'UID'],
-//       autoIncrement: true,
-//       data_source: 'http://proj.nddery.dev/larelance/app/data/donnees.json',
-//       data: '' },
-//   ];
 
-  // data.objectstores = [
-  //   { name: 'UNIVERSITIES',
-  //     keyPath: 'UID',
-  //     autoIncrement: false,
-  //     data_source: 'http://proj.nddery.ca/larelance/data/universite.json',
-  //     data: '' },
-
-  //   { name: 'PROGRAMS',
-  //     keyPath: 'PID',
-  //     autoIncrement: false,
-  //     data_source: 'http://proj.nddery.ca/larelance/data/programmes.json',
-  //     data: '' },
-  //   { name: 'DATA',
-  //     keyPath: 'id',
-  //     autoIncrement: true,
-  //     data_source: 'http://proj.nddery.ca/larelance/data/donnees.json',
-  //     data: '' },
-  // ];
-
-  // var indexedDB   = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB,
   var indexedDB   = window.indexedDB,
       filesLoaded = 0,
       filesToLoad = objectstores.length,
       db          = null,
       DB_NAME     = 'larelance-test',
-      DB_VERSION  = 2;
+      DB_VERSION  = 6;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");
