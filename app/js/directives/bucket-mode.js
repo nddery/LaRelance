@@ -5,7 +5,6 @@ angular.module('app')
   var margin      = 20,
       width       = window.innerWidth,
       height      = window.innerHeight,
-      // height      = window.innerHeight - (margin * 2),
       radius      = Math.min(width, height) / 2,
       twoPI       = 2 * Math.PI,
       color       = d3.scale.category20c();
@@ -22,77 +21,51 @@ angular.module('app')
       // If my-directive is within an ng-repeat-ed template then it will be
       // called every time ngRepeat creates a new copy of the template.
       var force = d3.layout.force()
-        .charge(-120)
-        .linkDistance(75)
+        .charge(-300)
         .size([width, height]);
-
-      // The arc we'll use over and over.
-      var arc = d3.svg.arc()
-        .startAngle(0)
-        .endAngle(twoPI)
-        .innerRadius(20)
-        .outerRadius(25);
 
       // Set up the initial svg, full width and height.
       var svg = d3.select(elem[0])
         .append('svg')
           .attr('width', width)
-          .attr('height', height);
-
-      var group = svg.append('g');
+          .attr('height', height)
+          .append('g');
 
       // Whenever the bound 'exp' expression changes, execute this
       scope.$watch('data', function (newData, oldData) {
         // Exit if no new data.
-        if (!newData) {
+        if(!newData){
           return;
         }
 
-        force
-          .nodes(newData)
+        force.nodes(newData)
           .links([])
           .start();
 
+        var node = svg.selectAll('.node')
+          .data(newData)
+          .enter().append('g')
+          .attr('class', 'node')
+          .call(force.drag);
 
-        var node = group.selectAll('.node')
-          .data(newData).enter()
-          .append('g');
+        node.append('image')
+          .attr('xlink:href', function(d){
+            return 'img/' + d.UNAME.toLowerCase() + '.ico';
+          })
+          .attr('x', -8)
+          .attr('y', -8)
+          .attr('width', 16)
+          .attr('height', 16);
 
-          node.append('path')
-            .attr('fill', 'red')
-            .attr('data-UID', function(d){ return d.UID; })
-            .attr('d', arc)
-            .attr('class', 'node not-fixed')
-            .attr('ng-click', 'clicked(evt)');
-
-        // attach the standard force drag to all but the fixed node
-        group.selectAll('.not-fixed').call(force.drag);
-
-        // attach a different drag handler to the fixed node
-        var groupDrag = d3.behavior.drag()
-          .on('drag', function(d) {
-            // add to the current bucket
-            console.log(d);
-            bucket.universities.push(d.UID);
-            console.log(bucket.universities);
-            // mouse pos offset by starting node pos
-            var x = d3.event.x - 200,
-                y = d3.event.y - 200;
-            group.attr('transform', function(d) {
-              return 'translate(' + x + ',' + y + ')';
-            });
-          });
-
-        group.call(groupDrag)
-
-        node.append('title').text(function(d) { return d.name; });
+        node.append('text')
+          .attr('dx', 12)
+          .attr('dy', '.35em')
+          .text(function(d) { return d.name });
 
         force.on('tick', function() {
           node.attr('transform', function(d) {
-             return 'translate(' + d.x + ',' + d.y + ')';
-           });
-          // node.attr('cx', function(d) { return d.x; })
-          //   .attr('cy', function(d) { return d.y; });
+            return 'translate(' + d.x + ',' + d.y + ')';
+          });
         });
       });
     }
