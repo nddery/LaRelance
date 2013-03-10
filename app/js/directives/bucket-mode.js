@@ -1,10 +1,11 @@
 'use strict';
 angular.module('app')
-.directive('bucketMode', function(){
+.directive('bucketMode', ['bucket', function(bucket){
   // Constants
   var margin      = 20,
       width       = window.innerWidth,
-      height      = window.innerHeight - (margin * 2),
+      height      = window.innerHeight,
+      // height      = window.innerHeight - (margin * 2),
       radius      = Math.min(width, height) / 2,
       twoPI       = 2 * Math.PI,
       color       = d3.scale.category20c();
@@ -22,8 +23,15 @@ angular.module('app')
       // called every time ngRepeat creates a new copy of the template.
       var force = d3.layout.force()
         .charge(-120)
-        .linkDistance(40)
+        .linkDistance(75)
         .size([width, height]);
+
+      // The arc we'll use over and over.
+      var arc = d3.svg.arc()
+        .startAngle(0)
+        .endAngle(twoPI)
+        .innerRadius(20)
+        .outerRadius(25);
 
       // Set up the initial svg, full width and height.
       var svg = d3.select(elem[0])
@@ -45,43 +53,48 @@ angular.module('app')
           .links([])
           .start();
 
-        // var link = group.selectAll(".link")
-        //   .data(graph.links)
-        //   .enter().append("line")
-        //     .attr("class", "link")
-        //     .style("stroke-width", function(d) { return Math.sqrt(d.value); });
 
         var node = group.selectAll('.node')
-          .data(newData)
-          .enter().append('circle')
-            .attr('class', function(d) {
-              return d.fixed ? 'node fixed' : 'node not-fixed';
-            })
-            .attr('r', 10);
+          .data(newData).enter()
+          .append('g');
+
+          node.append('path')
+            .attr('fill', 'red')
+            .attr('data-UID', function(d){ return d.UID; })
+            .attr('d', arc)
+            .attr('class', 'node not-fixed')
+            .attr('ng-click', 'clicked(evt)');
 
         // attach the standard force drag to all but the fixed node
-        group.selectAll('.not-fixed')
-          .call(force.drag);
+        group.selectAll('.not-fixed').call(force.drag);
 
         // attach a different drag handler to the fixed node
         var groupDrag = d3.behavior.drag()
           .on('drag', function(d) {
+            // add to the current bucket
+            console.log(d);
+            bucket.universities.push(d.UID);
+            console.log(bucket.universities);
             // mouse pos offset by starting node pos
             var x = d3.event.x - 200,
                 y = d3.event.y - 200;
-            group.attr('transform', function(d) { return 'translate(' + x + ',' + y + ')'; });
+            group.attr('transform', function(d) {
+              return 'translate(' + x + ',' + y + ')';
+            });
           });
 
         group.call(groupDrag)
 
-        node.append('title')
-          .text(function(d) { return d.name; });
+        node.append('title').text(function(d) { return d.name; });
 
         force.on('tick', function() {
-          node.attr('cx', function(d) { return d.x; })
-            .attr('cy', function(d) { return d.y; });
+          node.attr('transform', function(d) {
+             return 'translate(' + d.x + ',' + d.y + ')';
+           });
+          // node.attr('cx', function(d) { return d.x; })
+          //   .attr('cy', function(d) { return d.y; });
         });
       });
     }
   };
-});
+}]);

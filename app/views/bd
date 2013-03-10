@@ -1,9 +1,0 @@
-<bucket-mode data="data"></bucket-mode>
-
-<nav>
-  <ul>
-    <li>
-      <a class="btn" href="#/" title="Start Over!">Home</a>
-    </li>
-  </ul>
-</nav>
