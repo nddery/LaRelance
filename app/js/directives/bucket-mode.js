@@ -22,7 +22,7 @@ angular.module('app')
       // called every time ngRepeat creates a new copy of the template.
       var force = d3.layout.force()
         .charge(-300)
-        .size([width, height]);
+        .size([(width -  angular.element('#right-menu').width()), height]);
 
       // Set up the initial svg, full width and height.
       var svg = d3.select(elem[0])

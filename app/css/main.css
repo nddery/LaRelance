@@ -3,13 +3,53 @@
    ========================================================================== */
 
 body {
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
-nav,
+ul,
+ol {
+  list-style: none;
+}
+
+ul.inline li {
+  float: left;
+}
+
+.label {
+  margin: 5px;
+}
+
+.remove:hover{
+  cursor: pointer;
+  background: #999;
+}
+
+.remove {
+  border-left: 1px solid #fff;
+  padding-left: 4px;
+  margin-left: 1px;
+}
+
 #mainView {
   position:absolute;
   top: 0;
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   Header / Nav
+   ========================================================================== */
+
+header {
+  padding: 10px 20px;
+}
+
+nav {
+  position: absolute;
+  z-index: 1;
+  top: 2%;
+  right: 10%;
 }
 
 
@@ -20,4 +60,57 @@ nav,
 section {
   /* min-height: 100%; */
   /* border-bottom: 5px solid #000; */
+}
+
+#right-menu {
+  position:absolute;
+  /* z-index: -1; */
+  /* -1 makes it so svg element appears on top.... but disable click and all.. */
+  z-index: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 25%;
+  height: 100%;
+  background: #eee;
+  border-left: 2px solid #e2e2e2;
+}
+
+
+/* ==========================================================================
+   Bucket Mode
+   ========================================================================== */
+
+bucket-mode {
+  display: block;
+  width: 75%;
+}
+
+#bucket {
+  position: absolute;
+  bottom: 0;
+  width: 70%;
+  padding: 5%;
+  margin: 10%;
+  background: #e2e2e2;
+  border: 2px solid #eee;
+  -webkit-border-radius: 12px;
+          border-radius: 5px;
+  -webkit-transition: all 0.3s ease-out;
+     -moz-transition: all 0.3s ease-out;
+       -o-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out;
+}
+
+#bucket:hover {
+  border: 2px solid #f5f5f5;
+}
+
+
+/* ==========================================================================
+   SVG Styling
+   ========================================================================== */
+
+g.node:hover {
+  cursor: pointer;
 }

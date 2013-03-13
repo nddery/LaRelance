@@ -7,3 +7,13 @@
     </li>
   </ul>
 </nav>
+
+<div id="right-menu">
+  <div id="bucket" ng-controller="BucketCtrl">
+    <h3 ng-show="items.length == 0">Drop stuff here</h3>
+    <span ng-repeat="item in items"
+      class="item item-u-{{item.UID}} item-p-{{item.PID}} label {{item.label}}">
+      {{item.name}} <span class="remove" ng-click="remove(i)">x</span>
+    </span>
+  </div>
+</div>
