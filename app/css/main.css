@@ -17,6 +17,7 @@ ul.inline li {
 
 .label {
   margin: 5px;
+  float: left;
 }
 
 .remove:hover{
@@ -88,7 +89,7 @@ bucket-mode {
 
 #bucket {
   position: absolute;
-  bottom: 0;
+  bottom: 8%;
   width: 70%;
   padding: 5%;
   margin: 10%;
@@ -108,6 +109,12 @@ bucket-mode {
 
 #bucket h3 {
   text-align: center;
+}
+
+.bottom-nav {
+  position: absolute;
+  bottom: 2%;
+  right: 10%;
 }
 
 

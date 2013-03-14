@@ -47,17 +47,16 @@ angular.module('app')
         var dragend = function(d,i){
           var $bucket      = $('#bucket'),
               targetTopLeft = $bucket.offset(),
-              targetBottomRight = {bottom:($bucket.outerHeight() + targetTopLeft.top), right:($bucket.outerWidth() + targetTopLeft.left)};
+              targetBottomRight = {};
+          targetBottomRight.bottom = ($bucket.outerHeight() + targetTopLeft.top);
+          targetBottomRight.right  = ($bucket.outerWidth() + targetTopLeft.left);
 
           // http://codegolf.stackexchange.com/a/8661
           // If in correct x position.
           if((d3.event.sourceEvent.clientX-targetTopLeft.left^d3.event.sourceEvent.clientX-targetBottomRight.right)<0){
             // If in correct y position.
             if((d3.event.sourceEvent.clientY-targetTopLeft.top^d3.event.sourceEvent.clientY-targetBottomRight.bottom)<0){
-              // console.log('X & Y');
-              // console.log(d3.event);
-              bucket.items.push(d);
-              console.log(bucket.items);
+              bucket.newItem = d;
               $rootScope.$broadcast('bucketItemsUpdated');
             }
           }

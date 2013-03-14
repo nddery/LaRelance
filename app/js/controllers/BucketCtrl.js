@@ -1,46 +1,30 @@
 'use strict';
 angular.module('app')
-.controller('BucketCtrl', ['$scope', '$routeParams', 'bucket', 'idb', function BucketCtrl($scope, $routeParams, bucket, idb) {
+.controller('BucketCtrl', ['$rootScope', '$scope', '$routeParams', 'bucket', 'idb', function BucketCtrl($rootScope, $scope, $routeParams, bucket, idb) {
   $scope.u      = $routeParams.u;
   $scope.p      = $routeParams.p;
   $scope.d      = $routeParams.d;
+  $scope.href   = '#/bucket';
+
+  var labelU = 'label-important',
+      labelP = 'label-info',
+      labelD = 'label';
+  var currentLabel = labelU;
+  if(typeof $scope.u !== 'undefined')
+    currentLabel = labelP;
+  if(typeof $scope.p !== 'undefined')
+    currentLabel = labelD;
 
   // The list in the bucket.
-  $scope.items = bucket.items;
+  $scope.items = [];
   $scope.$on('bucketItemsUpdated', function(event) {
     $scope.$apply(function(){
-      $scope.items = bucket.items;
+      bucket.newItem.label = currentLabel;
+      $scope.items.push(bucket.newItem);
     });
   });
 
-  // $scope.items = [{"name": "NAME", "UID": "980000"},{"name": "NAME", "UID": "980000"}];
-  //
-  // $(window).mousedown(mouseUpAfterDrag);
-  // var mouseUpAfterDrag = function(e) {
-  //   console.log('moving mouse');
-  //   /* You can record the starting position with */
-  //   var start_x = e.pageX;
-  //   var start_y = e.pageY;
-
-  //   $().mousemove(function(e) {
-  //     /* And you can get the distance moved by */
-  //     var offset_x = e.pageX - start_x;
-  //     var offset_y = e.pageY - start_y;
-  //   });
-
-  //   $().one('mouseup', function() {
-  //     alert("This will show after mousemove and mouse released.");
-  //     $().unbind();
-  //     $(window).mousedown(mouseUpAfterDrag);
-  //   });
-
-  //   // Using return false prevents browser's default,
-  //   // often unwanted mousemove actions (drag & drop)
-  //   return false;
-  // }
-
-
-  // Add data to bucket.
+  // Add URL data to bucket.
   var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
   request.onsuccess = function( e ) {
     var db     = e.target.result,
@@ -58,7 +42,7 @@ angular.module('app')
         var index = dStore.index("UID");
         index.get(cur).onsuccess = function(event){
           event.target.result.name = event.target.result.UNAMEL;
-          event.target.result.label = 'label-important';
+          event.target.result.label = labelU;
           $scope.items.push(event.target.result);
 
           $scope.$apply(function(){
@@ -77,7 +61,7 @@ angular.module('app')
         var index = dStore.index("PID");
         index.get(cur).onsuccess = function(event){
           event.target.result.name = event.target.result.PNAME;
-          event.target.result.label = 'label-info';
+          event.target.result.label = labelP;
           $scope.items.push(event.target.result);
 
           $scope.$apply(function(){
