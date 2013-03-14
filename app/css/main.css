@@ -106,6 +106,10 @@ bucket-mode {
   border: 2px solid #f5f5f5;
 }
 
+#bucket h3 {
+  text-align: center;
+}
+
 
 /* ==========================================================================
    SVG Styling

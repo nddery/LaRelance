@@ -1,12 +1,17 @@
 'use strict';
 angular.module('app')
-.controller('BucketCtrl', ['$scope', '$routeParams', 'idb', function BucketCtrl($scope, $routeParams, idb) {
+.controller('BucketCtrl', ['$scope', '$routeParams', 'bucket', 'idb', function BucketCtrl($scope, $routeParams, bucket, idb) {
   $scope.u      = $routeParams.u;
   $scope.p      = $routeParams.p;
   $scope.d      = $routeParams.d;
 
   // The list in the bucket.
-  $scope.items = [];
+  $scope.items = bucket.items;
+  $scope.$on('bucketItemsUpdated', function(event) {
+    $scope.$apply(function(){
+      $scope.items = bucket.items;
+    });
+  });
 
   // $scope.items = [{"name": "NAME", "UID": "980000"},{"name": "NAME", "UID": "980000"}];
   //

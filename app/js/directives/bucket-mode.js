@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.directive('bucketMode', ['bucket', function(bucket){
+.directive('bucketMode', ['$rootScope', 'bucket', function($rootScope, bucket){
   // Constants
   var margin      = 20,
       width       = window.innerWidth,
@@ -38,15 +38,65 @@ angular.module('app')
           return;
         }
 
+        // Method for dragging related stuff.
+        var dragstart = function(d,i){
+          $('#right-menu').css('z-index', '-1');
+          force.stop();
+        }
+
+        var dragend = function(d,i){
+          var $bucket      = $('#bucket'),
+              targetTopLeft = $bucket.offset(),
+              targetBottomRight = {bottom:($bucket.outerHeight() + targetTopLeft.top), right:($bucket.outerWidth() + targetTopLeft.left)};
+
+          // http://codegolf.stackexchange.com/a/8661
+          // If in correct x position.
+          if((d3.event.sourceEvent.clientX-targetTopLeft.left^d3.event.sourceEvent.clientX-targetBottomRight.right)<0){
+            // If in correct y position.
+            if((d3.event.sourceEvent.clientY-targetTopLeft.top^d3.event.sourceEvent.clientY-targetBottomRight.bottom)<0){
+              // console.log('X & Y');
+              // console.log(d3.event);
+              bucket.items.push(d);
+              console.log(bucket.items);
+              $rootScope.$broadcast('bucketItemsUpdated');
+            }
+          }
+
+          $('#right-menu').css('z-index', '0');
+          force.resume();
+          tick();
+        }
+
+        var dragmove = function(d,i){
+          // Move along with the mouse.
+          d.px += d3.event.dx;
+          d.py += d3.event.dy;
+          d.x += d3.event.dx;
+          d.y += d3.event.dy;
+          // And tick.
+          tick();
+        }
+
+        var tick = function() {
+          node.attr('transform', function(d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+          });
+        };
+
         force.nodes(newData)
           .links([])
           .start();
+
+        var node_drag = d3.behavior.drag()
+          .on('dragstart', dragstart)
+          .on('drag',      dragmove)
+          .on('dragend',   dragend);
 
         var node = svg.selectAll('.node')
           .data(newData)
           .enter().append('g')
           .attr('class', 'node')
-          .call(force.drag);
+          .call(node_drag);
 
         node.append('image')
           .attr('xlink:href', function(d){
@@ -62,11 +112,7 @@ angular.module('app')
           .attr('dy', '.35em')
           .text(function(d) { return d.name });
 
-        force.on('tick', function() {
-          node.attr('transform', function(d) {
-            return 'translate(' + d.x + ',' + d.y + ')';
-          });
-        });
+        force.on('tick', tick);
       });
     }
   };

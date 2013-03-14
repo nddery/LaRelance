@@ -103,8 +103,4 @@ angular.module('app')
       $scope.data = o;
     });
   }
-
-  $scope.clicked = function(evt) {
-    console.log(evt);
-  }
 }]);
