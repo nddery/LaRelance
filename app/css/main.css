@@ -9,11 +9,19 @@ body {
 ul,
 ol {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-ul.inline li {
-  float: left;
+ul.inline > li,
+ol.inline > li {
+  /* display: inline-block; */
+  padding-right: 10px;
+  padding-left: 0;
 }
+/* ul.inline li { */
+/*   float: left; */
+/* } */
 
 .label {
   margin: 5px;
@@ -43,14 +51,21 @@ ul.inline li {
    ========================================================================== */
 
 header {
-  padding: 10px 20px;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 25%;
 }
 
 nav {
-  position: absolute;
-  z-index: 1;
-  top: 2%;
-  right: 10%;
+  /* position: absolute; */
+  /* z-index: 1; */
+  /* top: 2%; */
+  /* right: 10%; */
+}
+
+nav li {
+  padding-left: 0;
 }
 
 
@@ -75,6 +90,16 @@ section {
   height: 100%;
   background: #eee;
   border-left: 2px solid #e2e2e2;
+}
+
+
+/* ==========================================================================
+   Main
+   ========================================================================== */
+#intro,
+#instructions {
+  width: 50%;
+  margin: 20px auto 0 auto;
 }
 
 
