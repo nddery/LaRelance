@@ -19,6 +19,8 @@ angular.module('app')
   $scope.items = [];
   $scope.$on('bucketItemsUpdated', function(event) {
     $scope.$apply(function(){
+      // console.log($scope.data[bucket.index]);
+      $scope.data.splice(bucket.index, 1);
       bucket.newItem.label = currentLabel;
       $scope.items.push(bucket.newItem);
     });

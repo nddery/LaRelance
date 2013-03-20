@@ -57,6 +57,7 @@ angular.module('app')
             // If in correct y position.
             if((d3.event.sourceEvent.clientY-targetTopLeft.top^d3.event.sourceEvent.clientY-targetBottomRight.bottom)<0){
               bucket.newItem = d;
+              bucket.index = i;
               $rootScope.$broadcast('bucketItemsUpdated');
             }
           }
