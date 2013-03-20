@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.controller('BucketCtrl', ['$rootScope', '$scope', '$routeParams', '$location', 'bucket', 'idb', function BucketCtrl($rootScope, $scope, $routeParams, $location, bucket, idb) {
+.controller('BucketCtrl', ['$rootScope', '$scope', '$routeParams', '$window', 'bucket', 'idb', function BucketCtrl($rootScope, $scope, $routeParams, $window, bucket, idb) {
   $scope.u      = $routeParams.u;
   $scope.p      = $routeParams.p;
   $scope.d      = $routeParams.d;
@@ -16,6 +16,12 @@ angular.module('app')
   if(typeof $scope.p !== 'undefined'){
     var values = $scope.p.split(',');
     $scope.href += '/p/' + values[0];
+    if(values.length === 2)
+      $scope.href += ',' + values[1];
+  }
+  if(typeof $scope.d !== 'undefined'){
+    var values = $scope.d.split(',');
+    $scope.href += '/d/' + values[0];
     if(values.length === 2)
       $scope.href += ',' + values[1];
   }
@@ -97,20 +103,27 @@ angular.module('app')
       }
       else if($scope.items.length === 2){
         $scope.href += ',' + bucket.newItem.UID;
-        // $location.path($scope.href);
+        $window.location.href = $scope.href;
       }
     }
     // Programs
     else if(typeof $scope.p === 'undefined'){
-      console.log($scope.items);
       if($scope.items.length === 3){
-        console.log('first');
         $scope.href += '/p/' + bucket.newItem.PID;
       }
       else if($scope.items.length === 4){
-        console.log('second');
         $scope.href += ',' + bucket.newItem.PID;
-        // $location.path($scope.href);
+        $window.location.href = $scope.href;
+      }
+    }
+    // Data
+    else if(typeof $scope.d === 'undefined'){
+      if($scope.items.length === 5){
+        $scope.href += '/d/' + bucket.newItem.name;
+      }
+      else if($scope.items.length === 6){
+        $scope.href += ',' + bucket.newItem.name;
+        $window.location.href = $scope.href;
       }
     }
   }
