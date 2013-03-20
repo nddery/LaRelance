@@ -1,6 +1,9 @@
 <bucket-mode data="data"></bucket-mode>
 
 <div id="right-menu" ng-controller="BucketCtrl">
+  <p class="top-nav">
+    <input ng-model="query">
+  </p>
   <p  class="bottom-nav"
       ng-show="items.length > 0">
     <a  ng-href="{{href}}"

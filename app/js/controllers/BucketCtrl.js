@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.controller('BucketCtrl', ['$rootScope', '$scope', '$routeParams', 'bucket', 'idb', function BucketCtrl($rootScope, $scope, $routeParams, bucket, idb) {
+.controller('BucketCtrl', ['$rootScope', '$scope', '$routeParams', '$location', 'bucket', 'idb', function BucketCtrl($rootScope, $scope, $routeParams, $location, bucket, idb) {
   $scope.u      = $routeParams.u;
   $scope.p      = $routeParams.p;
   $scope.d      = $routeParams.d;
@@ -19,10 +19,11 @@ angular.module('app')
   $scope.items = [];
   $scope.$on('bucketItemsUpdated', function(event) {
     $scope.$apply(function(){
-      // console.log($scope.data[bucket.index]);
-      $scope.data.splice(bucket.index, 1);
+      // Add item from bucket to bucket.
       bucket.newItem.label = currentLabel;
       $scope.items.push(bucket.newItem);
+
+      updateNextLink();
     });
   });
 
@@ -73,6 +74,20 @@ angular.module('app')
       });
     } // end population bucket for universities.
   }; // end request.onsuccess()
+
+  var updateNextLink = function(){
+    console.log($scope.items);
+    if($scope.items.length === 1){
+      $scope.href += '/u/' + bucket.newItem.UID;
+    }
+    else if($scope.items.length === 2){
+      $scope.href += ',' + bucket.newItem.UID;
+      // $location.path($scope.href);
+    }
+    else{
+      $scope.href += ',' + bucket.newItem.UID;
+    }
+  }
 
   $scope.remove = function(event){
     console.log('remove');
