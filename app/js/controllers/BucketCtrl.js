@@ -4,11 +4,25 @@ angular.module('app')
   $scope.u      = $routeParams.u;
   $scope.p      = $routeParams.p;
   $scope.d      = $routeParams.d;
+
+  // Set href.
   $scope.href   = '#/bucket';
+  if(typeof $scope.u !== 'undefined'){
+    var values = $scope.u.split(',');
+    $scope.href += '/u/' + values[0];
+    if(values.length === 2)
+      $scope.href += ',' + values[1];
+  }
+  if(typeof $scope.p !== 'undefined'){
+    var values = $scope.p.split(',');
+    $scope.href += '/p/' + values[0];
+    if(values.length === 2)
+      $scope.href += ',' + values[1];
+  }
 
   var labelU = 'label-important',
       labelP = 'label-info',
-      labelD = 'label';
+      labelD = 'label-success';
   var currentLabel = labelU;
   if(typeof $scope.u !== 'undefined')
     currentLabel = labelP;
@@ -44,7 +58,7 @@ angular.module('app')
       values.forEach(function(cur){
         var index = dStore.index("UID");
         index.get(cur).onsuccess = function(event){
-          event.target.result.name = event.target.result.UNAMEL;
+          event.target.result.name = event.target.result.UNAME;
           event.target.result.label = labelU;
           $scope.items.push(event.target.result);
 
@@ -76,16 +90,28 @@ angular.module('app')
   }; // end request.onsuccess()
 
   var updateNextLink = function(){
-    console.log($scope.items);
-    if($scope.items.length === 1){
-      $scope.href += '/u/' + bucket.newItem.UID;
+    // Universities
+    if(typeof $scope.u === 'undefined'){
+      if($scope.items.length === 1){
+        $scope.href += '/u/' + bucket.newItem.UID;
+      }
+      else if($scope.items.length === 2){
+        $scope.href += ',' + bucket.newItem.UID;
+        // $location.path($scope.href);
+      }
     }
-    else if($scope.items.length === 2){
-      $scope.href += ',' + bucket.newItem.UID;
-      // $location.path($scope.href);
-    }
-    else{
-      $scope.href += ',' + bucket.newItem.UID;
+    // Programs
+    else if(typeof $scope.p === 'undefined'){
+      console.log($scope.items);
+      if($scope.items.length === 3){
+        console.log('first');
+        $scope.href += '/p/' + bucket.newItem.PID;
+      }
+      else if($scope.items.length === 4){
+        console.log('second');
+        $scope.href += ',' + bucket.newItem.PID;
+        // $location.path($scope.href);
+      }
     }
   }
 

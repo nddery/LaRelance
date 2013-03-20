@@ -15,31 +15,25 @@ angular.module('app')
     var range  = null;
     // We have both universities and programs.
     if(typeof $scope.u !== 'undefined' && typeof $scope.p !== 'undefined'){
-      var values = $scope.u.split(','),
-          index  = dStore.index("UID");
-      index.get(values[0]).onsuccess = function(event){
-        // var foo = event.target.result;
-        // foo.name = 'enRapport';
-        // objs.push(foo);
+      var index  = dStore.index("UID"),
+          i      = 0,
+          data   = ["auxEtudes", "dureeDeRecherche", "emploiEnRapport", "emploiTempsPlein", "enEmploi", "enRapport", "nVisees", "pInactives", "rechercheEmploi", "salaireHebdoBrut", "tauxDeChomage", "tauxDeReponse"];
 
-        // var bar = event.target.result;
-        // bar.name = 'dureeDeRecherche';
-        // objs.push(bar);
-        // console.log(objs);
-        // apply(objs);
-        //
-        // var notIn = ["PID", "PNAME", "UID", "UNAME", "UNAMEL", "UNIQ", "id"];
-        // for(var cur in event.target.result){
-        //   if(notIn.indexOf(cur) === -1){
-        //     // event.target.result.name = event.target.result.cur;
-        //     objs.push(event.target.result);
-        //   }
-        // };
-        // apply(objs);
-        // console.log(objs);
-        // event.target.result.name = event.target.result.PNAME;
-        // event.target.result.label = 'label-info';
-        // $scope.items.push(event.target.result);
+      index.openCursor().onsuccess = function(event) {
+        var cursor = event.target.result;
+        if(cursor){
+          // If we do not stored this value yet.
+          if(objs.length !== data.length){
+            cursor.value.name = data[i];
+            objs.push(cursor.value);
+            i++;
+          }
+          cursor.continue();
+        }
+        else{
+          console.log(objs);
+          apply(objs);
+        }
       }
     }
     // We only have universities, display programs.
