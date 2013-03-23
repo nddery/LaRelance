@@ -110,7 +110,7 @@ angular.module('app')
         node.append('text')
           .attr('dx', 12)
           .attr('dy', '.35em')
-          .text(function(d) { return d.name });
+          .text(function(d) { console.log("é"); return d.name });
 
         force.on('tick', tick);
       });
