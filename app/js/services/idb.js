@@ -164,6 +164,8 @@ angular.module('app')
   return {
     indexedDB: indexedDB,
     DB_NAME: DB_NAME,
-    DB_VERSION: DB_VERSION
+    DB_VERSION: DB_VERSION,
+    U: {},
+    P: {}
   };
 }]);

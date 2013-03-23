@@ -98,6 +98,7 @@ angular.module('app')
   var updateNextLink = function(){
     // Universities
     if(typeof $scope.u === 'undefined'){
+      idb.U[bucket.newItem.UID].checked = true;
       if($scope.href.match('/u/') === null){
         $scope.href += '/u/' + bucket.newItem.UID;
       }
@@ -108,6 +109,7 @@ angular.module('app')
     }
     // Programs
     else if(typeof $scope.p === 'undefined'){
+      idb.P[bucket.newItem.PID].checked = true;
       if($scope.href.match('/p/') === null){
         $scope.href += '/p/' + bucket.newItem.PID;
       }
