@@ -98,34 +98,39 @@ angular.module('app')
   var updateNextLink = function(){
     // Universities
     if(typeof $scope.u === 'undefined'){
-      if($scope.items.length === 1){
+      if($scope.href.match('/u/') === null){
         $scope.href += '/u/' + bucket.newItem.UID;
       }
-      else if($scope.items.length === 2){
+      else{
         $scope.href += ',' + bucket.newItem.UID;
-        $window.location.href = $scope.href;
+        // $window.location.href = $scope.href;
       }
     }
     // Programs
     else if(typeof $scope.p === 'undefined'){
-      if($scope.items.length === 3){
+      if($scope.href.match('/p/') === null){
         $scope.href += '/p/' + bucket.newItem.PID;
       }
-      else if($scope.items.length === 4){
+      else{
         $scope.href += ',' + bucket.newItem.PID;
-        $window.location.href = $scope.href;
+        // $window.location.href = $scope.href;
       }
     }
     // Data
     else if(typeof $scope.d === 'undefined'){
-      if($scope.items.length === 5){
+      if($scope.href.match('/d/') === null){
         $scope.href += '/d/' + bucket.newItem.name;
       }
-      else if($scope.items.length === 6){
+      else{
         $scope.href += ',' + bucket.newItem.name;
-        $window.location.href = $scope.href;
+        // $window.location.href = $scope.href;
       }
     }
+
+    // Limit to two items of each.
+    console.log($scope.items.length % 2);
+    // if($scope.items.length % 2 === 1)
+    //   $window.location.href = $scope.href;
   }
 
   $scope.remove = function(event){

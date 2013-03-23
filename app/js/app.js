@@ -9,7 +9,8 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/bucket', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
     when('/bucket/u/:u', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
     when('/bucket/u/:u/p/:p', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
-    when('/bucket/u/:u/p/:p/d/:d', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
+
+    when('/bucket/u/:u/p/:p/d/:d', {templateUrl: 'views/vis-timeline.html',   controller: 'VisMode'}).
 
     otherwise({redirectTo: '/'});
 }]);

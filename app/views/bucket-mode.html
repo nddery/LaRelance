@@ -4,13 +4,13 @@
   <p class="top-nav">
     <input ng-model="query">
   </p>
-  <!-- <p  class="bottom-nav" -->
-  <!--     ng-show="items.length > 0"> -->
-  <!--   <a  ng-href="{{href}}" -->
-  <!--       class="btn"> -->
-  <!--     Next -->
-  <!--   </a> -->
-  <!-- </p> -->
+  <p  class="bottom-nav"
+      ng-show="items.length > 0">
+    <a  ng-href="{{href}}"
+        class="btn">
+      Next
+    </a>
+  </p>
   <div id="bucket">
     <h3 ng-show="items.length == 0">Drop stuff here</h3>
     <span ng-repeat="item in items"
