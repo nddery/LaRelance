@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('app', []);
+var app = angular.module('app', ['d3js.directive']);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
     when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'}).
@@ -11,6 +11,10 @@ app.config(['$routeProvider', function($routeProvider) {
     when('/bucket/u/:u/p/:p', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
 
     when('/bucket/u/:u/p/:p/d/:d', {templateUrl: 'views/vis-timeline.html',   controller: 'VisMode'}).
+
+    when('/vis/areachart', {templateUrl: 'views/vis-areachart.html',   controller: 'VisAreaChartCtrl'}).
+
+
 
     otherwise({redirectTo: '/'});
 }]);

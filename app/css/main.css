@@ -41,7 +41,7 @@ ol.inline > li {
 
 #mainView {
   position:absolute;
-  top: 0;
+  top: 40px;
   width: 100%;
 }
 
