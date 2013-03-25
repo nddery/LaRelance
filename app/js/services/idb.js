@@ -1,5 +1,5 @@
 angular.module('app')
-.service('idb', ['$rootScope', function($rootScope) {
+.service('idb', ['$rootScope', 'statusBar', function($rootScope, statusBar) {
   var objectstores = [
     { name: 'LARELANCE',
       keyPath: 'id',
@@ -14,7 +14,7 @@ angular.module('app')
       filesToLoad = objectstores.length,
       db          = null,
       DB_NAME     = 'larelance-test',
-      DB_VERSION  = 8;
+      DB_VERSION  = 1;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");
@@ -27,10 +27,10 @@ angular.module('app')
    * @return  void
    */
   var preFetchAll = function() {
-    updateStatusBar( 'Fetching data...' );
+    statusBar.update( 'Fetching data...' );
 
     objectstores.forEach( function( o ) {
-      updateStatusBar( 'Fetching data for ' + o.name +'...' );
+      statusBar.update( 'Fetching data for ' + o.name +'...' );
       var data = fetchDataFromURL( o );
     });
   }; // end preFetchAll()
@@ -79,27 +79,27 @@ angular.module('app')
    *
    */
   var openDatabase = function() {
-    updateStatusBar( 'Initializing database...' );
+    statusBar.update( 'Initializing database...' );
 
     // Everything is done through requests and transactions.
     var request = window.indexedDB.open( DB_NAME, DB_VERSION );
 
     // We can only create Object stores in a onupgradeneeded transaction.
     request.onupgradeneeded = function( e ) {
-      updateStatusBar( 'Database update required...' );
+      statusBar.update( 'Database update required...' );
       db = e.target.result;
 
       e.target.transaction.onerror = handleError;
 
       // Delete all object stores not to create confusion.
-      updateStatusBar( 'Updating database schema...' );
+      statusBar.update( 'Updating database schema...' );
       objectstores.forEach( function( o ) {
         if ( db.objectStoreNames.contains( o.name ) ) {
-          updateStatusBar( 'Deleting the ' + o.name + ' object store...' );
+          statusBar.update( 'Deleting the ' + o.name + ' object store...' );
           db.deleteObjectStore( o.name );
         }
 
-        updateStatusBar( 'Creating the ' + o.name + ' object store...' );
+        statusBar.update( 'Creating the ' + o.name + ' object store...' );
         var store = db.createObjectStore(
           o.name,
           { keyPath: o.keyPath, autoIncrement: o.autoIncrement }
@@ -110,7 +110,7 @@ angular.module('app')
           store.createIndex(index, index, { unique: false });
         });
 
-        updateStatusBar( 'Adding data in the ' + o.name + ' object store...' );
+        statusBar.update( 'Adding data in the ' + o.name + ' object store...' );
         o.data.forEach( function( json, i ) {
           var request = store.add( json );
           request.onsuccess = function ( event ) { /* success, continue */ };
@@ -122,7 +122,7 @@ angular.module('app')
 
     request.onsuccess = function( e ) {
       db = e.target.result;
-      updateStatusBar( 'Database initialized...' );
+      statusBar.update( 'Database initialized...' );
       $rootScope.$broadcast('idbInitialized');
     }; // end request.onsuccess()
 
@@ -135,28 +135,9 @@ angular.module('app')
    *
    */
   handleError = function( e ) {
-    updateStatusBar( e, 'error' );
+    statusBar.update( e, 'error' );
   }; // end handleError()
 
-
-  /**
-   * Helper method to update the text in #statusbar.
-   *
-   * @param   {String}  status  The text to display.
-   * @param   {String}  type    The type of status.
-   */
-  var updateStatusBar = function( status, type ) {
-    var status = typeof status === 'undefined' ? ''       : status;
-    var type   = typeof type   === 'undefined' ? 'notice' : type;
-
-    if ( type === 'error' ) {
-      console.error('Error: ' + status);
-      console.log(status);
-    }
-    else {
-      console.log('Status updated: ' + status);
-    }
-  }
 
   // Start pre-fetching.
   preFetchAll();
