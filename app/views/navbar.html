@@ -9,12 +9,17 @@
               Universities
             </a>
             <ul class="dropdown-menu inline">
-              <li ng-repeat="u in universities">
-                <label for="{{u.name}}">
-                  <input type="checkbox" ng-model="u.checked" />
+              <li ng-repeat="u in universities | selectedPrograms">
+                <label  for="{{u.name}}"
+                        ng-click="stopPropagation($event)"
+                        class="label label-important">
+                  <input  type="checkbox"
+                          id="{{u.name}}"
+                          ng-model="u.checked" />
                   {{u.data.name}}
                 </label>
               </li>
+              <!-- <li ng-hide="!universities.length">No match found</li> -->
             </ul>
           </li>
 
@@ -23,10 +28,52 @@
               Programs
             </a>
             <ul class="dropdown-menu inline">
-              <li ng-repeat="p in programs">
-                <label for="{{p.name}}">
-                  <input type="checkbox" ng-model="p.checked" />
+              <li ng-repeat="p in programs | selectedUniversities">
+                <label  for="{{p.name}}"
+                        ng-click="stopPropagation($event)"
+                        class="label label-info">
+                  <input  type="checkbox"
+                          id="{{p.name}}"
+                          ng-model="p.checked" />
                   {{p.data.name}}
+                </label>
+              </li>
+              <!-- <li ng-hide="!programs.length">No match found</li> -->
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              Data
+            </a>
+            <ul class="dropdown-menu inline">
+              <li ng-repeat="d in dataType">
+                <label  for="{{d.id}}"
+                        ng-click="stopPropagation($event)"
+                        class="label label-success">
+                  <input  type="checkbox"
+                          id="{{d.id}}"
+                          ng-model="d.checked" />
+                  {{d.name}}
+                </label>
+              </li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              Vis Type
+            </a>
+            <ul class="dropdown-menu inline" resize>
+              <li ng-repeat="v in visType">
+                <label  for="{{v.id}}"
+                        ng-click="stopPropagation($event)"
+                        class="label">
+                  <input  type="radio"
+                          id="{{v.id}}"
+                          value="{{v.id}}"
+                          name="visType" />
+                  {{v.name}}
                 </label>
               </li>
             </ul>

@@ -1,11 +1,19 @@
 'use strict';
 angular.module('app')
-.controller('NavBarCtrl', ['$rootScope', '$scope', 'bucket', 'idb', function NavBarCtrl($rootScope, $scope, bucket, idb) {
+.controller('NavBarCtrl', ['$scope', 'bucket', 'stdData', 'idb', function NavBarCtrl($scope, bucket, stdData, idb) {
   $scope.$on('bucketItemsUpdated', function(event) {
     $scope.$apply(function(){
       //
     });
   });
+
+  $scope.visType  = stdData.visType;
+  $scope.dataType = stdData.dataType;
+
+  $scope.stopPropagation = function($event){
+    // console.log($event);
+    $event.stopPropagation();
+  };
 
   // Get our data.
   var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
@@ -28,11 +36,29 @@ angular.module('app')
             cursor.value.name = cursor.value["UNAME"];
             idb.U[cursor.value.UID] = {};
             idb.U[cursor.value.UID]["data"] = cursor.value;
+            idb.U[cursor.value.UID]["programs"] = [];
           }
           cursor.continue();
         }
         else{
-          console.log(idb.U);
+          // Add programs to each universities.
+          var index  = store.index("UID");
+          angular.forEach(idb.U, function(value,key){
+            var range = IDBKeyRange.only(value.data.UID),
+                v     = [];
+            index.openCursor(range).onsuccess = function(event) {
+              var cursor = event.target.result;
+              if(cursor){
+                // If we did not stored this value yet.
+                if(v.indexOf(cursor.value.PID) === -1){
+                  v.push(cursor.value.PID);
+                  value.programs.push(cursor.value.PID);
+                }
+                // console.log(cursor.value);
+                cursor.continue();
+              }
+            }
+          });
           $scope.$apply(function(){
             $scope.universities = idb.U;
           });
@@ -53,11 +79,29 @@ angular.module('app')
             cursor.value.name = cursor.value["PNAME"];
             idb.P[cursor.value.PID] = {};
             idb.P[cursor.value.PID]["data"] = cursor.value;
+            idb.P[cursor.value.PID]["universities"] = [];
           }
           cursor.continue();
         }
         else{
-          console.log(idb.P);
+          // Add programs to each universities.
+          var index  = store.index("PID");
+          angular.forEach(idb.P, function(value,key){
+            var range = IDBKeyRange.only(value.data.PID),
+                v     = [];
+            index.openCursor(range).onsuccess = function(event) {
+              var cursor = event.target.result;
+              if(cursor){
+                // If we did not stored this value yet.
+                if(v.indexOf(cursor.value.UID) === -1){
+                  v.push(cursor.value.UID);
+                  value.universities.push(cursor.value.UID);
+                }
+                // console.log(cursor.value);
+                cursor.continue();
+              }
+            }
+          });
           $scope.$apply(function(){
             $scope.programs = idb.P;
           });
@@ -65,96 +109,4 @@ angular.module('app')
       }
     };
   }
-
-
-
-  // Add URL data to bucket.
-  // var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
-  // request.onsuccess = function( e ) {
-  //   var db     = e.target.result,
-  //       trn    = db.transaction(["LARELANCE"]),
-  //       dStore = trn.objectStore("LARELANCE"),
-  //       objs   = [];
-
-  //   var range  = null;
-  //   // Universities
-  //   if(typeof $scope.u !== 'undefined'){
-  //     console.log('Adding university to bucket');
-  //     // Get a list of programs from the data object store.
-  //     var values = $scope.u.split(',');
-  //     values.forEach(function(cur){
-  //       var index = dStore.index("UID");
-  //       index.get(cur).onsuccess = function(event){
-  //         event.target.result.name = event.target.result.UNAME;
-  //         event.target.result.label = labelU;
-  //         $scope.items.push(event.target.result);
-
-  //         $scope.$apply(function(){
-  //           $scope.items = $scope.items;
-  //         });
-  //       }
-  //     });
-  //   } // end population bucket for universities.
-
-  //   // Programs
-  //   if(typeof $scope.p !== 'undefined'){
-  //     console.log('Adding program to bucket');
-  //     // Get a list of programs from the data object store.
-  //     var values = $scope.p.split(',');
-  //     values.forEach(function(cur){
-  //       var index = dStore.index("PID");
-  //       index.get(cur).onsuccess = function(event){
-  //         event.target.result.name = event.target.result.PNAME;
-  //         event.target.result.label = labelP;
-  //         $scope.items.push(event.target.result);
-
-  //         $scope.$apply(function(){
-  //           $scope.items = $scope.items;
-  //         });
-  //       }
-  //     });
-  //   } // end population bucket for universities.
-  // }; // end request.onsuccess()
-
-  // var updateNextLink = function(){
-  //   // Universities
-  //   if(typeof $scope.u === 'undefined'){
-  //     if($scope.href.match('/u/') === null){
-  //       $scope.href += '/u/' + bucket.newItem.UID;
-  //     }
-  //     else{
-  //       $scope.href += ',' + bucket.newItem.UID;
-  //       // $window.location.href = $scope.href;
-  //     }
-  //   }
-  //   // Programs
-  //   else if(typeof $scope.p === 'undefined'){
-  //     if($scope.href.match('/p/') === null){
-  //       $scope.href += '/p/' + bucket.newItem.PID;
-  //     }
-  //     else{
-  //       $scope.href += ',' + bucket.newItem.PID;
-  //       // $window.location.href = $scope.href;
-  //     }
-  //   }
-  //   // Data
-  //   else if(typeof $scope.d === 'undefined'){
-  //     if($scope.href.match('/d/') === null){
-  //       $scope.href += '/d/' + bucket.newItem.name;
-  //     }
-  //     else{
-  //       $scope.href += ',' + bucket.newItem.name;
-  //       // $window.location.href = $scope.href;
-  //     }
-  //   }
-
-  //   // Limit to two items of each.
-  //   console.log($scope.items.length % 2);
-  //   // if($scope.items.length % 2 === 1)
-  //   //   $window.location.href = $scope.href;
-  // }
-
-  // $scope.remove = function(event){
-  //   console.log('remove');
-  // }
 }]);

@@ -14,3 +14,24 @@ app.config(['$routeProvider', function($routeProvider) {
 
     otherwise({redirectTo: '/'});
 }]);
+
+app.value('stdData', {
+  "visType" : [
+    { "id" : "timeline", "name" : "Timeline" }
+    ,{ "id" : "sunburst", "name" : "Sunburst" }
+  ],
+  "dataType" : [
+    { "id" :  "nVisees", "name" :           "nVisees" }
+    ,{ "id" :  "tauxDeReponse", "name" :     "tauxDeReponse" }
+    ,{ "id" :  "enEmploi", "name" :          "enEmploi" }
+    ,{ "id" :  "rechercheEmploi", "name" :   "rechercheEmploi" }
+    ,{ "id" :  "auxEtudes", "name" :         "auxEtudes" }
+    ,{ "id" :  "pInactives", "name" :        "pInactives" }
+    ,{ "id" :  "tauxDeChomage", "name" :     "tauxDeChomage" }
+    ,{ "id" :  "emploiTempsPlein", "name" :  "emploiTempsPlein" }
+    ,{ "id" :  "dureeDeRecherche", "name" :  "dureeDeRecherche" }
+    ,{ "id" :  "salaireHebdoBrut", "name" :  "salaireHebdoBrut" }
+    ,{ "id" :  "emploiEnRapport", "name" :   "emploiEnRapport" }
+    ,{ "id" :  "enRapport", "name" :         "enRapport" }
+  ]
+});
