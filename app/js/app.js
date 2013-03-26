@@ -1,19 +1,20 @@
 'use strict';
 
-var app = angular.module('app', ['d3js.directive']);
+var app = angular.module('app', []);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
     when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'}).
     when('/s:step', {templateUrl: 'views/main.html',   controller: 'AppCtrl'}).
 
+
     when('/bucket', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
     when('/bucket/u/:u', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
     when('/bucket/u/:u/p/:p', {templateUrl: 'views/bucket-mode.html',   controller: 'BucketModeCtrl'}).
 
-    when('/bucket/u/:u/p/:p/d/:d', {templateUrl: 'views/vis-timeline.html',   controller: 'VisMode'}).
+    // when('/bucket/u/:u/p/:p/d/:d', {templateUrl: 'views/vis-timeline.html',   controller: 'VisMode'}).
+
 
     when('/vis/areachart', {templateUrl: 'views/vis-areachart.html',   controller: 'VisAreaChartCtrl'}).
-
 
 
     otherwise({redirectTo: '/'});
