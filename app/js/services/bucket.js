@@ -5,5 +5,9 @@ angular.module('app')
     index: 0,
     newItem: {},
     items: [],
+    U: [],
+    P: [],
+    D: [],
+    V: ''
   };
 });

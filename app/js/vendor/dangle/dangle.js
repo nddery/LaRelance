@@ -4,7 +4,7 @@
 
 angular.module('dangle', []);
 
-/* 
+/*
  * Copyright (c) 2012 FullScale Labs, LLC
  *
  * Permission is hereby granted, free of charge, to any person
@@ -18,7 +18,7 @@ angular.module('dangle', []);
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -47,15 +47,15 @@ angular.module('dangle')
                 duration:    '@',
                 delay:       '@',
                 plot:        '@',
-                pointRadius: '@' 
+                pointRadius: '@'
             },
 
 			link: function(scope, element, attrs) {
 
 				var margin = {
-                    top: 20, 
-                    right: 20, 
-                    bottom: 30, 
+                    top: 20,
+                    right: 20,
+                    bottom: 30,
                     left: 80
                 };
 
@@ -80,7 +80,7 @@ angular.module('dangle')
 				var y = d3.scale.linear()
 					.range([height, 0]);
 
-                // create x,y axis 
+                // create x,y axis
 				var xAxis = d3.svg.axis()
 					.scale(x)
 					.orient('bottom');
@@ -89,7 +89,7 @@ angular.module('dangle')
 					.scale(y)
 					.orient('left');
 
-                // create line generator 
+                // create line generator
                 var line = d3.svg.line()
                     .x(function(d) { return x(d.time); })
                     .y(function(d) { return y(d.count); });
@@ -100,7 +100,7 @@ angular.module('dangle')
 					.y0(height)
 					.y1(function(d) { return y(d.count); });
 
-                // enable interpolation if specified 
+                // enable interpolation if specified
                 if (attrs.interpolate == 'true') {
                     line.interpolate('cardinal');
                     area.interpolate('cardinal');
@@ -164,7 +164,7 @@ angular.module('dangle')
                         x.domain(d3.extent(data, function(d) { return d.time; }));
 				        y.domain([0, d3.max(data, function(d) { return d.count; })]);
 
-                        // create the transition 
+                        // create the transition
                         var t = svg.transition().duration(duration);
 
                         // feed the current data to our area/line generators
@@ -178,13 +178,13 @@ angular.module('dangle')
                             // using Math.random as (optional) key fn ensures old
                             // data values are flushed and all new values inserted
       	                    var points = svg.selectAll('circle')
-	                            .data(data.filter(function(d) { 
-                                    return d.count; 
-                                }), function(d) { 
-                                    return Math.random(); 
+	                            .data(data.filter(function(d) {
+                                    return d.count;
+                                }), function(d) {
+                                    return Math.random();
                                 });
 
-                            // d3 enter fn binds each new value to a circle 
+                            // d3 enter fn binds each new value to a circle
 	                        points.enter()
                                 .append('circle')
                                     .attr('class', 'area line points ' + klass)
@@ -200,7 +200,7 @@ angular.module('dangle')
 	                                    .attr("r", pointRadius);
 
                             // wire up any events (registers filter callback)
-                            points.on('mousedown', function(d) { 
+                            points.on('mousedown', function(d) {
                                 scope.$apply(function() {
                                     (scope.onClick || angular.noop)(field, d.time);
                                 });
@@ -220,7 +220,7 @@ angular.module('dangle')
         };
     }]);
 
-/* 
+/*
  * Copyright (c) 2012 FullScale Labs, LLC
  *
  * Permission is hereby granted, free of charge, to any person
@@ -234,7 +234,7 @@ angular.module('dangle')
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -263,15 +263,15 @@ angular.module('dangle')
 			link: function(scope, element, attrs) {
 
                 var margin = {
-                    top: 10, 
-                    right: 10, 
-                    bottom: 10, 
+                    top: 10,
+                    right: 10,
+                    bottom: 10,
                     left: 10
                 };
 
                 var width = scope.width || 300;
                 var height = scope.height || 1020;
-                
+
                 // add margin
                 width = width - margin.left - margin.right;
                 height = height - margin.top - margin.bottom;
@@ -304,7 +304,7 @@ angular.module('dangle')
 
                     if (data) {
 
-                        // pull the data array from the facet 
+                        // pull the data array from the facet
                         data = data.terms || [];
 
                         x.domain([0, d3.max(data, function(d) { return d.count; })*2]);
@@ -321,17 +321,17 @@ angular.module('dangle')
                                 .attr('cursor', 'pointer')
                                 .attr('y', function(d) { return y(d.term); })
                                 .attr('height', y.rangeBand())
-                                .attr('x', function(d) { 
+                                .attr('x', function(d) {
                                     if (align === 'right') {
                                         return width;
                                     } else {
-                                        return 0; 
+                                        return 0;
                                     }
                                 }) // added
                                 .transition()
                                     .duration(duration)
                                         .attr('width', function(d) { return x(d.count); })
-                                        .attr('x', function(d) { 
+                                        .attr('x', function(d) {
                                             if (align === 'right') {
                                                 return width - x(d.count);
                                             } else {
@@ -357,7 +357,7 @@ angular.module('dangle')
                                 .attr('class', 'bar text ' + klass)
                                 .attr('cursor', 'pointer')
                                 .attr('y', function(d) { return y(d.term) + y.rangeBand() / 2; })
-                                .attr('x', function(d) { 
+                                .attr('x', function(d) {
                                     if (align === 'right') {
                                         return width - x(d.count) - 3;
                                     } else {
@@ -373,7 +373,7 @@ angular.module('dangle')
                                     }
                                 })
 
-                                .text(function(d) { 
+                                .text(function(d) {
                                     if (align === 'right') {
                                         return '(' + d.count + ') ' + d.term;
                                     } else {
@@ -396,7 +396,7 @@ angular.module('dangle')
         };
     }]);
 
-/* 
+/*
  * Copyright (c) 2012 FullScale Labs, LLC
  *
  * Permission is hereby granted, free of charge, to any person
@@ -410,7 +410,7 @@ angular.module('dangle')
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -524,7 +524,7 @@ angular.module('dangle')
         };
     }]);
 
-/* 
+/*
  * Copyright (c) 2012 FullScale Labs, LLC
  *
  * Permission is hereby granted, free of charge, to any person
@@ -538,7 +538,7 @@ angular.module('dangle')
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -554,7 +554,7 @@ angular.module('dangle')
         'use strict';
 
         return {
-			restrict: 'E', 
+			restrict: 'E',
 
             // sets up the isolate scope so that we don't clobber parent scope
             scope: {
@@ -572,9 +572,9 @@ angular.module('dangle')
 			link: function(scope, element, attrs) {
 
                 var margin = {
-                    top:20, 
-                    right: 20, 
-                    bottom: 30, 
+                    top:20,
+                    right: 20,
+                    bottom: 30,
                     left: 80
                 };
 
@@ -642,7 +642,7 @@ angular.module('dangle')
                     // just because scope is bound doesn't imply we have data
                     if (data) {
 
-                        // pull the data array from the facet 
+                        // pull the data array from the facet
                         data = data.entries || [];
 
                         // calculate the bar width based on the data length leaving
@@ -650,15 +650,15 @@ angular.module('dangle')
                         var barWidth = width/data.length - 2;
 
                         // recalculate the x and y domains based on the new data.
-                        // we have to add our "interval" to the max otherwise 
+                        // we have to add our "interval" to the max otherwise
                         // we don't have enough room to draw the last bar. Here it's
                         // hardcoded to 1day (86400000 ms) but we need to somehow
                         // "know" the interval the user used for the facet.
                         x.domain([
-                            d3.min(data, function(d) { 
+                            d3.min(data, function(d) {
                                 return d.time;
-                            }), 
-                            d3.max(data, function(d) { 
+                            }),
+                            d3.max(data, function(d) {
                                 return d.time;
                             }) + 86400000
                         ]);
@@ -705,7 +705,7 @@ angular.module('dangle')
     }]);
 
 
-/* 
+/*
  * Copyright (c) 2012 FullScale Labs, LLC
  *
  * Permission is hereby granted, free of charge, to any person
@@ -719,7 +719,7 @@ angular.module('dangle')
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -759,6 +759,7 @@ angular.module('dangle')
 
                 // if no field param is set, use the facet name but normalize the case
                 if (attrs.field == undefined) {
+                  console.log(attrs.data);
                     attrs.field = attrs.data.split('.').pop().toLowerCase();
                 }
 
@@ -780,7 +781,7 @@ angular.module('dangle')
                 var w = (outerRadius * 3) + 30;
                 var h = outerRadius * 3;
 
-                // arc generator 
+                // arc generator
                 var arc = d3.svg.arc()
                     .outerRadius(outerRadius - 10)
                     .innerRadius(innerRadius);
@@ -818,7 +819,7 @@ angular.module('dangle')
                             return arc(i(t));
                         };
                     }
-        
+
                     // label tweening
                     function textTween(d, i) {
                         var a = (this._current.startAngle + this._current.endAngle - Math.PI)/2;
@@ -827,8 +828,8 @@ angular.module('dangle')
                         var fn = d3.interpolateNumber(a, b);
                         return function(t) {
                             var val = fn(t);
-                            return "translate(" + 
-                                Math.cos(val) * (outerRadius + textOffset) + "," + 
+                            return "translate(" +
+                                Math.cos(val) * (outerRadius + textOffset) + "," +
                                 Math.sin(val) * (outerRadius + textOffset) + ")";
                         };
                     }
@@ -845,7 +846,7 @@ angular.module('dangle')
                     var textOffset = 14;
 
                     // if data is not null
-                    if (data) { 
+                    if (data) {
 
                         // pull out the terms array from the facet
                         data = data.terms || [];
@@ -863,7 +864,7 @@ angular.module('dangle')
                             // update the arcs
                             var path = arcs.selectAll('path').data(pieData);
                             path.enter()
-                                .append('path') 
+                                .append('path')
                                     .attr('d', arc)
                                     .attr('stroke', '#fff')
                                     .attr('stroke-width', '1.5')
@@ -923,8 +924,8 @@ angular.module('dangle')
                                 .attr('font-size', 20)
                                 .attr('font-weight', 'bold')
                                 .attr("transform", function(d) {
-                                    return "translate(" + 
-                                        Math.cos(((d.startAngle + d.endAngle - Math.PI)/2)) * (outerRadius + textOffset) + "," + 
+                                    return "translate(" +
+                                        Math.cos(((d.startAngle + d.endAngle - Math.PI)/2)) * (outerRadius + textOffset) + "," +
                                         Math.sin((d.startAngle + d.endAngle - Math.PI)/2) * (outerRadius + textOffset) + ")";
                                 })
                                 .attr("dy", function(d) {
@@ -940,14 +941,14 @@ angular.module('dangle')
                                     return percentage.toFixed(1) + "%";
                                 })
                                 .each(function(d) {this._current = d;});
-                           
+
                             // run the transition
                             percentLabels.transition().duration(750).attrTween("transform", textTween);
 
                             // flush old entries
                             percentLabels.exit().remove();
 
-                            // update the value labels 
+                            // update the value labels
                             var nameLabels = labels.selectAll("text.units").data(pieData)
                                 .attr("dy", function(d){
                                     if ((d.startAngle + d.endAngle)/2 > Math.PI/2 && (d.startAngle+d.endAngle)/2 < Math.PI*1.5 ) {
@@ -978,8 +979,8 @@ angular.module('dangle')
                                 .attr('stroke', 'none')
                                 .attr('fill', '#000')
                                 .attr("transform", function(d) {
-                                    return "translate(" + 
-                                        Math.cos(((d.startAngle + d.endAngle - Math.PI)/2)) * (outerRadius + textOffset) + "," + 
+                                    return "translate(" +
+                                        Math.cos(((d.startAngle + d.endAngle - Math.PI)/2)) * (outerRadius + textOffset) + "," +
                                         Math.sin((d.startAngle + d.endAngle - Math.PI)/2) * (outerRadius + textOffset) + ")";
                                 })
                                 .attr("dy", function(d){
@@ -1003,7 +1004,7 @@ angular.module('dangle')
 
                             // run the transition
                             nameLabels.transition().duration(750).attrTween("transform", textTween);
-    
+
                             // flush old entries
                             nameLabels.exit().remove();
 
@@ -1022,7 +1023,7 @@ angular.module('dangle')
         };
     }]);
 
-/* 
+/*
  * Copyright (c) 2012 FullScale Labs, LLC
  *
  * Permission is hereby granted, free of charge, to any person
@@ -1036,7 +1037,7 @@ angular.module('dangle')
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -1109,14 +1110,14 @@ angular.module('dangle')
                         .attr('preserveAspectRatio', 'xMinYMin meet')
                         .attr('viewBox', '0 0 ' + outerRadius*2 + ' ' + outerRadius*2)
                         .append('g')
-                            .attr('transform', 'translate(' + 
+                            .attr('transform', 'translate(' +
                                 outerRadius + ',' + outerRadius + ') rotate(180) scale(-1, -1)');
 
                 // Wrap the main drawing logic in an Angular watch function.
                 // This will get called whenever our data attribute changes.
                 scope.$watch('bind', function(data) {
-                   
-                    if (data) { 
+
+                    if (data) {
                         data = data.terms || [];
                         svg.selectAll('*').remove();
 
@@ -1134,7 +1135,7 @@ angular.module('dangle')
                             g.append('path')
                                 .attr('d', arc)
                                 .style('fill', function(d) {
-                                    return color(d.data.term); 
+                                    return color(d.data.term);
                                 });
 
                             g.append('text')
@@ -1143,9 +1144,9 @@ angular.module('dangle')
                                 .style('text-anchor', 'middle')
                                 .attr('fill', fontColor)
                                 .attr('font-size', fontSize)
-                                .text(function(d) { 
-                                    return d.data.term; 
-                                }); 
+                                .text(function(d) {
+                                    return d.data.term;
+                                });
                     }
                 })
 

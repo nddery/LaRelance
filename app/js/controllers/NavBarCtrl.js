@@ -1,12 +1,6 @@
 'use strict';
 angular.module('app')
 .controller('NavBarCtrl', ['$scope', 'bucket', 'stdData', 'idb', function NavBarCtrl($scope, bucket, stdData, idb) {
-  $scope.$on('bucketItemsUpdated', function(event) {
-    $scope.$apply(function(){
-      //
-    });
-  });
-
   $scope.visType  = stdData.visType;
   $scope.dataType = stdData.dataType;
 

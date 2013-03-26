@@ -2,21 +2,21 @@
  * Filter that only returns programs that has currently selected universities.
  *
  */
-app.filter('selectedUniversities', ['idb', function (idb) {
+app.filter('selectedUniversities', ['idb', 'bucket', function (idb, bucket) {
   return function (items) {
-    var checked = [];
+    bucket.U = [];
     angular.forEach(idb.U, function(value,key){
       if(value.checked)
-        checked.push(value.data.UID);
+        bucket.U.push(value.data.UID);
     });
 
     // Bail out early if no universities selected, do no filter.
-    if(checked.length === 0)
+    if(bucket.U.length === 0)
       return items;
 
     // Start filtering for each selected universities.
     var filtered = $.extend({}, idb.P);
-    angular.forEach(checked, function(value,key){
+    angular.forEach(bucket.U, function(value,key){
       angular.forEach(filtered, function(value2,key2){
         // If programs does not belong to one of the chosen universities.
         if(value2.universities.indexOf(value) === -1){
@@ -34,21 +34,21 @@ app.filter('selectedUniversities', ['idb', function (idb) {
  * Filter that only returns universities that has currently selected programs.
  *
  */
-app.filter('selectedPrograms', ['idb', function (idb) {
+app.filter('selectedPrograms', ['idb', 'bucket', function (idb, bucket) {
   return function (items) {
-    var checked = [];
+    bucket.P = [];
     angular.forEach(idb.P, function(value,key){
       if(value.checked)
-        checked.push(value.data.PID);
+        bucket.P.push(value.data.PID);
     });
 
     // Bail out early if no universities selected, do no filter.
-    if(checked.length === 0)
+    if(bucket.P.length === 0)
       return items;
 
     // Start filtering for each selected universities.
     var filtered = $.extend({}, idb.U);
-    angular.forEach(checked, function(value,key){
+    angular.forEach(bucket.P, function(value,key){
       angular.forEach(filtered, function(value2,key2){
         // If programs does not belong to one of the chosen programs.
         if(value2.programs.indexOf(value) === -1){
