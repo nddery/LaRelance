@@ -2,11 +2,12 @@
 angular.module('app')
 .directive('lrVis', ['$rootScope', 'stdData', function($rootScope, stdData) {
   // Constants
-  var width       = window.innerWidth,
-      height      = window.innerHeight - 40,
-      radius      = Math.min(width, height) / 2,
-      twoPI       = 2 * Math.PI,
-      color       = d3.scale.category20c();
+  var width  = window.innerWidth,
+      height = window.innerHeight - 40,
+      radius = Math.min(width, height) / 2,
+      twoPI  = 2 * Math.PI,
+      color  = d3.scale.category20c(),
+      closed = false;
 
   return {
     // The directive can only be invoked by using tag in the template.
@@ -23,33 +24,60 @@ angular.module('app')
 
       var force = d3.layout.force()
         .on('tick', tick)
+        .charge(-1000)
+        // .friction(0.5)
+        .linkDistance(50)
         .size([width, height]);
 
       // Set up the initial svg, full width and height.
       var svg = d3.select(elem[0])
-        .append('svg:svg')
+        .append('svg')
           .attr('width', width)
           .attr('height', height);
 
-      function tick(){
+      function tick(tick){
         link
-          .attr("x1", function(d){ return d.source.x; })
-          .attr("y1", function(d){ return d.source.y; })
-          .attr("x2", function(d){ return d.target.x; })
-          .attr("y2", function(d){ return d.target.y; });
+          .attr('x1', function(d){ return d.source.x; })
+          .attr('y1', function(d){ return d.source.y; })
+          .attr('x2', function(d){ return d.target.x; })
+          .attr('y2', function(d){ return d.target.y; });
 
         node
-          .attr("cx", function(d){ return d.x; })
-          .attr("cy", function(d){ return d.y; });
+          .attr('cx', function(d){ return d.x; })
+          .attr('cy', function(d){ return d.y; });
+
+        // "Notification" when it is almost done.
+        if(!closed){
+          if(tick.alpha < 0.08){
+            closeAll();
+            closed = true;
+          }
+        }
+      }
+
+      function closeAll(){
+        angular.forEach(data.children, function(v,k){
+          if(v.children){
+            v._children = v.children;
+            v.children  = null;
+          }
+          // else{
+          //   v.children  = v._children;
+          //   v._children = null;
+          // }
+        });
+        update();
       }
 
       // Color leaf nodes orange, and packages white or blue.
       function color(d){
-        return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+        return d._children ? '#ff0000' : d.children ? '#a60000' : '#ff7373';
       }
 
       // Toggle children on click.
       function click(d){
+        closeAll();
+
         if(d.children){
           d._children = d.children;
           d.children  = null;
@@ -77,6 +105,7 @@ angular.module('app')
         return nodes;
       }
 
+
       // Update the force layout.
       function update(){
         var nodes = flatten(data),
@@ -95,10 +124,10 @@ angular.module('app')
         // Enter any new links.
         link.enter().insert('svg:line', '.node')
           .attr('class', 'link')
-          .attr("x1", function(d){ return d.source.x; })
-          .attr("y1", function(d){ return d.source.y; })
-          .attr("x2", function(d){ return d.target.x; })
-          .attr("y3", function(d){ return d.target.y; })
+          .attr('x1', function(d){ return d.source.x; })
+          .attr('y1', function(d){ return d.source.y; })
+          .attr('x2', function(d){ return d.target.x; })
+          .attr('y3', function(d){ return d.target.y; });
 
         // Exit any old links.
         link.exit().remove();
@@ -111,34 +140,34 @@ angular.module('app')
         // Enter any new nodes.
         node.enter().append('svg:circle')
           .attr('class', 'node')
-          .attr("cx", function(d) { return d.x; })
-          .attr("cy", function(d) { return d.y; })
-          .attr("r", function(d) { return Math.sqrt(d.salaireHebdoBrut) / 10 || 4.5; })
+          .attr('cx', function(d) { return d.x; })
+          .attr('cy', function(d) { return d.y; })
+          .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 10; })
           .style('fill', color)
           .on('click', click)
           .call(force.drag);
-          // .attr("r", function(d) { return Math.sqrt(d.salaireHebdoBrut) / 4 || 18; })
+          // .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 1 || 10; })
 
         // Exit any old nodes.
         node.exit().remove();
       }
 
-      // // Whenever the bound 'exp' expression changes, execute this
-      // scope.$watch('bind', function (newData, oldData) {
-      //   // Bail out early if no new data.
-      //   if(!newData){
-      //     return;
-      //   }
-      //   else{
-      //     data = newData;
-      //     update();
-      //   }
-      // });
-
-      d3.json("data/test 2.json", function(json) {
-        data = json;
-        update();
+      // Whenever the bound 'exp' expression changes, execute this
+      scope.$watch('bind', function (newData, oldData) {
+        // Bail out early if no new data.
+        if(!newData){
+          return;
+        }
+        else{
+          data = newData;
+          update();
+        }
       });
+
+      // d3.json("data/test 2.json", function(json) {
+      //   data = json;
+      //   update();
+      // });
     }
   };
 }]);

@@ -11,9 +11,11 @@ angular.module('app')
     a.children = [];
     angular.forEach(idb.U, function(v,k){
       var foo = {};
-      foo.name = v.data.name;
-      foo.children = v.children;
-      a.children.push(foo);
+      if(v.data.UID !== "975000"){
+        foo.name = v.data.name;
+        foo.children = v.children;
+        a.children.push(foo);
+      }
     });
 
     if(!$scope.$$phase){
