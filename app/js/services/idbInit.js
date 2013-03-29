@@ -14,7 +14,7 @@ angular.module('app')
       filesToLoad = objectstores.length,
       db          = null,
       DB_NAME     = 'larelance-test',
-      DB_VERSION  = 120;
+      DB_VERSION  = 121;
 
   if ( ! indexedDB ) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Latest version of Chrome and Firefox will work.");

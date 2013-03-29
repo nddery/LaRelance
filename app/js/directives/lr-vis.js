@@ -9,6 +9,14 @@ angular.module('app')
       color  = d3.scale.category20c(),
       closed = false;
 
+  function conceal(elem){
+    elem.css('display', 'none');
+  }
+
+  function reveal(elem){
+    elem.css('display', 'block');
+  }
+
   return {
     // The directive can only be invoked by using tag in the template.
     restrict: 'E',
@@ -25,8 +33,7 @@ angular.module('app')
       var force = d3.layout.force()
         .on('tick', tick)
         .charge(-1000)
-        // .friction(0.5)
-        .linkDistance(50)
+        .linkDistance(200)
         .size([width, height]);
 
       // Set up the initial svg, full width and height.
@@ -34,6 +41,8 @@ angular.module('app')
         .append('svg')
           .attr('width', width)
           .attr('height', height);
+
+      conceal(angular.element(svg[0]));
 
       function tick(tick){
         link
@@ -43,12 +52,12 @@ angular.module('app')
           .attr('y2', function(d){ return d.target.y; });
 
         node
-          .attr('cx', function(d){ return d.x; })
-          .attr('cy', function(d){ return d.y; });
+          .attr('transform', function(d){ return "translate("+ d.x +","+ d.y +")"; });
 
         // "Notification" when it is almost done.
         if(!closed){
           if(tick.alpha < 0.08){
+            reveal(angular.element(svg[0]));
             closeAll();
             closed = true;
           }
@@ -133,20 +142,39 @@ angular.module('app')
         link.exit().remove();
 
         // Update the nodes.
-        node = svg.selectAll('circle.node')
-          .data(nodes, function(d){ return d.id; })
-          .style('fill', color);
+        node = svg.selectAll('g.node')
+          .data(nodes, function(d){ return d.id; });
 
-        // Enter any new nodes.
-        node.enter().append('svg:circle')
+        var group = node.enter().append('g')
           .attr('class', 'node')
-          .attr('cx', function(d) { return d.x; })
-          .attr('cy', function(d) { return d.y; })
-          .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 10; })
-          .style('fill', color)
-          .on('click', click)
-          .call(force.drag);
-          // .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 1 || 10; })
+          .attr('transform', function(d){ return "translate("+ d.x +","+ d.y +")"; })
+          .call(force.drag)
+          .on('click', click);
+
+        group.append('circle')
+          .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 15; })
+          .style('fill', '#ffffff')
+          .style('stroke', color)
+          .style('stroke-width', '5');
+
+        group.append('text')
+          .attr('dx', 20)
+          .attr('dy', '.35em')
+          .text(function(d) { return d.name });
+
+        group.append('image')
+          .attr('xlink:href', function(d){
+            if(typeof d.image !== 'undefined'){
+              return d.image;
+            }
+            else{
+              return 'img/U/_pixel.gif';
+            }
+          })
+          .attr('x', -8)
+          .attr('y', -8)
+          .attr('width', 16)
+          .attr('height', 16);
 
         // Exit any old nodes.
         node.exit().remove();
@@ -163,11 +191,6 @@ angular.module('app')
           update();
         }
       });
-
-      // d3.json("data/test 2.json", function(json) {
-      //   data = json;
-      //   update();
-      // });
     }
   };
 }]);

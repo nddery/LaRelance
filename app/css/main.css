@@ -147,10 +147,19 @@ nav#main h1 {
   font-size: 1.2em;
 }
 
+
+/* ==========================================================================
+   SVG Elements
+   ========================================================================== */
+
 circle.node {
   cursor: pointer;
   stroke: #ff4040;
   stroke-width: 1.5px;
+}
+
+.node text {
+  fill: #A3A0A0;
 }
 
 line.link {

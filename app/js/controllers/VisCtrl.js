@@ -13,6 +13,7 @@ angular.module('app')
       var foo = {};
       if(v.data.UID !== "975000"){
         foo.name = v.data.name;
+        foo.image = v.data.image;
         foo.children = v.children;
         a.children.push(foo);
       }
@@ -20,7 +21,6 @@ angular.module('app')
 
     if(!$scope.$$phase){
       $scope.$apply(function(){
-        console.log(JSON.stringify(a));
         $scope.data = a;
       });
     }

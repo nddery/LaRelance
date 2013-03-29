@@ -23,6 +23,7 @@ angular.module('app')
           if(values.indexOf(cursor.value["UID"]) === -1){
             values.push(cursor.value["UID"]);
             cursor.value.name = cursor.value["UNAME"];
+            cursor.value.image = 'img/U/' + cursor.value.UNAME.toLowerCase() + '.ico';
             idb.U[cursor.value.UID] = {};
             idb.U[cursor.value.UID]["data"] = cursor.value;
             idb.U[cursor.value.UID]["programs"] = [];
