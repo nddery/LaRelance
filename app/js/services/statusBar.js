@@ -1,17 +1,22 @@
 angular.module('app')
-.service('statusBar', function() {
-  return {
-    update : function(status, type){
-      var status = typeof status === 'undefined' ? ''       : status;
-      var type   = typeof type   === 'undefined' ? 'notice' : type;
+.service('statusBar', ['$rootScope', function($rootScope) {
+  var statusBar = {
+    status : '',
+    type   : '',
+    update : function(s, t){
+      statusBar.status = typeof s === 'undefined' ? ''       : s;
+      statusBar.type   = typeof t === 'undefined' ? 'notice' : t;
+      $rootScope.$broadcast('statusUpdated');
 
-      if ( type === 'error' ) {
-        console.error('Error: ' + status);
-        console.log(status);
+      if ( t === 'error' ) {
+        console.error('Error: ' + statusBar.status);
+        console.log(statusBar.status);
       }
       else {
-        console.log('Status updated: ' + status);
+        console.log('Status updated: ' + statusBar.status);
       }
     }
   };
-});
+
+  return statusBar;
+}]);
