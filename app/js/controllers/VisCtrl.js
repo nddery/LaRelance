@@ -1,23 +1,33 @@
 'use strict';
 angular.module('app')
 .controller('VisCtrl', ['$scope', '$routeParams', 'idb', function VisCtrl($scope, $routeParams, idb) {
-  // Everything is done through requests and transactions.
-  var request = idb.indexedDB.open( idb.DB_NAME, idb.DB_VERSION );
-  request.onsuccess = function( e ) {
-    var db = e.target.result;
-    var objectStore = db.transaction("UNIVERSITIES").objectStore("UNIVERSITIES");
-    var universities = [];
-    objectStore.openCursor().onsuccess = function(event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        universities.push(cursor.value);
-        cursor.continue();
+  $scope.$on('appReady', function(event) {
+    gatherData();
+  });
+
+  var gatherData = function(){
+    var a = {};
+    a.name = "La Relance";
+    a.children = [];
+    angular.forEach(idb.U, function(v,k){
+      var foo = {};
+      if(v.data.UID !== "975000"){
+        foo.name = v.data.name;
+        foo.image = v.data.image;
+        foo.children = v.children;
+        a.children.push(foo);
       }
-      else {
-        $scope.$apply(function(){
-          $scope.data = universities;
-        });
-      }
-    };
-  }; // end request.onsuccess()
+    });
+
+    if(!$scope.$$phase){
+      $scope.$apply(function(){
+        $scope.data = a;
+      });
+    }
+    else{
+      $scope.data = a;
+    }
+  }
+
+  gatherData();
 }]);
