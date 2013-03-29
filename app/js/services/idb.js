@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.service('idb', ['$rootScope', 'idbInit', 'statusBar', function($rootScope, idbInit, statusBar) {
+.service('idb', ['$rootScope', 'idbInit', 'statusBar', 'stdData', function($rootScope, idbInit, statusBar, stdData) {
   // This service extends the idb service and returns the same information.
   // However, U and P are filled out.
   var idb = idbInit;
@@ -44,9 +44,10 @@ angular.module('app')
                 if(v.indexOf(cursor.value.PID) === -1){
                   v.push(cursor.value.PID);
                   value.programs.push(cursor.value.PID);
+                  cursor.value.name = cursor.value['PNAME'];
+                  // cursor.value.children = [{"name": "test", "salaireHebdoBrut": "1"}];
                   value.children.push(cursor.value);
                 }
-                // console.log(cursor.value);
                 cursor.continue();
               }
             }
@@ -96,6 +97,7 @@ angular.module('app')
                 if(v.indexOf(cursor.value.UID) === -1){
                   v.push(cursor.value.UID);
                   value.universities.push(cursor.value.UID);
+                  cursor.value.name = cursor.value['UNAME'];
                   value.children.push(cursor.value);
                 }
                 cursor.continue();

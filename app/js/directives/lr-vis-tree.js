@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.directive('lrVis', ['$rootScope', 'stdData', function($rootScope, stdData) {
+.directive('lrVisTree', ['$rootScope', 'stdData', function($rootScope, stdData) {
   // Constants
   var width  = window.innerWidth,
       height = window.innerHeight - 40,
@@ -30,11 +30,15 @@ angular.module('app')
       // called every time ngRepeat creates a new copy of the template.
       var node, link, data;
 
-      var force = d3.layout.force()
-        .on('tick', tick)
-        .charge(-1000)
-        .linkDistance(200)
-        .size([width, height]);
+      var tree = d3.layout.tree()
+        .size([width, height])
+        .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+
+      // var force = d3.layout.force()
+      //   .on('tick', tick)
+      //   .charge(-1000)
+      //   .linkDistance(200)
+      //   .size([width, height]);
 
       // Set up the initial svg, full width and height.
       var svg = d3.select(elem[0])
@@ -71,7 +75,7 @@ angular.module('app')
           if(tick.alpha < 0.08){
             reveal(angular.element(svg[0]));
             loading.remove();
-            closeAll();
+            // closeAll();
             closed = true;
           }
         }
@@ -99,23 +103,18 @@ angular.module('app')
 
       // Toggle children on click.
       function click(d){
-        var shouldClose = true;
-        // If we clicked on a program.
-        if(d.hasOwnProperty("UID")){
-          console.log('Clicked on a program');
-          shouldClose = false;
-        }
+        // closeAll();
 
         if(d.children){
           d._children = d.children;
           d.children  = null;
         }
         else{
-          if(shouldClose) closeAll();
           d.children  = d._children;
           d._children = null;
         }
 
+          console.log('Clicked on a program');
 
         update();
       }
