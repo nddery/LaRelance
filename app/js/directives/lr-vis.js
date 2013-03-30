@@ -53,7 +53,7 @@ angular.module('app')
           .startAngle(225 * (PI / 180))
           .endAngle(405 * (PI / 180)),
 
-        labels: ['Comparer les donn&eacute;es entre universit&eacute;', 'Voir les donn&eacute;es pour cette universit&eacute;'],
+        labels: ['COMPARER', 'ANALYSER'],
 
         setHUD: function(hud){
           HUD.hud = hud;
@@ -82,12 +82,13 @@ angular.module('app')
           // UNIVERSITY & PROGRAM LABEL
           var labels = HUD.hud.append('svg:g')
             .style('fill', '#fff')
+            .style('font-size', 20)
             .style('stroke-width', 0);
 
           labels.append('svg:text')
             .style('font-size', 30)
             .attr('x', function(){ console.log(HUD.d.name.getComputedTextLenght); return this.getComputedTextLenght / 2; })
-            .attr('y', -230)
+            .attr('y', -235)
             .attr('dy', '.35em')
             .text(HUD.d.UNAMEL);
 
@@ -100,15 +101,12 @@ angular.module('app')
 
           // ARCS LABEL
           labels.append('svg:text')
-            .style('font-size', 12)
-            .attr('x', 0)
-            .attr('y', 0)
+            .attr('x', -100)
+            .attr('y', -80)
             .text(HUD.labels[0]);
 
           labels.append('svg:text')
-            // .style('font-size', 12)
-            .attr('x', 0)
-            .attr('y', 0)
+            .attr('x', 85)
             .text(HUD.labels[1]);
 
           HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
