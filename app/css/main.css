@@ -158,6 +158,9 @@ nav#main h1 {
   fill: #008000;
   stroke: #008000;
 }
+.hidden {
+  display: none;
+}
 circle.node {
   cursor: pointer;
   stroke: #008000;

@@ -7,7 +7,7 @@ angular.module('app')
 
   var gatherData = function(){
     var a = {};
-    a.name = "La Relance";
+    a.name = "root";
     a.children = [];
     angular.forEach(idb.U, function(v,k){
       var foo = {};

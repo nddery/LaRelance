@@ -61,11 +61,13 @@ angular.module('app')
         display: function(){
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc1)
-            .attr('fill', '#ff0000');
+            .attr('fill', '#0f0f0f')
+            .attr('stroke', '#fff');
 
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc2)
-            .attr('fill', '#00ff00');
+            .attr('fill', '#0f0f0f')
+            .attr('stroke', '#fff');
 
           HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
 
@@ -138,10 +140,6 @@ angular.module('app')
             v._children = v.children;
             v.children  = null;
           }
-          // else{
-          //   v.children  = v._children;
-          //   v._children = null;
-          // }
         });
         update();
       }
@@ -158,7 +156,7 @@ angular.module('app')
           var shouldClose = true;
           // If we clicked on a program.
           if(d.hasOwnProperty("UID")){
-            HUD.setHUD(svg.insert('g', '.node'));
+            HUD.setHUD(svg.insert('g', 'node'));
             HUD.setNode(d, i);
             HUD.display();
             shouldClose = false;
@@ -230,8 +228,9 @@ angular.module('app')
         var group = node.enter().append('g')
           .attr('class', function(d, i){
             var c = 'node';
-            console.log(i + "\t\t" + d.name);
-
+            if(d.name === 'root'){
+              c += ' hidden';
+            }
             return c;
           })
           .attr('transform', function(d){ return "translate("+ d.x +","+ d.y +")"; })
