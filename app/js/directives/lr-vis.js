@@ -53,6 +53,8 @@ angular.module('app')
           .startAngle(225 * (PI / 180))
           .endAngle(405 * (PI / 180)),
 
+        labels: ['Comparer les donn&eacute;es entre universit&eacute;', 'Voir les donn&eacute;es pour cette universit&eacute;'],
+
         setHUD: function(hud){
           HUD.hud = hud;
           HUD.hud.style('fill', '#000');
@@ -76,6 +78,38 @@ angular.module('app')
 
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc3);
+
+          // UNIVERSITY & PROGRAM LABEL
+          var labels = HUD.hud.append('svg:g')
+            .style('fill', '#fff')
+            .style('stroke-width', 0);
+
+          labels.append('svg:text')
+            .style('font-size', 30)
+            .attr('x', function(){ console.log(HUD.d.name.getComputedTextLenght); return this.getComputedTextLenght / 2; })
+            .attr('y', -230)
+            .attr('dy', '.35em')
+            .text(HUD.d.UNAMEL);
+
+          labels.append('svg:text')
+            .style('font-size', 25)
+            .attr('x', function(){ console.log(HUD.d.name.getComputedTextLenght); return this.getComputedTextLenght / 2; })
+            .attr('y', -200)
+            .attr('dy', '.35em')
+            .text(HUD.d.PNAME);
+
+          // ARCS LABEL
+          labels.append('svg:text')
+            .style('font-size', 12)
+            .attr('x', 0)
+            .attr('y', 0)
+            .text(HUD.labels[0]);
+
+          labels.append('svg:text')
+            // .style('font-size', 12)
+            .attr('x', 0)
+            .attr('y', 0)
+            .text(HUD.labels[1]);
 
           HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
 
@@ -209,7 +243,6 @@ angular.module('app')
 
       // Update the force layout.
       function update(){
-        console.log('update');
         var nodes = flatten(data),
             links = d3.layout.tree().links(nodes);
 
@@ -250,6 +283,7 @@ angular.module('app')
           .call(force.drag)
           .on('click', click);
 
+        // OUTER CIRCLE
         group.append('circle')
           .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 20; })
           .attr('class', color)
@@ -263,11 +297,13 @@ angular.module('app')
           })
           .style('stroke-width', '0.5');
 
+        // LABEL
         group.append('text')
           .attr('dx', 30)
           .attr('dy', '.35em')
           .text(function(d) { return d.name });
 
+        // IMAGE
         group.append('image')
           .attr('xlink:href', function(d){
             if(typeof d.image !== 'undefined'){
@@ -282,6 +318,21 @@ angular.module('app')
           .attr('width', 16)
           .attr('height', 16);
 
+        // ARC
+        // group.append('svg:path')
+        //   .style('fill', '#b42121')
+        //   .attr('d', function(d,i){
+        //     var r = Math.sqrt(d.salaireHebdoBrut) / 2 || 20;
+        //     var arc =  d3.svg.arc()
+        //       .innerRadius( r + 5 )
+        //       .outerRadius( r + 10 )
+        //       .startAngle(45 * (PI / 180))
+        //       .endAngle(135 * (PI / 180));
+          //        arc is a functin...
+        //     console.log(arc);
+        //     return eval(arc);
+        //   });
+
         // Exit any old nodes.
         node.exit().remove();
       }
@@ -294,7 +345,6 @@ angular.module('app')
         }
         else{
           data = newData;
-          console.log('allo');
           update();
         }
       });
