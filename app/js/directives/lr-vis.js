@@ -41,16 +41,22 @@ angular.module('app')
         arc1: d3.svg.arc()
           .innerRadius(50)
           .outerRadius(200)
-          .startAngle(35 * (PI / 180)) // degs to radians
-          .endAngle(215 * (PI / 180)),
+          .startAngle(45 * (PI / 180)) // degs to radians
+          .endAngle(135 * (PI / 180)),
         arc2: d3.svg.arc()
           .innerRadius(50)
           .outerRadius(200)
-          .startAngle(215 * (PI / 180))
-          .endAngle(395 * (PI / 180)),
+          .startAngle(135 * (PI / 180))
+          .endAngle(225 * (PI / 180)),
+        arc3: d3.svg.arc()
+          .innerRadius(50)
+          .outerRadius(180)
+          .startAngle(225 * (PI / 180))
+          .endAngle(405 * (PI / 180)),
 
         setHUD: function(hud){
           HUD.hud = hud;
+          HUD.hud.style('fill', '#000');
         },
 
         setNode: function(d,i){
@@ -59,17 +65,22 @@ angular.module('app')
         },
 
         display: function(){
-          HUD.hud.append('svg:path')
-            .attr('d', HUD.arc1)
-            .attr('fill', '#0f0f0f')
+          HUD.hud
+            .attr('fill', '#141414')
             .attr('stroke', '#fff');
 
           HUD.hud.append('svg:path')
-            .attr('d', HUD.arc2)
-            .attr('fill', '#0f0f0f')
-            .attr('stroke', '#fff');
+            .attr('d', HUD.arc1);
+
+          HUD.hud.append('svg:path')
+            .attr('d', HUD.arc2);
+
+          HUD.hud.append('svg:path')
+            .attr('d', HUD.arc3);
 
           HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
+
+          console.log(elem);
 
           HUD.visible = true;
         },
@@ -193,7 +204,6 @@ angular.module('app')
         recurse(root);
         return nodes;
       }
-      //   .endAngle(355 * (PI / 180));
 
       // Update the force layout.
       function update(){
