@@ -66,7 +66,7 @@ angular.module('app')
         display: function(){
           HUD.hud
             .attr('fill', '#141414')
-            .attr('stroke', '#fff');
+            .attr('stroke', '#5e1111');
 
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc1);
@@ -248,12 +248,20 @@ angular.module('app')
           .on('click', click);
 
         group.append('circle')
-          .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 15; })
+          .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 20; })
           .attr('class', color)
-          .style('stroke-width', '5');
+          .style('stroke', function(d){
+            if(typeof d.image !== 'undefined'){
+              return "#fff";
+            }
+            else{
+              return '#b42121';
+            }
+          })
+          .style('stroke-width', '0.5');
 
         group.append('text')
-          .attr('dx', 20)
+          .attr('dx', 30)
           .attr('dy', '.35em')
           .text(function(d) { return d.name });
 
