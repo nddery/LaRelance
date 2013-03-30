@@ -113,13 +113,14 @@ angular.module('app')
       var loading = d3.select(elem[0])
         .append('svg')
           .attr('width', width)
-          .attr('height', height)
-          .append('text')
-            .attr('class', 'loadingIndicator')
-            .attr('x', width / 2)
-            .attr('y', height / 2)
-            .attr('dy', '.35em')
-            .attr('text-anchor', 'middle');
+          .attr('height', height);
+      var loadingText = loading.append('text')
+        .attr('class', 'loadingIndicator')
+        .attr('x', width / 2)
+        .attr('y', height / 2)
+        .attr('dy', '.35em')
+        .attr('text-anchor', 'middle')
+        .text('chargement');
 
       function tick(tick){
         HUD.move();
@@ -136,8 +137,10 @@ angular.module('app')
         // "Notification" when it is almost done.
         if(!closed){
           if(tick.alpha < 0.08){
-            reveal(angular.element(svg[0]));
             loading.remove();
+
+            reveal(angular.element(svg[0]));
+
             closeAll();
             closed = true;
           }
