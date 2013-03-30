@@ -155,21 +155,16 @@ nav#main h1 {
   stroke: #1cffff;
 }
 .green {
-  fill: #b3ff1c;
-  stroke: #b3ff1c;
+  fill: #008000;
+  stroke: #008000;
 }
 circle.node {
   cursor: pointer;
-  stroke: #b3ff1c;
+  stroke: #008000;
   stroke-width: 1.5px;
 }
 .node text {
   fill: #fff;
-}
-line.link {
-  fill: none;
-  stroke: #a60909;
-  stroke-width: 1.5px;
 }
 /* ==========================================================================
    Helper classes

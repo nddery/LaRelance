@@ -34,34 +34,38 @@ angular.module('app')
       // HUD, display the HUD around a node.
       var HUD = {
         d: null,
+        i: null,
         visible: false,
 
         hud: null,
         arc1: d3.svg.arc()
           .innerRadius(50)
           .outerRadius(200)
-          .startAngle(25 * (PI / 180)) // degs to radians
-          .endAngle(205 * (PI / 180))
-          .style('fill', '#ff0000'),
+          .startAngle(35 * (PI / 180)) // degs to radians
+          .endAngle(215 * (PI / 180)),
         arc2: d3.svg.arc()
           .innerRadius(50)
           .outerRadius(200)
-          .startAngle(205 * (PI / 180))
-          .endAngle(385 * (PI / 180)),
+          .startAngle(215 * (PI / 180))
+          .endAngle(395 * (PI / 180)),
 
         setHUD: function(hud){
           HUD.hud = hud;
         },
 
-        setNode: function(d){
+        setNode: function(d,i){
           HUD.d = d;
+          HUD.i = i;
         },
 
         display: function(){
           HUD.hud.append('svg:path')
-            .attr('d', HUD.arc1);
+            .attr('d', HUD.arc1)
+            .attr('fill', '#ff0000');
+
           HUD.hud.append('svg:path')
-            .attr('d', HUD.arc2);
+            .attr('d', HUD.arc2)
+            .attr('fill', '#00ff00');
 
           HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
 
@@ -72,12 +76,17 @@ angular.module('app')
           if(HUD.visible){
             HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
           }
+        },
+
+        remove: function(){
+          HUD.hud.remove();
+          HUD.visible = false;
         }
       };
 
       var force = d3.layout.force()
         .on('tick', tick)
-        .charge(-1000)
+        .charge(-2000)
         .linkDistance(height / 4)
         .size([width, height]);
 
@@ -143,28 +152,33 @@ angular.module('app')
       }
 
       // Toggle children on click.
-      function click(d){
-        var shouldClose = true;
-        // If we clicked on a program.
-        if(d.hasOwnProperty("UID")){
-          HUD.setHUD(svg.insert('g', '.node'));
-          HUD.setNode(d);
-          HUD.display();
-          // displayHUD(d);
-          shouldClose = false;
-        }
+      function click(d, i){
+        // If HUD is NOT visible.
+        if(!HUD.visible){
+          var shouldClose = true;
+          // If we clicked on a program.
+          if(d.hasOwnProperty("UID")){
+            HUD.setHUD(svg.insert('g', '.node'));
+            HUD.setNode(d, i);
+            HUD.display();
+            shouldClose = false;
+          }
 
-        if(d.children){
-          d._children = d.children;
-          d.children  = null;
+          if(d.children){
+            d._children = d.children;
+            d.children  = null;
+          }
+          else{
+            if(shouldClose) closeAll();
+            d.children  = d._children;
+            d._children = null;
+          }
+
+          update();
         }
         else{
-          if(shouldClose) closeAll();
-          d.children  = d._children;
-          d._children = null;
+          HUD.remove();
         }
-
-        update();
       }
 
       // Returns a list of all nodes under the root.
@@ -214,7 +228,12 @@ angular.module('app')
           .data(nodes, function(d){ return d.id; });
 
         var group = node.enter().append('g')
-          .attr('class', 'node')
+          .attr('class', function(d, i){
+            var c = 'node';
+            console.log(i + "\t\t" + d.name);
+
+            return c;
+          })
           .attr('transform', function(d){ return "translate("+ d.x +","+ d.y +")"; })
           .call(force.drag)
           .on('click', click);
@@ -222,8 +241,6 @@ angular.module('app')
         group.append('circle')
           .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 15; })
           .attr('class', color)
-          // .style('fill', '#ffffff')
-          // .style('stroke', color)
           .style('stroke-width', '5');
 
         group.append('text')
