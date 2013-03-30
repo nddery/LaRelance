@@ -29,11 +29,56 @@ angular.module('app')
       // If my-directive is within an ng-repeat-ed template then it will be
       // called every time ngRepeat creates a new copy of the template.
       var node, link, data;
+      var PI = Math.PI;
+
+      // HUD, display the HUD around a node.
+      var HUD = {
+        d: null,
+        visible: false,
+
+        hud: null,
+        arc1: d3.svg.arc()
+          .innerRadius(50)
+          .outerRadius(200)
+          .startAngle(25 * (PI / 180)) // degs to radians
+          .endAngle(205 * (PI / 180))
+          .style('fill', '#ff0000'),
+        arc2: d3.svg.arc()
+          .innerRadius(50)
+          .outerRadius(200)
+          .startAngle(205 * (PI / 180))
+          .endAngle(385 * (PI / 180)),
+
+        setHUD: function(hud){
+          HUD.hud = hud;
+        },
+
+        setNode: function(d){
+          HUD.d = d;
+        },
+
+        display: function(){
+          HUD.hud.append('svg:path')
+            .attr('d', HUD.arc1);
+          HUD.hud.append('svg:path')
+            .attr('d', HUD.arc2);
+
+          HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
+
+          HUD.visible = true;
+        },
+
+        move: function(){
+          if(HUD.visible){
+            HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
+          }
+        }
+      };
 
       var force = d3.layout.force()
         .on('tick', tick)
         .charge(-1000)
-        .linkDistance(200)
+        .linkDistance(height / 4)
         .size([width, height]);
 
       // Set up the initial svg, full width and height.
@@ -53,10 +98,11 @@ angular.module('app')
             .attr('x', width / 2)
             .attr('y', height / 2)
             .attr('dy', '.35em')
-            .attr('text-anchor', 'middle')
-            .text('loading');
+            .attr('text-anchor', 'middle');
 
       function tick(tick){
+        HUD.move();
+
         link
           .attr('x1', function(d){ return d.source.x; })
           .attr('y1', function(d){ return d.source.y; })
@@ -94,7 +140,6 @@ angular.module('app')
       // Color leaf nodes orange, and packages white or blue.
       function color(d){
         return d._children ? 'red1' : d.children ? 'red2' : 'green';
-        // return d._children ? '#ff0000' : d.children ? '#a60000' : '#ff7373';
       }
 
       // Toggle children on click.
@@ -102,7 +147,10 @@ angular.module('app')
         var shouldClose = true;
         // If we clicked on a program.
         if(d.hasOwnProperty("UID")){
-          console.log('Clicked on a program');
+          HUD.setHUD(svg.insert('g', '.node'));
+          HUD.setNode(d);
+          HUD.display();
+          // displayHUD(d);
           shouldClose = false;
         }
 
@@ -115,7 +163,6 @@ angular.module('app')
           d.children  = d._children;
           d._children = null;
         }
-
 
         update();
       }
@@ -134,7 +181,7 @@ angular.module('app')
         recurse(root);
         return nodes;
       }
-
+      //   .endAngle(355 * (PI / 180));
 
       // Update the force layout.
       function update(){
