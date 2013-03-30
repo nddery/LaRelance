@@ -1,22 +1,6 @@
 'use strict';
 angular.module('app')
 .directive('lrVis', ['$rootScope', 'stdData', function($rootScope, stdData) {
-  // Constants
-  var width  = window.innerWidth,
-      height = window.innerHeight - 40,
-      radius = Math.min(width, height) / 2,
-      twoPI  = 2 * Math.PI,
-      color  = d3.scale.category20c(),
-      closed = false;
-
-  function conceal(elem){
-    elem.css('display', 'none');
-  }
-
-  function reveal(elem){
-    elem.css('display', 'block');
-  }
-
   return {
     // The directive can only be invoked by using tag in the template.
     restrict: 'E',
@@ -28,8 +12,23 @@ angular.module('app')
       // Initialization, done once per my-directive tag in template.
       // If my-directive is within an ng-repeat-ed template then it will be
       // called every time ngRepeat creates a new copy of the template.
-      var node, link, data;
-      var PI = Math.PI;
+      // Constants
+      var width  = window.innerWidth,
+          height = window.innerHeight - 40,
+          radius = Math.min(width, height) / 2,
+          twoPI  = 2 * Math.PI,
+          color  = d3.scale.category20c(),
+          closed = false,
+          PI     = Math.PI,
+          node, link, data;
+
+      function conceal(elem){
+        elem.css('display', 'none');
+      }
+
+      function reveal(elem){
+        elem.css('display', 'block');
+      }
 
       // HUD, display the HUD around a node.
       var HUD = {
@@ -45,7 +44,7 @@ angular.module('app')
           .endAngle(135 * (PI / 180)),
         arc2: d3.svg.arc()
           .innerRadius(50)
-          .outerRadius(200)
+          .outerRadius(160)
           .startAngle(135 * (PI / 180))
           .endAngle(225 * (PI / 180)),
         arc3: d3.svg.arc()
@@ -207,6 +206,7 @@ angular.module('app')
 
       // Update the force layout.
       function update(){
+        console.log('update');
         var nodes = flatten(data),
             links = d3.layout.tree().links(nodes);
 
@@ -283,7 +283,7 @@ angular.module('app')
         }
         else{
           data = newData;
-          console.log(data);
+          console.log('allo');
           update();
         }
       });
