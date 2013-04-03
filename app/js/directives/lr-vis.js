@@ -130,6 +130,7 @@ angular.module('app')
 
       var force = d3.layout.force()
         .on('tick', tick)
+        .gravity(0.5)
         .charge(-2000)
         .linkDistance(height / 4)
         .size([width, height]);
@@ -208,10 +209,17 @@ angular.module('app')
           }
 
           if(d.children){
+            // Open children
             d._children = d.children;
             d.children  = null;
+
+            // Position the clicked item in the center of the screen.
+            // d.attr('cx', width / 2);
+            // d.attr('cy', height / 2);
+            // d.fixed = true;
           }
           else{
+            // Close children.
             if(shouldClose) closeAll();
             d.children  = d._children;
             d._children = null;
@@ -237,6 +245,10 @@ angular.module('app')
 
         recurse(root);
         return nodes;
+      }
+
+      function getRadius(d){
+        return Math.sqrt(d.salaireHebdoBrut) / 1.5 || 25;
       }
 
       // Update the force layout.
@@ -283,7 +295,7 @@ angular.module('app')
 
         // OUTER CIRCLE
         group.append('circle')
-          .attr('r', function(d) { return Math.sqrt(d.salaireHebdoBrut) / 2 || 20; })
+          .attr('r', function(d){ return getRadius(d) } )
           .attr('class', color)
           .style('stroke', function(d){
             if(typeof d.image !== 'undefined'){
@@ -295,14 +307,25 @@ angular.module('app')
           })
           .style('stroke-width', '0.5');
 
+        var innerGroup = group.append('g')
+          .attr('transform', 'translate(0,-8)');
+
         // LABEL
-        group.append('text')
-          .attr('dx', 30)
-          .attr('dy', '.35em')
-          .text(function(d) { return d.name });
+        innerGroup.append('foreignObject')
+          .attr('width', 100)
+          .attr('height', 100)
+          .attr('transform', function(d) {
+            var x = -50,
+                y = !d.image ? 0 : 10;
+            return 'translate('+ x + ',' + y +')';
+          })
+          .append("xhtml:div")
+            .attr('class', 'innerText')
+            .style("font", "14px 'Helvetica Neue'")
+            .html(function(d) { return d.name } );
 
         // IMAGE
-        group.append('image')
+        innerGroup.append('image')
           .attr('xlink:href', function(d){
             if(typeof d.image !== 'undefined'){
               return d.image;
@@ -315,21 +338,6 @@ angular.module('app')
           .attr('y', -8)
           .attr('width', 16)
           .attr('height', 16);
-
-        // ARC
-        // group.append('svg:path')
-        //   .style('fill', '#b42121')
-        //   .attr('d', function(d,i){
-        //     var r = Math.sqrt(d.salaireHebdoBrut) / 2 || 20;
-        //     var arc =  d3.svg.arc()
-        //       .innerRadius( r + 5 )
-        //       .outerRadius( r + 10 )
-        //       .startAngle(45 * (PI / 180))
-        //       .endAngle(135 * (PI / 180));
-          //        arc is a functin...
-        //     console.log(arc);
-        //     return eval(arc);
-        //   });
 
         // Exit any old nodes.
         node.exit().remove();
