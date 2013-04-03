@@ -131,7 +131,7 @@ angular.module('app')
       var force = d3.layout.force()
         .on('tick', tick)
         .gravity(0.5)
-        .charge(-2000)
+        .charge(-5000)
         .linkDistance(height / 4)
         .size([width, height]);
 
@@ -214,8 +214,10 @@ angular.module('app')
             d.children  = null;
 
             // Position the clicked item in the center of the screen.
-            // d.attr('cx', width / 2);
-            // d.attr('cy', height / 2);
+            // d.attr('px', width / 2);
+            // d.attr('py', height / 2);
+            // d.attr('x', width / 2);
+            // d.attr('y', height / 2);
             // d.fixed = true;
           }
           else{
