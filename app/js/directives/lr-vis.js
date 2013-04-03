@@ -71,13 +71,19 @@ angular.module('app')
             .attr('stroke', '#5e1111');
 
           HUD.hud.append('svg:path')
-            .attr('d', HUD.arc1);
+            .attr('d', HUD.arc1)
+            .on('click', function(){
+              console.log('ANALYSER' + "\t" + HUD.d.PNAME + "\t" + HUD.d.UNAME);
+            });
 
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc2);
 
           HUD.hud.append('svg:path')
-            .attr('d', HUD.arc3);
+            .attr('d', HUD.arc3)
+            .on('click', function(){
+              console.log('COMPARER' + "\t" + HUD.d.PNAME);
+            });
 
           // UNIVERSITY & PROGRAM LABEL
           var labels = HUD.hud.append('svg:g')
@@ -110,8 +116,6 @@ angular.module('app')
             .text(HUD.labels[1]);
 
           HUD.hud.attr('transform', function(){ return "translate("+ HUD.d.x +","+ HUD.d.y +")"; });
-
-          console.log(elem);
 
           HUD.visible = true;
         },
