@@ -91,19 +91,19 @@ angular.module('app')
             .style('font-size', 20)
             .style('stroke-width', 0);
 
-          labels.append('svg:text')
+        // LABEL
+        HUD.hud.append('foreignObject')
+          .attr('width', 800)
+          .attr('height', 200)
+          .attr('transform', function(d) {
+            var x = -400,
+                y = -240;
+            return 'translate('+ x + ',' + y +')';
+          })
+          .append("xhtml:div")
+            .attr('class', 'hudInnerText')
             .style('font-size', 30)
-            .attr('x', function(){ console.log(HUD.d.name.getComputedTextLenght); return this.getComputedTextLenght / 2; })
-            .attr('y', -235)
-            .attr('dy', '.35em')
-            .text(HUD.d.UNAMEL);
-
-          labels.append('svg:text')
-            .style('font-size', 25)
-            .attr('x', function(){ console.log(HUD.d.name.getComputedTextLenght); return this.getComputedTextLenght / 2; })
-            .attr('y', -200)
-            .attr('dy', '.35em')
-            .text(HUD.d.PNAME);
+            .html(function(d) { return HUD.d.UNAMEL + "<br /><span>" + HUD.d.PNAME + "</span>" } );
 
           // ARCS LABEL
           labels.append('svg:text')
