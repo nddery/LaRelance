@@ -73,28 +73,8 @@ angular.module('app')
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc1)
             .on('click', function(){
-              var d = $dialog.dialog({
-                backdrop: true,
-                backdropFade: true,
-                keyboard: true,
-                backdropClick: true,
-                dialogFade: true,
-                template: '<div class="modal">'+
-                  '<iframe src="http://nddery.ca" width="500" height="281" frameborder="0" autoplay="1" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>'+
-                  '<p><a href="http://vimeo.com/55240195">ECO</a> from <a href="http://vimeo.com/user6721526">nddery</a> on <a href="http://vimeo.com">Vimeo</a>.</p>'+
-                '</div>',
-                controller: 'DialogCtrl'
-              });
-              // We need to apply ourselves!
-              scope.$apply(function(){
-                d.open().then(function(result){
-                  console.log('modal opened');
-                  if(result){
-                    alert('dialog closed with result: ' + result);
-                  }
-                });
-              });
               console.log('ANALYSER' + "\t" + HUD.d.PNAME + "\t" + HUD.d.UNAME);
+              openDialogWindow( 'views/vis-analyser.html' );
             });
 
           HUD.hud.append('svg:path')
@@ -104,6 +84,7 @@ angular.module('app')
             .attr('d', HUD.arc3)
             .on('click', function(){
               console.log('COMPARER' + "\t" + HUD.d.PNAME);
+              openDialogWindow( 'views/vis-comparer.html' );
             });
 
           // UNIVERSITY & PROGRAM LABEL
@@ -152,6 +133,21 @@ angular.module('app')
           HUD.visible = false;
         }
       };
+
+      var openDialogWindow = function(templateUrl){
+              var d = $dialog.dialog({
+                backdrop: true,
+                backdropFade: true,
+                backdropClick: true,
+                dialogFade: true,
+                templateUrl: templateUrl,
+                controller: 'DialogCtrl'
+              });
+              // We need to apply ourselves!
+              scope.$apply(function(){
+                d.open();
+              });
+      }
 
       var force = d3.layout.force()
         .on('tick', tick)

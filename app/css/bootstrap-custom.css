@@ -190,11 +190,11 @@ input[type="button"].btn-block {
 
 .modal {
   position: fixed;
-  top: 10%;
-  left: 50%;
+  top: 2%;
+  left: 2%;
   z-index: 1050;
-  width: 560px;
-  margin-left: -280px;
+  width: 96%;
+  height: 96%;
   background-color: #ffffff;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, 0.3);
@@ -212,7 +212,7 @@ input[type="button"].btn-block {
 }
 
 .modal.fade {
-  top: -25%;
+  top: 2%;
   -webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
      -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
        -o-transition: opacity 0.3s linear, top 0.3s ease-out;
@@ -220,7 +220,7 @@ input[type="button"].btn-block {
 }
 
 .modal.fade.in {
-  top: 10%;
+  top: 2%;
 }
 
 .modal-header {
