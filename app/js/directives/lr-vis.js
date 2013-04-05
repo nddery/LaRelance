@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.directive('lrVis', ['$rootScope', 'stdData', function($rootScope, stdData) {
+.directive('lrVis', ['$rootScope', '$dialog', 'stdData', function($rootScope, $dialog, stdData) {
   return {
     // The directive can only be invoked by using tag in the template.
     restrict: 'E',
@@ -73,6 +73,27 @@ angular.module('app')
           HUD.hud.append('svg:path')
             .attr('d', HUD.arc1)
             .on('click', function(){
+              var d = $dialog.dialog({
+                backdrop: true,
+                backdropFade: true,
+                keyboard: true,
+                backdropClick: true,
+                dialogFade: true,
+                template: '<div class="modal">'+
+                  '<iframe src="http://nddery.ca" width="500" height="281" frameborder="0" autoplay="1" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>'+
+                  '<p><a href="http://vimeo.com/55240195">ECO</a> from <a href="http://vimeo.com/user6721526">nddery</a> on <a href="http://vimeo.com">Vimeo</a>.</p>'+
+                '</div>',
+                controller: 'DialogCtrl'
+              });
+              // We need to apply ourselves!
+              scope.$apply(function(){
+                d.open().then(function(result){
+                  console.log('modal opened');
+                  if(result){
+                    alert('dialog closed with result: ' + result);
+                  }
+                });
+              });
               console.log('ANALYSER' + "\t" + HUD.d.PNAME + "\t" + HUD.d.UNAME);
             });
 
