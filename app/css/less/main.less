@@ -81,9 +81,9 @@ textarea {
    app styles
    ========================================================================== */
 
-h1 { font-size: 3em; }
-h2 { font-size: 2em; }
-h3 { font-size: 1.5em; }
+h1 { font-size: 2.5em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.2em; }
 
 a {
   color: #575656;
@@ -221,14 +221,27 @@ line.link {
    Modal Window Visualisation
    ========================================================================== */
 
+.modal-header {
+  text-align: right;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.modal-header h2,
+.modal-header h3 {
+  color: #fff;
+}
+
 ul.stats {
-  margin-top: 0;
+  margin-top: 20px;
   padding: 10px;
   background: #eee;
 }
 
 ul.stats li {
-  height: 90px;
+  height: 70px;
   vertical-align: top;
   margin-top: 0;
   width: 16.5%;
@@ -241,8 +254,9 @@ ul.stats li:last-child {
 }
 
 ul.stats .th {
-  height: 60px;
+  height: 40px;
   font-weight: bold;
+  padding: 0 10px;
 }
 
 ul.stats .td {
@@ -254,6 +268,14 @@ ul.stats .td {
 /* ==========================================================================
    Helper classes
    ========================================================================== */
+
+.floatleft {
+  float: left;
+}
+
+.floatright {
+  float: right;
+}
 
 /*
  * Image replacement

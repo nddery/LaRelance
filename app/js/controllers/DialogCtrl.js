@@ -1,7 +1,7 @@
 'use strict';
 app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function DialogCtrl($scope, idb, stdData, dialog) {
-  $scope.title    = 'Title';
-  $scope.subtitle = 'Subtitle';
+  $scope.title    = dialog.options.data.UNAMEL;
+  $scope.subtitle = dialog.options.data.PNAME;
 
   getCurrentData();
   function getCurrentData(){
@@ -12,44 +12,48 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
           store = trn.objectStore("LARELANCE"),
           objs  = [];
 
-      var index  = store.index("PID"),
-          range  = IDBKeyRange.only(dialog.options.data.P),
-          values = [],
-          cursor = index.openCursor(range);
-          // cursor = dialog.options.data.P ? index.openCursor(range) : index.openCursor();
+          console.log(dialog.options);
 
-      // if(dialog.options.data.P){
-      //   cursor = index.openCursor(range);
-      // }
-      // else{
-      //   cursor = index.openCursor();
-      // }
-      cursor.onsuccess = function(event) {
+      var index  = store.index("PID"),
+          range  = IDBKeyRange.only(dialog.options.data.PID),
+          values = [];
+
+      index.openCursor(range).onsuccess = function(event) {
         var cursor = event.target.result;
         if(cursor){
-        //   if(cursor.value.UID === dialog.options.data.U && cursor.value.type === 0){
+          // If we also filter by university
+          if(dialog.options.single){
+            if(cursor.value.UID === dialog.options.data.UID){
+              values.push(cursor.value);
+            }
+          }
+          else{
             values.push(cursor.value);
-        //   }
+          }
+
           cursor.continue();
         }
         else{
-        //   if(value){
-        //     var stats = angular.copy(stdData.dataType);
-        //     angular.forEach(stats, function(v,k){
-        //       v.value = value[v.id];
-        //     });
-        //     if(!$scope.$$phase){
-        //       $scope.$apply(function(){
-        //         $scope.stats = stats;
-        //       });
-        //     }
-        //     else{
-        //       $scope.stats = stats;
-        //     }
-        //   }
-        //   else{
-        //     console.log('no value?');
-        //   }
+          if(values[0]){
+            // If we are only showing for 1 university, easy, use item at position
+            // 0.
+            if(dialog.options.single){
+              var stats = angular.copy(stdData.dataType);
+              angular.forEach(stats, function(v,k){
+                v.value = values[0][v.id];
+              });
+
+              apply('stats', stats);
+            }
+            // We are comparing many universities. We need to have a JJJJJJ
+            else{
+              //
+            }
+          }
+          // No data.
+          else{
+            console.log('no value?');
+          }
         }
       } // end index.openCursor();
     } // end request.onsuccess();
@@ -58,6 +62,31 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
     }
   } // end getCurrentData();
 
+  /* --------------------------------------------------------------------------
+   * $apply
+   * ------------------------------------------------------------------------ */
+
+  function apply(object, value, broadcast){
+    // Prevent trying to $apply when $apply in progress.
+    if(!$scope.$$phase){
+      $scope.$apply(function(){
+        make();
+      });
+    }
+    // But ensure what we are trying to do gets done.
+    else{
+      make();
+    }
+
+    function make(){
+      $scope[object] = value;
+      if(broadcast) $rootScope.$broadcast(broadcast)
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+   * Dialog callbacks
+   * ------------------------------------------------------------------------ */
 
   $scope.close = function(){
     dialog.close();

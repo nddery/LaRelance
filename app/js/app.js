@@ -14,37 +14,43 @@ app.value('stdData', {
   "dataType" : [
     {
       "id" : "enEmploi"
-      ,"name" : "En emploi (%)"
+      ,"name" : "En emploi"
+      ,"type" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
     ,{
       "id" : "auxEtudes"
-      ,"name" : "Aux études (%)"
+      ,"name" : "Aux études"
+      ,"type" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
     ,{
       "id" : "emploiTempsPlein"
-      ,"name" : "Emploi à temps plein (%)"
+      ,"name" : "Emploi à temps plein"
+      ,"type" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
     ,{
       "id" : "dureeDeRecherche"
-      ,"name" : "Durée de recherche (semaine)"
+      ,"name" : "Durée de recherche"
+      ,"type" : "semaine(s)"
       ,"min" : "1"
       ,"max" : "52"
     }
     ,{
       "id" : "salaireHebdoBrut"
       ,"name" : "Salaire hebdomadaire brut"
+      ,"type" : "$"
       ,"min" : "414"
       ,"max" : "2625"
     }
     ,{
       "id" : "emploiEnRapport"
-      ,"name" : "Emploi en rapport (%)"
+      ,"name" : "Emploi en rapport"
+      ,"type" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }

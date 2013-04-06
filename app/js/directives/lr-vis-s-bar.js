@@ -1,6 +1,6 @@
 'use strict';
 angular.module('app')
-.directive('lrVisAnalyser', ['$rootScope', 'stdData', function($rootScope, stdData) {
+.directive('lrVisSBar', ['$rootScope', 'stdData', function($rootScope, stdData) {
   return {
     // The directive can only be invoked by using tag in the template.
     restrict: 'E',

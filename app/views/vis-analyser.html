@@ -1,19 +1,22 @@
 <div class="modal">
-  <div class="modal-header">
-    <h2>{{title}}</h2>
-    <h3>{{subtitle}}</h3>
+  <div class="modal-header clearfix">
+    <button class="floatleft" ng-click="close()">X</button>
+
+    <div class="floatright">
+      <h2>{{title}}</h2>
+      <h3>{{subtitle}}</h3>
+    </div>
   </div>
 
   <div class="modal-header">
     <ul class="stats inline">
       <li ng-repeat="s in stats">
         <div class="th">{{s.name}}</div>
-        <div class="td">{{s.value}}</div>
+        <div class="td">{{s.value}} {{s.type}}</div>
       </li>
     </ul>
   </div>
 
-  <lr-vis-analyser bind="data"></lr-vis-analyser>
+  <lr-vis-s-bar bind="data"></lr-vis-s-bar>
 
-  <button ng-click="close()">X</button>
 </div>
