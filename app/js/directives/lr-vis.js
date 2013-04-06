@@ -135,18 +135,20 @@ angular.module('app')
       };
 
       var openDialogWindow = function(templateUrl){
-              var d = $dialog.dialog({
-                backdrop: true,
-                backdropFade: true,
-                backdropClick: true,
-                dialogFade: true,
-                templateUrl: templateUrl,
-                controller: 'DialogCtrl'
-              });
-              // We need to apply ourselves!
-              scope.$apply(function(){
-                d.open();
-              });
+        var d = $dialog.dialog({
+          templateUrl: templateUrl,
+          controller: 'DialogCtrl'
+        });
+
+        // We need to apply ourselves!
+        if(!scope.$$phase){
+          scope.$apply(function(){
+            d.open();
+          });
+        }
+        else{
+          d.open();
+        }
       }
 
       var force = d3.layout.force()
@@ -155,9 +157,6 @@ angular.module('app')
         .charge(-5000)
         .linkDistance(height / 4)
         .size([width, height]);
-
-        // .gravity(0.5)
-        // .charge(-5000)
 
       // Set up the initial svg, full width and height.
       var svg = d3.select(elem[0])
