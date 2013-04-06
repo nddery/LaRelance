@@ -12,12 +12,42 @@ app.config(['$routeProvider', function($routeProvider) {
 
 app.value('stdData', {
   "dataType" : [
-    { "id" :  "enEmploi", "name" :          "En emploi (%)" }
-    ,{ "id" :  "auxEtudes", "name" :         "Aux études (%)" }
-    ,{ "id" :  "emploiTempsPlein", "name" :  "Emploi à temps plein (%)" }
-    ,{ "id" :  "dureeDeRecherche", "name" :  "Durée de recherche (semaine)" }
-    ,{ "id" :  "salaireHebdoBrut", "name" :  "Salaire hebdomadaire brut" }
-    ,{ "id" :  "emploiEnRapport", "name" :   "Emploi en rapport (%)" }
+    {
+      "id" : "enEmploi"
+      ,"name" : "En emploi (%)"
+      ,"min" : "0.0"
+      ,"max" : "100.0"
+    }
+    ,{
+      "id" : "auxEtudes"
+      ,"name" : "Aux études (%)"
+      ,"min" : "0.0"
+      ,"max" : "100.0"
+    }
+    ,{
+      "id" : "emploiTempsPlein"
+      ,"name" : "Emploi à temps plein (%)"
+      ,"min" : "0.0"
+      ,"max" : "100.0"
+    }
+    ,{
+      "id" : "dureeDeRecherche"
+      ,"name" : "Durée de recherche (semaine)"
+      ,"min" : "1"
+      ,"max" : "52"
+    }
+    ,{
+      "id" : "salaireHebdoBrut"
+      ,"name" : "Salaire hebdomadaire brut"
+      ,"min" : "414"
+      ,"max" : "2625"
+    }
+    ,{
+      "id" : "emploiEnRapport"
+      ,"name" : "Emploi en rapport (%)"
+      ,"min" : "0.0"
+      ,"max" : "100.0"
+    }
   ]
 });
 

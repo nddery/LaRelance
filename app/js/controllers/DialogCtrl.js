@@ -12,35 +12,44 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
           store = trn.objectStore("LARELANCE"),
           objs  = [];
 
-      var index = store.index("UID"),
-          range = IDBKeyRange.only(dialog.options.data.U),
-          value;
-      index.openCursor(range).onsuccess = function(event) {
+      var index  = store.index("PID"),
+          range  = IDBKeyRange.only(dialog.options.data.P),
+          values = [],
+          cursor = index.openCursor(range);
+          // cursor = dialog.options.data.P ? index.openCursor(range) : index.openCursor();
+
+      // if(dialog.options.data.P){
+      //   cursor = index.openCursor(range);
+      // }
+      // else{
+      //   cursor = index.openCursor();
+      // }
+      cursor.onsuccess = function(event) {
         var cursor = event.target.result;
         if(cursor){
-          if(cursor.value.PID === dialog.options.data.P){
-            value = cursor.value;
-          }
+        //   if(cursor.value.UID === dialog.options.data.U && cursor.value.type === 0){
+            values.push(cursor.value);
+        //   }
           cursor.continue();
         }
         else{
-          if(value){
-            var stats = angular.copy(stdData.dataType);
-            angular.forEach(stats, function(v,k){
-              v.value = value[v.id];
-            });
-            if(!$scope.$$phase){
-              $scope.$apply(function(){
-                $scope.stats = stats;
-              });
-            }
-            else{
-              $scope.stats = stats;
-            }
-          }
-          else{
-            console.log('no value?');
-          }
+        //   if(value){
+        //     var stats = angular.copy(stdData.dataType);
+        //     angular.forEach(stats, function(v,k){
+        //       v.value = value[v.id];
+        //     });
+        //     if(!$scope.$$phase){
+        //       $scope.$apply(function(){
+        //         $scope.stats = stats;
+        //       });
+        //     }
+        //     else{
+        //       $scope.stats = stats;
+        //     }
+        //   }
+        //   else{
+        //     console.log('no value?');
+        //   }
         }
       } // end index.openCursor();
     } // end request.onsuccess();
