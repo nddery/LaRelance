@@ -12,17 +12,25 @@ app.config(['$routeProvider', function($routeProvider) {
 
 app.value('stdData', {
   "dataType" : [
-    { "id" :   "nVisees", "name" :           "nVisees" }
-    ,{ "id" :  "tauxDeReponse", "name" :     "tauxDeReponse" }
-    ,{ "id" :  "enEmploi", "name" :          "enEmploi" }
-    ,{ "id" :  "rechercheEmploi", "name" :   "rechercheEmploi" }
-    ,{ "id" :  "auxEtudes", "name" :         "auxEtudes" }
-    ,{ "id" :  "pInactives", "name" :        "pInactives" }
-    ,{ "id" :  "tauxDeChomage", "name" :     "tauxDeChomage" }
-    ,{ "id" :  "emploiTempsPlein", "name" :  "emploiTempsPlein" }
-    ,{ "id" :  "dureeDeRecherche", "name" :  "dureeDeRecherche" }
-    ,{ "id" :  "salaireHebdoBrut", "name" :  "salaireHebdoBrut" }
-    ,{ "id" :  "emploiEnRapport", "name" :   "emploiEnRapport" }
-    ,{ "id" :  "enRapport", "name" :         "enRapport" }
+    { "id" :  "enEmploi", "name" :          "En emploi (%)" }
+    ,{ "id" :  "auxEtudes", "name" :         "Aux études (%)" }
+    ,{ "id" :  "emploiTempsPlein", "name" :  "Emploi à temps plein (%)" }
+    ,{ "id" :  "dureeDeRecherche", "name" :  "Durée de recherche (semaine)" }
+    ,{ "id" :  "salaireHebdoBrut", "name" :  "Salaire hebdomadaire brut" }
+    ,{ "id" :  "emploiEnRapport", "name" :   "Emploi en rapport (%)" }
   ]
 });
+
+
+    // { "id" :   "nVisees", "name" :           "nVisees" }
+    // ,{ "id" :  "tauxDeReponse", "name" :     "Taux de réponse" }
+    // ,{ "id" :  "enEmploi", "name" :          "En emploi" }
+    // ,{ "id" :  "rechercheEmploi", "name" :   "À la recherche d'un emploi" }
+    // ,{ "id" :  "auxEtudes", "name" :         "Aux études" }
+    // ,{ "id" :  "pInactives", "name" :        "Personnes inactives" }
+    // ,{ "id" :  "tauxDeChomage", "name" :     "Taux de chomage" }
+    // ,{ "id" :  "emploiTempsPlein", "name" :  "Emploi à temps plein" }
+    // ,{ "id" :  "dureeDeRecherche", "name" :  "Durée de recherche" }
+    // ,{ "id" :  "salaireHebdoBrut", "name" :  "Salaire hebdomadaire brut" }
+    // ,{ "id" :  "emploiEnRapport", "name" :   "Emploi en rapport (%)" }
+    // ,{ "id" :  "enRapport", "name" :         "enRapport" }

@@ -74,7 +74,7 @@ angular.module('app')
             .attr('d', HUD.arc1)
             .on('click', function(){
               console.log('ANALYSER' + "\t" + HUD.d.PNAME + "\t" + HUD.d.UNAME);
-              openDialogWindow( 'views/vis-analyser.html' );
+              openDialogWindow( 'views/vis-analyser.html', {"P":HUD.d.PID, "U":HUD.d.UID} );
             });
 
           HUD.hud.append('svg:path')
@@ -84,7 +84,7 @@ angular.module('app')
             .attr('d', HUD.arc3)
             .on('click', function(){
               console.log('COMPARER' + "\t" + HUD.d.PNAME);
-              openDialogWindow( 'views/vis-comparer.html' );
+              openDialogWindow( 'views/vis-comparer.html', {"P":HUD.d.PID} );
             });
 
           // UNIVERSITY & PROGRAM LABEL
@@ -134,10 +134,11 @@ angular.module('app')
         }
       };
 
-      var openDialogWindow = function(templateUrl){
+      var openDialogWindow = function(templateUrl, data){
         var d = $dialog.dialog({
           templateUrl: templateUrl,
-          controller: 'DialogCtrl'
+          controller: 'DialogCtrl',
+          data: data
         });
 
         // We need to apply ourselves!
