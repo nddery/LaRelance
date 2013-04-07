@@ -1177,14 +1177,18 @@ angular.module( 'ui.bootstrap.popover', [] )
 
 
 angular.module('ui.bootstrap.tabs', [])
-.controller('TabsController', ['$scope', '$element', function($scope, $element) {
+.controller('TabsController', ['$scope', '$element', '$rootScope', function($scope, $element, $rootScope) {
   var panes = $scope.panes = [];
 
   this.select = $scope.select = function selectPane(pane) {
+    $rootScope.$broadcast('preSwitchTab');
+
     angular.forEach(panes, function(pane) {
       pane.selected = false;
     });
     pane.selected = true;
+
+    $rootScope.$broadcast('postSwitchTab');
   };
 
   this.addPane = function addPane(pane) {

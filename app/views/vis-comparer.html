@@ -8,29 +8,14 @@
   </div>
 
   <tabs>
-    <pane ng-repeat="pane in panes" heading="{{pane.name}}" active="pane.active">{{pane.content}}</pane>
+    <pane ng-repeat="pane in panes"
+          heading="{{pane.name}}"
+          active="pane.active">
+      <!-- https://github.com/angular-ui/bootstrap/pull/195 -->
+      <ng-include src="pane.content"
+                  data-id="{{pane.id}}"
+                  data-type="{{pane.type}}">
+      </ng-inlcude>
+    </pane>
   </tabs>
-
-
-<!--  -->
-<!--   <div class="modal-header clearfix"> -->
-<!--     <button class="floatleft" ng-click="close()">Retour</button> -->
-<!--  -->
-<!--     <div class="floatright"> -->
-      <!-- <h2>{{title}}</h2> -->
-<!--       <h3>{{subtitle}}</h3> -->
-<!--     </div> -->
-<!--   </div> -->
-<!--  -->
-<!--   <div class="modal-header"> -->
-<!--     <ul class="stats inline"> -->
-<!--       <li ng-repeat="s in stats"> -->
-<!--         <div class="th">{{s.name}}</div> -->
-<!--         <div class="td">{{s.value}} {{s.type}}</div> -->
-<!--       </li> -->
-<!--     </ul> -->
-<!--   </div> -->
-<!--  -->
-<!--   <lr-vis-s-bar bind="stats"></lr-vis-s-bar> -->
-
 </div>

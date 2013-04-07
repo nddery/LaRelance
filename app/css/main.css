@@ -78,7 +78,7 @@ h3 {
   font-size: 1.2em;
 }
 a {
-  color: #575656;
+  color: #a3a0a0;
   text-decoration: none;
 }
 ul,
@@ -143,12 +143,12 @@ nav#main h1 {
   fill: #fff;
 }
 .red1 {
-  fill: #a60909;
+  fill: #b42121;
   stroke: #ff1c1c;
 }
 .red2 {
   fill: #ff1c1c;
-  stroke: #a60909;
+  stroke: #b42121;
 }
 .blue {
   fill: #1cffff;
@@ -179,6 +179,25 @@ circle.node {
 }
 .hudInnerText span {
   font-size: 22px;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #575656;
+  shape-rendering: crispEdges;
+}
+.axis text {
+  fill: #A3A0A0;
+  font-size: 1.2em;
+}
+.bar {
+  fill: #b42121;
+}
+.bar-text {
+  fill: #fff;
+}
+.x.axis path {
+  display: none;
 }
 /* ==========================================================================
    Modal Window Visualisation

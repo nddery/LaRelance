@@ -1,5 +1,5 @@
 'use strict';
-app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function DialogCtrl($scope, idb, stdData, dialog) {
+app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', '$compile', function DialogCtrl($scope, idb, stdData, dialog, $compile) {
   // $scope.title    = dialog.options.data.UNAMEL;
   $scope.subtitle = dialog.options.data.PNAME;
   $scope.panes    = stdData.dataType;
@@ -13,8 +13,6 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
           trn   = db.transaction(["LARELANCE"]),
           store = trn.objectStore("LARELANCE"),
           objs  = [];
-
-          console.log(dialog.options);
 
       var index  = store.index("PID"),
           range  = IDBKeyRange.only(dialog.options.data.PID),
@@ -45,12 +43,11 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
                 v.value = values[0][v.id];
               });
 
-              apply('stats', stats);
+              apply('data', stats);
             }
             // We are comparing many universities. We need to have a JJJJJJ
             else{
-              console.log(values);
-              apply('stats', values);
+              apply('data', values);
             }
           }
           // No data.

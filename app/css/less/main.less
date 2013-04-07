@@ -1,5 +1,5 @@
 @red1: #ff1c1c;
-@red2: #a60909;
+@red2: #b42121;
 @blue: #1cffff;
 // @green: #b3ff1c;
 @green: #008000;
@@ -86,7 +86,8 @@ h2 { font-size: 1.5em; }
 h3 { font-size: 1.2em; }
 
 a {
-  color: #575656;
+  // color: #575656;
+  color: #a3a0a0;
   text-decoration: none;
 }
 
@@ -216,6 +217,31 @@ line.link {
   // stroke: @red2;
   // stroke-width: 1.5px;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #575656;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  fill: #A3A0A0;
+  font-size: 1.2em;
+}
+
+.bar {
+  fill: #b42121;
+}
+
+.bar-text {
+  fill: #fff;
+}
+
+.x.axis path {
+  display: none;
+}
+
 
 /* ==========================================================================
    Modal Window Visualisation

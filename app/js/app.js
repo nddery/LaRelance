@@ -1,6 +1,5 @@
 'use strict';
-
-var app = angular.module('app', ['ui.bootstrap']);
+var app = angular.module('app', ['ui.bootstrap', 'd3js.directives']);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'})
@@ -16,7 +15,7 @@ app.value('stdData', {
       "id" : "enEmploi"
       ,"name" : "En emploi"
       ,"type" : "%"
-      ,"directive" : "barChart"
+      ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
@@ -24,7 +23,7 @@ app.value('stdData', {
       "id" : "auxEtudes"
       ,"name" : "Aux études"
       ,"type" : "%"
-      ,"directive" : "%"
+      ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
@@ -32,7 +31,7 @@ app.value('stdData', {
       "id" : "emploiTempsPlein"
       ,"name" : "Emploi à temps plein"
       ,"type" : "%"
-      ,"directive" : "%"
+      ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
@@ -40,7 +39,7 @@ app.value('stdData', {
       "id" : "dureeDeRecherche"
       ,"name" : "Durée de recherche"
       ,"type" : "semaine(s)"
-      ,"directive" : "%"
+      ,"content" : "d3js-directives/areachart.html"
       ,"min" : "1"
       ,"max" : "52"
     }
@@ -48,7 +47,7 @@ app.value('stdData', {
       "id" : "salaireHebdoBrut"
       ,"name" : "Salaire hebdomadaire brut"
       ,"type" : "$"
-      ,"directive" : "%"
+      ,"content" : "d3js-directives/areachart.html"
       ,"min" : "414"
       ,"max" : "2625"
     }
@@ -56,7 +55,7 @@ app.value('stdData', {
       "id" : "emploiEnRapport"
       ,"name" : "Emploi en rapport"
       ,"type" : "%"
-      ,"directive" : "%"
+      ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
