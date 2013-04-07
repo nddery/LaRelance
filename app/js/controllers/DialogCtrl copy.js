@@ -48,8 +48,7 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
             }
             // We are comparing many universities. We need to have a JJJJJJ
             else{
-              console.log(values);
-              apply('stats', values);
+              //
             }
           }
           // No data.
