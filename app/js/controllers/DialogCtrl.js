@@ -3,6 +3,7 @@ app.controller('DialogCtrl', ['$scope', 'idb', 'stdData', 'dialog', function Dia
   // $scope.title    = dialog.options.data.UNAMEL;
   $scope.subtitle = dialog.options.data.PNAME;
   $scope.panes    = stdData.dataType;
+  $scope.panes[0].active = true;
 
   getCurrentData();
   function getCurrentData(){

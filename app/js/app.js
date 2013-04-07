@@ -2,12 +2,12 @@
 
 var app = angular.module('app', ['ui.bootstrap']);
 app.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.
-    when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'}).
+  $routeProvider
+    .when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'})
 
-    when('/vis', {templateUrl: 'views/vis.html',   controller: 'VisCtrl'}).
+    .when('/vis', {templateUrl: 'views/vis.html',   controller: 'VisCtrl'})
 
-    otherwise({redirectTo: '/'});
+    .otherwise({redirectTo: '/'});
 }]);
 
 app.value('stdData', {
@@ -16,6 +16,7 @@ app.value('stdData', {
       "id" : "enEmploi"
       ,"name" : "En emploi"
       ,"type" : "%"
+      ,"directive" : "barChart"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
@@ -23,6 +24,7 @@ app.value('stdData', {
       "id" : "auxEtudes"
       ,"name" : "Aux études"
       ,"type" : "%"
+      ,"directive" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
@@ -30,6 +32,7 @@ app.value('stdData', {
       "id" : "emploiTempsPlein"
       ,"name" : "Emploi à temps plein"
       ,"type" : "%"
+      ,"directive" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
@@ -37,6 +40,7 @@ app.value('stdData', {
       "id" : "dureeDeRecherche"
       ,"name" : "Durée de recherche"
       ,"type" : "semaine(s)"
+      ,"directive" : "%"
       ,"min" : "1"
       ,"max" : "52"
     }
@@ -44,6 +48,7 @@ app.value('stdData', {
       "id" : "salaireHebdoBrut"
       ,"name" : "Salaire hebdomadaire brut"
       ,"type" : "$"
+      ,"directive" : "%"
       ,"min" : "414"
       ,"max" : "2625"
     }
@@ -51,6 +56,7 @@ app.value('stdData', {
       "id" : "emploiEnRapport"
       ,"name" : "Emploi en rapport"
       ,"type" : "%"
+      ,"directive" : "%"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
