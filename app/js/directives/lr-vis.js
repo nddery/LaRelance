@@ -181,7 +181,7 @@ angular.module('app')
         .text('chargement');
 
       function tick(tick){
-        HUD.move();
+        // HUD.move();
 
         link
           .attr('x1', function(d){ return d.source.x; })
@@ -222,14 +222,43 @@ angular.module('app')
 
       // Toggle children on click.
       function click(d, i){
-        // If HUD is NOT visible.
-        if(!HUD.visible){
+        // // If HUD is NOT visible.
+        // if(!HUD.visible){
+        //   var shouldClose = true;
+        //   // If we clicked on a program.
+        //   if(d.hasOwnProperty("UID")){
+        //     HUD.setHUD(svg.insert('g', 'node'));
+        //     HUD.setNode(d, i);
+        //     HUD.display();
+        //     shouldClose = false;
+        //   }
+
+        //   if(d.children){
+        //     // Open children
+        //     d._children = d.children;
+        //     d.children  = null;
+        //   }
+        //   else{
+        //     // Close children.
+        //     if(shouldClose) closeAll();
+        //     d.children  = d._children;
+        //     d._children = null;
+        //   }
+
+        //   update();
+        // }
+        // else{
+        //   HUD.remove();
+        // }
+
+
           var shouldClose = true;
           // If we clicked on a program.
           if(d.hasOwnProperty("UID")){
-            HUD.setHUD(svg.insert('g', 'node'));
-            HUD.setNode(d, i);
-            HUD.display();
+            // HUD.setHUD(svg.insert('g', 'node'));
+            // HUD.setNode(d, i);
+            // HUD.display();
+            openDialogWindow( 'views/vis-comparer.html', d, false );
             shouldClose = false;
           }
 
@@ -237,13 +266,6 @@ angular.module('app')
             // Open children
             d._children = d.children;
             d.children  = null;
-
-            // Position the clicked item in the center of the screen.
-            // d.attr('px', width / 2);
-            // d.attr('py', height / 2);
-            // d.attr('x', width / 2);
-            // d.attr('y', height / 2);
-            // d.fixed = true;
           }
           else{
             // Close children.
@@ -253,10 +275,7 @@ angular.module('app')
           }
 
           update();
-        }
-        else{
-          HUD.remove();
-        }
+
       }
 
       // Returns a list of all nodes under the root.

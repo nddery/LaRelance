@@ -115,8 +115,10 @@ d3js.directive('d3jsAreachart', [ 'stdData', 'debounce', function (stdData, debo
           .attr('y', function(d) { return y(d[dataid]); });
 
         // Enter labels!
+        var FF = (document.getBoxObjectFor != null || window.mozInnerScreenX != null);
         rect.append('g')
-          // .attr("clip-path", "url(#clip)")
+          // @TODO: Firefox does not like clippath....
+          .attr('clip-path', function(){ if(FF) return ''; return 'url(#clip)';})
           .append('text')
             .attr('class', 'bar-text')
             .attr('text-anchor', 'end')
