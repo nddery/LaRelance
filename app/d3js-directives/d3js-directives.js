@@ -116,7 +116,7 @@ d3js.directive('d3jsAreachart', [ 'stdData', 'debounce', function (stdData, debo
 
         // Enter labels!
         rect.append('g')
-          .attr("clip-path", "url(#clip)")
+          // .attr("clip-path", "url(#clip)")
           .append('text')
             .attr('class', 'bar-text')
             .attr('text-anchor', 'end')
