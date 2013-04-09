@@ -220,6 +220,21 @@ angular.module('app')
         return d._children ? 'red1' : d.children ? 'red2' : 'green';
       }
 
+      function border(d){
+            if(typeof d.image !== 'undefined'){
+              console.log(d);
+              if(d._children){
+                return "#b42121";
+              }
+              else{
+                return "#fff";
+              }
+            }
+            else{
+              return '#b42121';
+            }
+      }
+
       // Toggle children on click.
       function click(d, i){
         // // If HUD is NOT visible.
@@ -313,12 +328,12 @@ angular.module('app')
           .data(links, function(d){ return d.target.id; });
 
         // Enter any new links.
-        link.enter().insert('svg:line', '.node')
-          .attr('class', 'link')
-          .attr('x1', function(d){ return d.source.x; })
-          .attr('y1', function(d){ return d.source.y; })
-          .attr('x2', function(d){ return d.target.x; })
-          .attr('y3', function(d){ return d.target.y; });
+        // link.enter().insert('svg:line', '.node')
+        //   .attr('class', 'link')
+        //   .attr('x1', function(d){ return d.source.x; })
+        //   .attr('y1', function(d){ return d.source.y; })
+        //   .attr('x2', function(d){ return d.target.x; })
+        //   .attr('y3', function(d){ return d.target.y; });
 
         // Exit any old links.
         link.exit().remove();
@@ -343,14 +358,7 @@ angular.module('app')
         group.append('circle')
           .attr('r', function(d){ return getRadius(d) } )
           .attr('class', color)
-          .style('stroke', function(d){
-            if(typeof d.image !== 'undefined'){
-              return "#fff";
-            }
-            else{
-              return '#b42121';
-            }
-          })
+          .style('stroke', border)
           .style('stroke-width', '0.5');
 
         var innerGroup = group.append('g')
