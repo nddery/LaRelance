@@ -76,6 +76,41 @@ textarea {
   padding: 0.2em 0;
 }
 
+/* ==========================================================================
+   Grid Support
+   ========================================================================== */
+
+.grid:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.grid h2 {
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.col {
+  float: left;
+}
+
+.col-1-3 {
+  width: 33.33%;
+}
+
+.col-2-3 {
+  width: 66.66%;
+}
+
+.col .module {
+  padding: 20px;
+}
+
+.col .module h2 {
+  padding-left: 0;
+}
+
 
 /* ==========================================================================
    app styles
@@ -141,7 +176,7 @@ nav#main h1 {
  * Text spaces
  */
 .text {
-  width: 50%;
+  // width: 50%;
   margin: 20px;
   padding: 20px;
 }
