@@ -157,7 +157,7 @@ angular.module('app')
         .on('tick', tick)
         .gravity(0.5)
         .charge(-5000)
-        .linkDistance(height / 4)
+        .linkDistance(height / 3.5)
         .size([width, height]);
 
       // Set up the initial svg, full width and height.
@@ -309,7 +309,13 @@ angular.module('app')
       }
 
       function getRadius(d){
-        return Math.sqrt(d.salaireHebdoBrut) / 1.5 || 25;
+        if(typeof d.image !== 'undefined'){
+          return 25;
+        }
+        else{
+          return Math.sqrt(d.salaireHebdoBrut) * 2.5 || 50;
+        }
+
       }
 
       // Update the force layout.
@@ -357,6 +363,7 @@ angular.module('app')
         // OUTER CIRCLE
         group.append('circle')
           .attr('r', function(d){ return getRadius(d) } )
+          // .attr('r', function(d){ return Math.random(100,150); } )
           .attr('class', color)
           .style('stroke', border)
           .style('stroke-width', '0.5');
@@ -366,17 +373,17 @@ angular.module('app')
 
         // LABEL
         innerGroup.append('foreignObject')
-          .attr('width', 100)
-          .attr('height', 100)
+          .attr('width', 150)
+          .attr('height', 150)
           .attr('transform', function(d) {
-            var x = -50,
+            var x = -75,
                 y = !d.image ? 0 : 10;
             return 'translate('+ x + ',' + y +')';
           })
           .append("xhtml:div")
             .attr('class', 'innerText')
             .style("font", "14px 'Helvetica Neue'")
-            .html(function(d) { return d.name } );
+            .html(function(d) { return d.name; } );
 
         // IMAGE
         innerGroup.append('image')
