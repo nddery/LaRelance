@@ -222,7 +222,7 @@ angular.module('app')
 
       function border(d){
             if(typeof d.image !== 'undefined'){
-              console.log(d);
+              // console.log(d);
               if(d._children){
                 return "#b42121";
               }

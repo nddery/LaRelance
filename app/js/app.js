@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module('app', ['ui.bootstrap', 'd3js.directives']);
+var app = angular.module('app', ['ngSanitize', 'ui.bootstrap', 'd3js.directives']);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/', {templateUrl: 'views/main.html',   controller: 'AppCtrl'})
@@ -14,6 +14,7 @@ app.value('stdData', {
     {
       "id" : "enEmploi"
       ,"name" : "En emploi"
+      ,"definition" : "Sont dites &laquo; en emploi &raquo; les personnes diplômées visées par l&apos;enquête qui ont déclaré travailler à leur compte ou pour autrui, sans étudier à temps plein."
       ,"type" : "%"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
@@ -22,6 +23,7 @@ app.value('stdData', {
     ,{
       "id" : "auxEtudes"
       ,"name" : "Aux études"
+      ,"definition" : "Sont dites &laquo; aux études &raquo; les personnes diplômées visées par l&apos;enquête qui ont déclaré soit étudier à temps plein, soit étudier à temps partiel sans avoir d’emploi."
       ,"type" : "%"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
@@ -30,6 +32,7 @@ app.value('stdData', {
     ,{
       "id" : "emploiTempsPlein"
       ,"name" : "Emploi à temps plein"
+      ,"definition" : "Sont dites &laquo; à temps plein &raquo; les personnes diplômées en emploi qui travaillent, de façon générale, 30 heures ou plus par semaine."
       ,"type" : "%"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
@@ -38,6 +41,7 @@ app.value('stdData', {
     ,{
       "id" : "dureeDeRecherche"
       ,"name" : "Durée de recherche"
+      ,"definition" : "Nombre moyen de semaines, calculé à partir de la fin des études, qu&apos;ont pris les travailleuses et les travailleurs à temps plein pour trouver un premier emploi qu&apos;ils jugent comme un emploi d&apos;importance. À partir de 2009, la méthode de calcul diffère de celle des enquêtes précédentes. Les personnes diplômées qui ont obtenu leur premier emploi dès la fin de leurs études sont désormais incluses dans le calcul."
       ,"type" : "semaine(s)"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "1"
@@ -46,6 +50,7 @@ app.value('stdData', {
     ,{
       "id" : "salaireHebdoBrut"
       ,"name" : "Salaire hebdomadaire brut"
+      ,"definition" : "Salaire brut moyen gagné par les travailleuses et les travailleurs à temps plein au cours d&apos;une semaine normale de travail. Ces données concernent uniquement les personnes diplômées qui travaillent pour autrui."
       ,"type" : "$"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "414"
@@ -54,6 +59,7 @@ app.value('stdData', {
     ,{
       "id" : "emploiEnRapport"
       ,"name" : "Emploi en rapport"
+      ,"definition" : "Sont dits avoir un emploi &laquo; en rapport avec leur formation &raquo; les travailleurs et les travailleuses à temps plein qui jugent que leur travail correspond à leurs études."
       ,"type" : "%"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"

@@ -11,6 +11,15 @@
     <pane ng-repeat="pane in panes"
           heading="{{pane.name}}"
           active="pane.active">
+
+      <button popover-animation="true"
+              popover-placement="left"
+              popover="I fade in and out!"
+              popover-title="Title"
+              class="btn btn-custom btn-small questionmark">
+        ?
+      </button>
+
       <!-- https://github.com/angular-ui/bootstrap/pull/195 -->
       <ng-include src="pane.content"
                   data-id="{{pane.id}}"
