@@ -377,12 +377,15 @@ angular.module('app')
           .attr('height', 150)
           .attr('transform', function(d) {
             var x = -75,
-                y = !d.image ? 0 : 10;
+                y = !d.image ? -63 : 10;
             return 'translate('+ x + ',' + y +')';
           })
-          .append("xhtml:div")
-            .attr('class', 'innerText')
-            .style("font", "14px 'Helvetica Neue'")
+          .append('xhtml:div')
+            .attr('class', function( d ) {
+              var c = [ 'aligncenter' ];
+              if ( !d.image ) c.push( 'inner' );
+              return c.join( ' ' );
+            })
             .html(function(d) { return d.name; } );
 
         // IMAGE

@@ -216,7 +216,14 @@ circle.node {
 .node text {
   fill: #fff;
 }
-.node .innerText {
+.node .inner {
+  width: 150px;
+  height: 150px;
+  display: table-cell;
+  vertical-align: middle;
+  margin-top: -75px;
+}
+.node .aligncenter {
   text-align: center;
 }
 .hudInnerText {
