@@ -9,7 +9,19 @@ app.config(['$routeProvider', function($routeProvider) {
     .otherwise({redirectTo: '/'});
 }]);
 
-app.value('stdData', {
+
+angular.module('app')
+.run(['$route', '$rootScope', function($route, $rootScope) {
+  $rootScope.page_title = 'La Relance';
+  $rootScope.$on('$routeChangeSuccess', function() {
+    $rootScope.page_title = $route.current.$route.title;
+    $rootScope.controller = $route.current.$route.controller;
+  });
+}]);
+
+
+angular.module('app')
+.value('stdData', {
   "dataType" : [
     {
       "id" : "enEmploi"

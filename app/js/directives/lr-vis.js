@@ -157,7 +157,7 @@ angular.module('app')
         .on('tick', tick)
         .gravity(0.5)
         .charge(-5000)
-        .linkDistance(height / 3.5)
+        .linkDistance(height / 3.5 )
         .size([width, height]);
 
       // Set up the initial svg, full width and height.
@@ -183,6 +183,15 @@ angular.module('app')
       function tick(tick){
         // HUD.move();
 
+        var nodes = flatten(data),
+            q = d3.geom.quadtree(nodes),
+            i = 0,
+            n = nodes.length;
+
+        while (++i < n) {
+          q.visit(collide(nodes[i]));
+        }
+
         link
           .attr('x1', function(d){ return d.source.x; })
           .attr('y1', function(d){ return d.source.y; })
@@ -203,6 +212,33 @@ angular.module('app')
             closed = true;
           }
         }
+      }
+
+      function collide(node) {
+        var r = node.radius + 16,
+            nx1 = node.x - r,
+            nx2 = node.x + r,
+            ny1 = node.y - r,
+            ny2 = node.y + r;
+        return function(quad, x1, y1, x2, y2) {
+          if (quad.point && (quad.point !== node)) {
+            var x = node.x - quad.point.x,
+                y = node.y - quad.point.y,
+                l = Math.sqrt(x * x + y * y),
+                r = node.radius + quad.point.radius;
+            if (l < r) {
+              l = (l - r) / l * .5;
+              node.x -= x *= l;
+              node.y -= y *= l;
+              quad.point.x += x;
+              quad.point.y += y;
+            }
+          }
+          return x1 > nx2
+              || x2 < nx1
+              || y1 > ny2
+              || y2 < ny1;
+        };
       }
 
       function closeAll(){
@@ -313,7 +349,10 @@ angular.module('app')
           return 25;
         }
         else{
-          return Math.sqrt(d.salaireHebdoBrut) * 2.5 || 50;
+          var r = d.name.length * 2.5;
+          console.log(r);
+          return r > 85 ? 85 : r < 40 ? 40 : r;
+          // return Math.sqrt(d.salaireHebdoBrut) * 2.5 || 50;
         }
 
       }
@@ -326,7 +365,7 @@ angular.module('app')
         // Restart the force layout.
         force
           .nodes(nodes)
-          .links(links)
+          .links([])
           .start();
 
         // Update the links.
@@ -373,8 +412,8 @@ angular.module('app')
 
         // LABEL
         innerGroup.append('foreignObject')
-          .attr('width', 150)
-          .attr('height', 150)
+          .attr('width', 180)
+          .attr('height', 180)
           .attr('transform', function(d) {
             var x = -75,
                 y = !d.image ? -63 : 10;
