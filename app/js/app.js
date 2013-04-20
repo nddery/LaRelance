@@ -33,18 +33,18 @@ angular.module('app')
       ,"max" : "100.0"
     }
     ,{
-      "id" : "auxEtudes"
-      ,"name" : "Aux études"
-      ,"definition" : "Sont dites &laquo; aux études &raquo; les personnes diplômées visées par l&apos;enquête qui ont déclaré soit étudier à temps plein, soit étudier à temps partiel sans avoir d’emploi."
+      "id" : "emploiTempsPlein"
+      ,"name" : "Emploi à temps plein"
+      ,"definition" : "Sont dites &laquo; à temps plein &raquo; les personnes diplômées en emploi qui travaillent, de façon générale, 30 heures ou plus par semaine."
       ,"type" : "%"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
       ,"max" : "100.0"
     }
     ,{
-      "id" : "emploiTempsPlein"
-      ,"name" : "Emploi à temps plein"
-      ,"definition" : "Sont dites &laquo; à temps plein &raquo; les personnes diplômées en emploi qui travaillent, de façon générale, 30 heures ou plus par semaine."
+      "id" : "auxEtudes"
+      ,"name" : "Aux études"
+      ,"definition" : "Sont dites &laquo; aux études &raquo; les personnes diplômées visées par l&apos;enquête qui ont déclaré soit étudier à temps plein, soit étudier à temps partiel sans avoir d’emploi."
       ,"type" : "%"
       ,"content" : "d3js-directives/areachart.html"
       ,"min" : "0.0"
