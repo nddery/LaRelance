@@ -20,7 +20,10 @@ angular.module('app')
           color  = d3.scale.category20c(),
           closed = false,
           PI     = Math.PI,
-          node, link, data;
+          node   = null,
+          link   = null,
+          data   = null,
+          selectedNode = null;
 
       function conceal(elem){
         elem.css('display', 'none');
@@ -183,20 +186,20 @@ angular.module('app')
       function tick(tick){
         // HUD.move();
 
-        var nodes = flatten(data),
-            q = d3.geom.quadtree(nodes),
-            i = 0,
-            n = nodes.length;
+        // var nodes = flatten(data),
+        //     q = d3.geom.quadtree(nodes),
+        //     i = 0,
+        //     n = nodes.length;
 
-        while (++i < n) {
-          q.visit(collide(nodes[i]));
-        }
+        // while (++i < n) {
+        //   q.visit(collide(nodes[i]));
+        // }
 
-        link
-          .attr('x1', function(d){ return d.source.x; })
-          .attr('y1', function(d){ return d.source.y; })
-          .attr('x2', function(d){ return d.target.x; })
-          .attr('y2', function(d){ return d.target.y; });
+        // link
+        //   .attr('x1', function(d){ return d.source.x; })
+        //   .attr('y1', function(d){ return d.source.y; })
+        //   .attr('x2', function(d){ return d.target.x; })
+        //   .attr('y2', function(d){ return d.target.y; });
 
         node
           .attr('transform', function(d){ return "translate("+ d.x +","+ d.y +")"; });
@@ -312,6 +315,14 @@ angular.module('app')
             openDialogWindow( 'views/vis-comparer.html', d, false );
             shouldClose = false;
           }
+          else {
+            if(d.children){
+              selectedNode = null;
+            }
+            else{
+              selectedNode = d.id;
+            }
+          }
 
           if(d.children){
             // Open children
@@ -350,7 +361,6 @@ angular.module('app')
         }
         else{
           var r = d.name.length * 2.5;
-          console.log(r);
           return r > 85 ? 85 : r < 40 ? 40 : r;
           // return Math.sqrt(d.salaireHebdoBrut) * 2.5 || 50;
         }
@@ -368,9 +378,9 @@ angular.module('app')
           .links([])
           .start();
 
-        // Update the links.
-        link = svg.selectAll('line.link')
-          .data(links, function(d){ return d.target.id; });
+        // // Update the links.
+        // link = svg.selectAll('line.link')
+        //   .data(links, function(d){ return d.target.id; });
 
         // Enter any new links.
         // link.enter().insert('svg:line', '.node')
@@ -380,20 +390,21 @@ angular.module('app')
         //   .attr('x2', function(d){ return d.target.x; })
         //   .attr('y3', function(d){ return d.target.y; });
 
-        // Exit any old links.
-        link.exit().remove();
+        // // Exit any old links.
+        // link.exit().remove();
 
         // Update the nodes.
         node = svg.selectAll('g.node')
           .data(nodes, function(d){ return d.id; });
 
+        node
+          .classed( 'selected', function( d ) { return d.id === selectedNode ? true : false; });
+
         var group = node.enter().append('g')
           .attr('class', function(d, i){
-            var c = 'node';
-            if(d.name === 'root'){
-              c += ' hidden';
-            }
-            return c;
+            var c = [ 'node' ];
+            if ( d.name === 'root' )        c.push( 'hidden' );
+            return c.join( ' ' );
           })
           .attr('transform', function(d){ return "translate("+ d.x +","+ d.y +")"; })
           .call(force.drag)
@@ -415,7 +426,7 @@ angular.module('app')
           .attr('width', 180)
           .attr('height', 180)
           .attr('transform', function(d) {
-            var x = -75,
+            var x = !d.image ? -75 : -90,
                 y = !d.image ? -63 : 10;
             return 'translate('+ x + ',' + y +')';
           })

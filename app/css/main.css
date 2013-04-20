@@ -225,6 +225,16 @@ circle.node {
 .node text {
   fill: #fff;
 }
+.node {
+  cursor: pointer;
+}
+.node.selected circle {
+  -webkit-svg-shadow: 0 0 15px #fff;
+  fill: rgba(255, 255, 255, 0);
+}
+.node.selected .aligncenter {
+  color: #000;
+}
 .node .inner {
   width: 150px;
   height: 150px;
