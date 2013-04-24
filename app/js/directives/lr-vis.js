@@ -163,11 +163,26 @@ angular.module('app')
         .linkDistance(height / 3.5 )
         .size([width, height]);
 
-      // Set up the initial svg, full width and height.
-      var svg = d3.select(elem[0])
-        .append('svg')
-          .attr('width', width)
-          .attr('height', height);
+      var draggable = d3.select(elem[0]).append('svg:svg')
+        .attr( 'width', width )
+        .attr( 'height', height )
+        .attr( 'pointer-events', 'all' );
+
+      var svg = draggable.append( 'svg:g' )
+          .call( d3.behavior.zoom().on( 'zoom', rescale ) )
+          .on( 'dblclick.zoom', null )
+          .append( 'svg:g' );
+
+      svg.append( 'svg:rect' )
+        .attr( 'width', width )
+        .attr( 'height', height )
+        .attr( 'fill', 'none' );
+
+      // // Set up the initial svg, full width and height.
+      // var svg = d3.select(elem[0])
+      //   .append('svg')
+      //     .attr('width', width)
+      //     .attr('height', height);
 
       conceal(angular.element(svg[0]));
 
@@ -182,6 +197,15 @@ angular.module('app')
         .attr('dy', '.35em')
         .attr('text-anchor', 'middle')
         .text('chargement');
+
+      function rescale(){
+        var trans  = d3.event.translate
+            ,scale = d3.event.scale;
+
+        svg.attr( 'transform',
+            'translate(' + trans + ')'
+            + ' scale(' + scale + ')');
+      }
 
       function tick(tick){
         // HUD.move();
