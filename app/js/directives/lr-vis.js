@@ -385,7 +385,7 @@ angular.module('app')
         }
         else{
           var r = d.name.length * 2.5;
-          return r > 85 ? 85 : r < 40 ? 40 : r;
+          return r > 85 ? 85 : r < 50 ? 50 : r;
           // return Math.sqrt(d.salaireHebdoBrut) * 2.5 || 50;
         }
 
@@ -447,10 +447,10 @@ angular.module('app')
 
         // LABEL
         innerGroup.append('foreignObject')
-          .attr('width', 180)
-          .attr('height', 180)
+          .attr('width', 140)
+          .attr('height', 140)
           .attr('transform', function(d) {
-            var x = !d.image ? -75 : -90,
+            var x = !d.image ? -70 : -70,
                 y = !d.image ? -63 : 10;
             return 'translate('+ x + ',' + y +')';
           })
