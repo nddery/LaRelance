@@ -159,7 +159,7 @@ angular.module('app')
       var force = d3.layout.force()
         .on('tick', tick)
         .gravity(0.5)
-        .charge(-5000)
+        .charge(-3750)
         .linkDistance(height / 3.5 )
         .size([width, height]);
 
@@ -169,8 +169,8 @@ angular.module('app')
         .attr( 'pointer-events', 'all' );
 
       var svg = draggable.append( 'svg:g' )
-          .call( d3.behavior.zoom().on( 'zoom', rescale ) )
-          .on( 'dblclick.zoom', null )
+          // .call( d3.behavior.zoom().on( 'zoom', rescale ) )
+          // .on( 'dblclick.zoom', null )
           .append( 'svg:g' );
 
       svg.append( 'svg:rect' )

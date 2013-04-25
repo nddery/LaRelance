@@ -711,7 +711,8 @@ input[type="button"].btn-block {
   margin-top: 10px;
 }
 .popover.left {
-  margin-left: -10px;
+  margin-left: -55px;
+  top: 38px !important;
 }
 .popover-title {
   margin: 0;
@@ -790,7 +791,7 @@ input[type="button"].btn-block {
   border-bottom-color: #ffffff;
 }
 .popover.left .arrow {
-  top: 50%;
+  top: 46px;
   right: -11px;
   margin-top: -11px;
   border-right-width: 0;
@@ -803,4 +804,3 @@ input[type="button"].btn-block {
   border-left-color: #ffffff;
   bottom: -10px;
 }
-

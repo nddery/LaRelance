@@ -1,6 +1,6 @@
 <div class="modal">
   <div class="modal-header clearfix">
-    <button class="btn btn-custom floatleft" ng-click="close()">Retour</button>
+    <button class="btn btn-large btn-custom floatleft" ng-click="close()">Retour</button>
 
     <div class="floatright">
       <h3>{{subtitle}}</h3>
@@ -13,8 +13,8 @@
           active="pane.active">
 
       <button popover-placement="left"
-              popover="I fade in and out! NOT"
-              popover-title="Title"
+              popover-title="{{pane.name}}"
+              popover="{{pane.definition}}"
               class="btn btn-custom btn-small questionmark">
         ?
       </button>
