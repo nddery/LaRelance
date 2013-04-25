@@ -108,6 +108,9 @@ textarea {
   margin-bottom: 0;
   padding-left: 20px;
 }
+.grid h3 {
+  margin-top: 5px;
+}
 .col {
   float: left;
 }
@@ -489,6 +492,9 @@ ul.stats .td {
   h3 {
     page-break-after: avoid;
   }
+}
+.popover {
+  color: #5d5d5d;
 }
 *,
 *:hover,
