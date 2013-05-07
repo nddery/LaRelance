@@ -711,8 +711,8 @@ input[type="button"].btn-block {
   margin-top: 10px;
 }
 .popover.left {
-  margin-left: -55px;
-  top: 38px !important;
+  margin-left: -40px;
+  top: 33px !important;
 }
 .popover-title {
   margin: 0;
