@@ -5,7 +5,7 @@ angular.module('app')
       keyPath: 'id',
       indexes: ['UNIQ', 'UID', 'PID', 'TYPE'],
       autoIncrement: true,
-      data_source: 'http://proj.nddery.dev/la-relance/app/data/larelance.json',
+      data_source: 'http://proj.nddery.ca/la-relance/data/larelance.json',
       data: '' }
   ];
 
