@@ -1,4 +1,4 @@
-# La Relance
+# [La Relance](http://proj.nddery.ca/la-relance/)
 ## Visualizing Quebec University students hiring rate.
 
 [La Relance](http://proj.nddery.ca/la-relance/) is an interactive data visualisation that explores the hiring rate of
